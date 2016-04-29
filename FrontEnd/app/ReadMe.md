@@ -1,0 +1,3 @@
+1 - Il file "main.ts" è il punto di partenza del FrontEnd, in quanto vengono importate le librerie che serviranno dal framework e soprattutto viene settato quello che sarà il punto di partenza della logica, ovvero il modulo AppComponent.
+
+2 - Il file "app.component.ts" contiene al suo interno un Componente che...

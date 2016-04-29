@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>GestioneProgetti FrontEnd</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- CSS -->
+        <link rel="stylesheet" href="css/styles.css" typ="text/css">
+        <link rel="stylesheet" href="css/forms.css" typ="text/css">
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <!-- 1. Load libraries -->
+        <!-- IE required polyfills, in this exact order -->
+        <script src="node_modules/es6-shim/es6-shim.min.js"></script>
+        <script src="node_modules/systemjs/dist/system-polyfills.js"></script>
+        <script src="node_modules/angular2/es6/dev/src/testing/shims_for_IE.js"></script>
+        <script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
+        <script src="node_modules/systemjs/dist/system.src.js"></script>
+        <script src="node_modules/rxjs/bundles/Rx.js"></script>
+        <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
+        <!-- Http Script -->
+        <script src="node_modules/angular2/bundles/http.dev.js"></script>
+        <!-- 2. Configure SystemJS -->
+        <script src="systemJSconfig.js"></script>
+    </head>
+    <!-- 3. Display the application -->
+    <body>
+        <h1>GestioneProgetti</h1>
+        <hr>
+        <my-app>
+            <p style="text-align: center;">Loading Application...</p>
+        </my-app>
+    </body>
+</html>

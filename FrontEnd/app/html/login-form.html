@@ -1,0 +1,52 @@
+<div class="container">
+		<h2>Login</h2>
+
+    <form id="login_form" name="login" #loginForm="ngForm">
+				<div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
+				<div class="form-group">
+						<label for="username">Username</label>
+		        <input #username="ngForm" type="text" class="form-control" id="username" name="username" placeholder="username" required ngControl="name"/>
+		        <div [hidden]="username.valid || username.pristine" class="alert alert-danger">
+		            Username is required
+		        </div>
+				</div>
+				<div class="form-group">
+		        <label for="pwd">Password</label>
+		        <input #pwd="ngForm" type="password" class="form-control" id="pwd" name="pwd" maxlength="10" placeholder="*****" required ngControl="pwd"/>
+		        <div [hidden]="pwd.valid || pwd.pristine" class="alert alert-danger">
+		            Password is required
+		        </div>
+				</div>
+				<div class="form-group">
+		        <label for="profile">Profile</label>
+		        <select class="form-control" id="profile" name="profile" required ngControl="profile" #profile="ngForm">
+		            <option *ngFor="#p of profiles" [value]="p.id">{{p.name}}</option>
+		        </select>
+		        <div [hidden]="profile.valid || profile.pristine" class="alert alert-danger">
+		            Profile is required
+		        </div>
+				</div>
+        <button class="btn btn-default" (click)="login(username.value, pwd.value, profile.value);" [disabled]="!loginForm.form.valid">Login</button>
+    </form>
+
+</div>
+
+<!--
+By setting ngControl we create a directive that can tell if the user touched the control,
+if the value changed, or if the value became invalid.
+The NgControl directive doesn't just track state. It updates the control with three classes
+that reflect the state:
+      Control has been visited: ng-touched / ng-untouched
+      Control's value has changed:	ng-dirty /	ng-pristine
+      Control's value is valid:	ng-valid /	ng-invalid
+Let's add a temporary local template variable named spy to the "Name" <input>
+tag and use the spy to display those classes.
+We hide the message when the control is valid or pristine;
+pristine means the user hasn't changed the value since it was displayed in this form.
+-->
+
+<!--
+Cliccando sul tasto Login il form si svuota automaticamente.
+Le barre colorate alla sx dell'input box rosse indicano invalid username, password e profiles.
+Se si riempiono tutti e 3 i campi required, il tasto Login può essere cliccato, altrimenti no.
+-->
