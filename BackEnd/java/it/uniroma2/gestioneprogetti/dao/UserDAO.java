@@ -62,10 +62,6 @@ public class UserDAO implements IUserDAO{
             System.err.println("Database Error!");
             e.printStackTrace();
             return "fail";
-        } catch (ClassNotFoundException e) { //il metodo intercetta un'eccezione proveniente dal driver del DB	    	 
-            System.err.println("Driver Not Found!");
-            e.printStackTrace();
-            return "fail";
         } finally {
             try {
                 if(stmt!=null)
@@ -112,10 +108,6 @@ public class UserDAO implements IUserDAO{
             System.err.println("Database Error!");
             e.printStackTrace();
             return FAIL;
-        } catch (ClassNotFoundException e) { //il metodo intercetta un'eccezione proveniente dal driver del DB         
-            System.err.println("Driver Not Found!");
-            e.printStackTrace();
-            return FAIL;
         } finally {
             try{
                 if(stmt!=null)
@@ -155,10 +147,6 @@ public class UserDAO implements IUserDAO{
         }
         } catch (SQLException e) { //il metodo intercetta un'eccezione proveniente dal DB	    	 
             System.err.println("Database Error!");
-            e.printStackTrace();
-            return "fail";
-        } catch (ClassNotFoundException e) { //il metodo intercetta un'eccezione proveniente dal driver del DB	    	 
-            System.err.println("Driver Not Found!");
             e.printStackTrace();
             return "fail";
         } finally {
@@ -206,10 +194,6 @@ public class UserDAO implements IUserDAO{
             u.setIsDeactivated(rs.getBoolean(8));
 
         } catch (SQLException e) {
-            System.err.println("Database Error!");
-            e.printStackTrace();
-            return FAIL;
-        } catch (ClassNotFoundException e) {
             System.err.println("Database Error!");
             e.printStackTrace();
             return FAIL;
@@ -265,10 +249,6 @@ public class UserDAO implements IUserDAO{
             System.err.println("Database Error!");
             e.printStackTrace();
             return FAIL;
-        } catch (ClassNotFoundException e) {
-            System.err.println("Database Error!");
-            e.printStackTrace();
-            return FAIL;
         } finally {
             try {
                 if(stmt!=null)
@@ -318,10 +298,6 @@ public class UserDAO implements IUserDAO{
             System.err.println("Database Error!");
             e.printStackTrace();
             return FAIL;
-        } catch (ClassNotFoundException e) {
-            System.err.println("Database Error!");
-            e.printStackTrace();
-            return FAIL;
         } finally {
             try {
                 if(stmt!=null)
@@ -368,9 +344,6 @@ public class UserDAO implements IUserDAO{
         } catch (SQLException e) { //il metodo intercetta un'eccezione proveniente dal DB 
             System.err.println("Database Error!");
             throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) { //il metodo intercetta un'eccezione proveniente dal driver del DB   
-            System.err.println("Driver Not Found!");
-            throw new RuntimeException(e);
         } finally {
             try{
                 if(stmt!=null)
@@ -406,10 +379,6 @@ public class UserDAO implements IUserDAO{
                 return FAIL;
             }
         } catch (SQLException e) {
-            System.err.println("Database Error!");
-            e.printStackTrace();
-            return FAIL;
-        } catch (ClassNotFoundException e) {
             System.err.println("Database Error!");
             e.printStackTrace();
             return FAIL;

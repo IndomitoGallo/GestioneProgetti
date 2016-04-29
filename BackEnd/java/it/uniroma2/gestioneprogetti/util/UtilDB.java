@@ -36,12 +36,11 @@ public class UtilDB {
      * dall'insieme di proprieta'.
      *
      * @return conn Connection to DB
-     * @throws ClassNotFoundException
      * @throws SQLException
      * @see com.mysql.jdbc.Driver
      * @see Config
      */
-    public Connection createConnection() throws ClassNotFoundException, SQLException {
+    public Connection createConnection() throws SQLException {
         return dataSource.getConnection();
     }
 

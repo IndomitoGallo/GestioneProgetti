@@ -66,10 +66,6 @@ public class ProjectDAO implements IProjectDAO {
             System.err.println("Database Error!");
             e.printStackTrace();
             return FAIL;
-        } catch (ClassNotFoundException e) {
-            System.err.println("Database Error!");
-            e.printStackTrace();
-            return FAIL;
         } finally {
             try {
                 if(stmt!=null)
@@ -115,10 +111,6 @@ public class ProjectDAO implements IProjectDAO {
             System.err.println("Database Error!");
             e.printStackTrace();
             return FAIL;
-        } catch (ClassNotFoundException e) { //il metodo intercetta un'eccezione proveniente dal driver del DB	    	 
-            System.err.println("Driver Not Found!");
-            e.printStackTrace();
-            return FAIL;
         } finally {
             try{
                 if(stmt!=null)
@@ -161,10 +153,6 @@ public class ProjectDAO implements IProjectDAO {
             System.err.println("Database Error!");
             e.printStackTrace();
             return FAIL;
-        } catch (ClassNotFoundException e) { //il metodo intercetta un'eccezione proveniente dal driver del DB	    	 
-            System.err.println("Driver Not Found!");
-            e.printStackTrace();
-            return FAIL;
         } finally {
             try{
                 if(stmt!=null)
@@ -181,7 +169,7 @@ public class ProjectDAO implements IProjectDAO {
     }
 
     /**
-     *  Effettua l'operazione di retrieve, ovvero il recupero dei dati nel database del Project
+     * Effettua l'operazione di retrieve, ovvero il recupero dei dati nel database del Project
      * passato come argomento settando tutti i parametri di esso.
      * Restituisce SUCCESS se il recupero e il settaggio dei dati e' andato a buon fine, FAIL altrimenti.
      * @param p Project
@@ -209,10 +197,6 @@ public class ProjectDAO implements IProjectDAO {
             p.setProjectManager(rs.getInt(7));
 
         } catch (SQLException e) {
-            System.err.println("Database Error!");
-            e.printStackTrace();
-            return FAIL;
-        } catch (ClassNotFoundException e) {
             System.err.println("Database Error!");
             e.printStackTrace();
             return FAIL;
