@@ -1,3 +1,5 @@
+PRE-CONDIZIONE: avere installato nel proprio pc Python 2.6 o 2.7
+
 1 - Scaricare il server NodeJS al seguente link: https://nodejs.org/en/download/.
 2 - Innstallare il server al cui interno è già installato il pacchetto npm.
 3 - Aprire il server NodeJS e spostarsi nella cartella del FrontEnd scaricato in locale.
