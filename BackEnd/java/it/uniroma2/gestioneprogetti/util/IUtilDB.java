@@ -1,9 +1,12 @@
 package it.uniroma2.gestioneprogetti.util;
 
+import it.uniroma2.gestioneprogetti.domain.Project;
+import it.uniroma2.gestioneprogetti.domain.User;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * IUtilDB è un'interfaccia che dichiara dei metodi standard che facilitano la
@@ -23,5 +26,7 @@ public interface IUtilDB {
     public ArrayList<String> resultSetToArrayString(ResultSet rs);
     public void printTables(Connection conn);
     public void printTableColumnsNames(Connection conn, String tableName);
+    public List<Project> resultSetToProjectArray(ResultSet rs);
+    public List<User> resultSetToUserArray(ResultSet rs);
     
 }

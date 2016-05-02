@@ -24,10 +24,44 @@ public class ProjectDAO implements IProjectDAO {
     //Qui di seguito viene iniettata l'iniezione della dipendenza di UtilDB
     @Autowired
     private UtilDB utilDB;
-
+    
+    /**
+     * Il metodo displayProjects() sfrutta i metodi forniti dalla classe UtilDB
+     * per estrapolare la lista dei progetti dal Database.
+     * @return List<Project>
+     * @author Luca Talocci
+     */
     @Override
     public List<Project> displayProjects() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        LOGGER.log(Level.INFO, LAYERLBL + "displayProjects");	
+        Connection conn=null;
+        Statement stmt=null;
+        List<Project> projectsList = null;
+        try{
+            conn = utilDB.createConnection();	//connessione al DB
+            stmt = conn.createStatement();	//creazione dello Statement
+            String sql = "SELECT * FROM project";
+            //memorizzazione del risultato della query in un ResultSet
+            ResultSet rs = utilDB.query(stmt, sql);
+            //setto i campi dell'oggetto del dominio con i dati letti dal database
+            projectsList = utilDB.resultSetToProjectArray(rs);
+       } catch(SQLException e){
+            System.err.println("Database Error!");
+            e.printStackTrace();
+            return projectsList;
+       } finally{
+            try{
+                if(stmt!=null)
+                    utilDB.closeStatement(stmt);
+                if(conn!=null)
+                    utilDB.closeConnection(conn);
+            } catch(SQLException e){
+                System.err.println("Close Resource Error!");
+                e.printStackTrace();
+                return projectsList;
+            }
+        }
+        return projectsList;
     }
 
     /**
@@ -39,6 +73,7 @@ public class ProjectDAO implements IProjectDAO {
      * @return String esito dell'inserimento
      * @author Lorenzo Bernabei
      */
+    @Override
     public String insertProject(Project project) {
         LOGGER.log(Level.INFO, LAYERLBL + "Insert project {0}", project.getName());	
         Connection conn = null;	
@@ -217,5 +252,43 @@ public class ProjectDAO implements IProjectDAO {
         return SUCCESS;
     }
     
+    /**
+     * Il metodo displayPMProjects(int idPM) sfrutta i metodi forniti dalla classe UtilDB
+     * per estrapolare la lista dei progetti di un ProjectManager dal Database.
+     * @param idPM
+     * @return List<Project>
+     */
+    @Override
+    public List<Project> displayPMProjects(int idPM) {
+        LOGGER.log(Level.INFO, LAYERLBL + "displayPMProjects");	
+        Connection conn=null;
+        Statement stmt=null;
+        List<Project> projectsList = null;
+        try{
+            conn = utilDB.createConnection();	//connessione al DB
+            stmt = conn.createStatement();	//creazione dello Statement
+            String sql="SELECT * FROM project WHERE project_manager=" + idPM;
+            //memorizzazione del risultato della query in un ResultSet
+            ResultSet rs = utilDB.query(stmt, sql);
+            //setto i campi dell'oggetto del dominio con i dati letti dal database
+            projectsList = utilDB.resultSetToProjectArray(rs);
+       } catch(SQLException e){
+            System.err.println("Database Error!");
+            e.printStackTrace();
+            return projectsList;
+       } finally{
+            try{
+                if(stmt!=null)
+                    utilDB.closeStatement(stmt);
+                if(conn!=null)
+                    utilDB.closeConnection(conn);
+            } catch(SQLException e){
+                System.err.println("Close Resource Error!");
+                e.printStackTrace();
+                return projectsList;
+            }
+        }
+        return projectsList;
+    }
     
 }

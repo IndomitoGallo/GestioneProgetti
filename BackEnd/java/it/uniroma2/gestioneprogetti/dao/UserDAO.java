@@ -24,10 +24,45 @@ public class UserDAO implements IUserDAO{
     //Qui di seguito viene iniettata l'iniezione della dipendenza di UtilDB
     @Autowired
     private UtilDB utilDB;
-
+    
+    /**
+     * Il metodo displayUsers() sfrutta i metodi forniti dalla classe UtilDB
+     * per estrapolare la lista degli utenti dal Database.
+     * Notare che per "utenti" si intendono i profili diversi da "Controller" e "Amministratore".
+     * @return List<User>
+     * @author Luca Talocci
+     */
     @Override
     public List<User> displayUsers() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        LOGGER.log(Level.INFO, LAYERLBL + "displayUsers");	
+        Connection conn=null;
+        Statement stmt=null;
+        List<User> usersList = null;
+        try{
+            conn = utilDB.createConnection();	//connessione al DB
+            stmt = conn.createStatement();	//creazione dello Statement
+            String sql = "SELECT * FROM user";
+            //memorizzazione del risultato della query in un ResultSet
+            ResultSet rs = utilDB.query(stmt, sql);
+            //setto i campi dell'oggetto del dominio con i dati letti dal database
+            usersList = utilDB.resultSetToUserArray(rs);
+       } catch(SQLException e){
+            System.err.println("Database Error!");
+            e.printStackTrace();
+            return usersList;
+       } finally{
+            try{
+                if(stmt!=null)
+                    utilDB.closeStatement(stmt);
+                if(conn!=null)
+                    utilDB.closeConnection(conn);
+            } catch(SQLException e){
+                System.err.println("Close Resource Error!");
+                e.printStackTrace();
+                return usersList;
+            }
+        }
+        return usersList;
     }
 
     /**
@@ -226,6 +261,7 @@ public class UserDAO implements IUserDAO{
      * @return String esito della verifica
      * @author Luca Talocci
      */
+    @Override
     public String verifyLoginData(String user, String pwd, int profile) {
         LOGGER.log(Level.INFO, LAYERLBL + "Verify user login data");  
         Connection conn = null; 

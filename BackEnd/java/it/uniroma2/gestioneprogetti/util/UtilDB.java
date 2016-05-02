@@ -1,5 +1,7 @@
 package it.uniroma2.gestioneprogetti.util;
 
+import it.uniroma2.gestioneprogetti.domain.Project;
+import it.uniroma2.gestioneprogetti.domain.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -228,5 +230,37 @@ public class UtilDB {
             System.out.println(columnName);
         }
     }
+    
+    /**
+     * Il metodo converte un ResultSet contenente record della tabella Project
+     * in una lista di progetti.
+     * @param rs
+     * @return List<Project>
+     * @throws SQLException
+     */
+    public List<Project> resultSetToProjectArray(ResultSet rs) throws SQLException {
+        List<Project> projects = new ArrayList<Project>();
+        while (rs.next())
+            projects.add(
+                    new Project(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                                rs.getDouble(5), rs.getDouble(6), rs.getInt(7)));
+        return projects;
+    }
+    /**
+     * Il metodo converte un ResultSet contenente record della tabella User
+     * in una lista di utenti.
+     * @param rs
+     * @return List<User>
+     * @throws SQLException
+     */
+    public List<User> resultSetToUserArray(ResultSet rs) throws SQLException {
+        List<User> users = new ArrayList<User>();
+        while (rs.next())
+            users.add(new User(rs.getInt(1), rs.getString(2), rs.getString(3), 
+                               rs.getString(4), rs.getString(5), rs.getString(6), 
+                               rs.getString(7), rs.getBoolean(8), rs.getInt(9)));
+        return users;
+    }
+    
 
 }

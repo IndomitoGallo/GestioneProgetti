@@ -9,4 +9,6 @@ public interface IProjectDAO {
     public String updateProject(Project project);
     public String deleteProject(Project project);
     public String retrieveProject(Project project);
+    public List<Project> displayPMProjects(int idPM);
+    
 }
