@@ -2,6 +2,12 @@ CREATE DATABASE IF NOT EXISTS projects;
 
 USE projects;
 
+CREATE TABLE seniority (
+	id INT PRIMARY KEY,
+	name VARCHAR(15) NOT NULL,
+	cost DOUBLE NOT NULL
+) Engine=InnoDB;
+
 CREATE TABLE user (
     id INT AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(30) NOT NULL,
@@ -13,15 +19,10 @@ CREATE TABLE user (
 	isDeactivated BOOLEAN NOT NULL,
 	seniority INT,
 	FOREIGN KEY(seniority) REFERENCES seniority(id)
-		ON UPDATE CASCADE
-		ON DELETE CASCADE
+    ON DELETE CASCADE
+	ON UPDATE CASCADE		
 ) Engine=InnoDB;
 
-CREATE TABLE seniority (
-	id INT PRIMARY KEY,
-	name VARCHAR(15) NOT NULL,
-	cost DOUBLE NOT NULL
-) Engine=InnoDB;
 
 CREATE TABLE profile (
 	id INT PRIMARY KEY,
@@ -33,11 +34,11 @@ CREATE TABLE profileUser (
 	profile INT,
 	PRIMARY KEY(user, profile),
 	FOREIGN KEY(user) REFERENCES user(id)
-		ON UPDATE CASCADE
-		ON DELETE CASCADE,
+    ON DELETE CASCADE
+	ON UPDATE CASCADE,
 	FOREIGN KEY(profile) REFERENCES profile(id)
-		ON UPDATE CASCADE
-		ON DELETE CASCADE
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
 ) Engine=InnoDB;
 
 CREATE TABLE project (
@@ -48,20 +49,26 @@ CREATE TABLE project (
 	budget DOUBLE NOT NULL,
 	cost DOUBLE NOT NULL,
 	project_manager INT,
-	FOREIGN KEY(user) REFERENCES user(id)
-		ON UPDATE CASCADE
-		ON DELETE CASCADE
+	FOREIGN KEY(project_manager) REFERENCES user(id)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE	
 ) Engine=InnoDB;
 
 CREATE TABLE projectUser (
     user INT,
 	project INT,
+	total_hours INT NOT NULL,
     FOREIGN KEY(user) REFERENCES user(id)
-		ON UPDATE CASCADE
-		ON DELETE CASCADE,
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
 	FOREIGN KEY(project) REFERENCES project(id)
-		ON UPDATE CASCADE
-		ON DELETE CASCADE
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
+) Engine=InnoDB;
+
+CREATE TABLE absence (
+	id INT PRIMARY KEY,
+	name VARCHAR(10) NOT NULL
 ) Engine=InnoDB;
 
 CREATE TABLE timesheetCell (
@@ -72,25 +79,22 @@ CREATE TABLE timesheetCell (
     date DATE NOT NULL,
     content CHAR(1),
 	FOREIGN KEY(user) REFERENCES user(id)
-		ON UPDATE CASCADE
-		ON DELETE CASCADE,
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
 	FOREIGN KEY(absence) REFERENCES absence(id)
-		ON UPDATE CASCADE
-		ON DELETE CASCADE,
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
 	FOREIGN KEY(project) REFERENCES project(id)
-		ON UPDATE CASCADE
-		ON DELETE CASCADE
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
 ) Engine=InnoDB;
 
-CREATE TABLE absence (
-	id INT PRIMARY KEY,
-	name VARCHAR(10) NOT NULL,
-) Engine=InnoDB;
 
-INSERT INTO assenza VALUES(1, 'Ferie');	
-INSERT INTO assenza VALUES(2, 'Malattia');	
-INSERT INTO assenza VALUES(3, 'Sciopero');
-INSERT INTO assenza VALUES(4, 'Permesso');
+
+INSERT INTO absence VALUES(1, 'Ferie');	
+INSERT INTO absence VALUES(2, 'Malattia');	
+INSERT INTO absence VALUES(3, 'Sciopero');
+INSERT INTO absence VALUES(4, 'Permesso');
 
 INSERT INTO profile VALUES(1, 'Amministratore');
 INSERT INTO profile VALUES(2, 'Controller');

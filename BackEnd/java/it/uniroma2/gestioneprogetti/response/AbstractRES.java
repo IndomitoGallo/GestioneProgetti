@@ -1,7 +1,7 @@
 package it.uniroma2.gestioneprogetti.response;
 
 public class AbstractRES {
-    
+
     private String errorCode;
     private String message;
     private boolean esito;

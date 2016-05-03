@@ -5,12 +5,12 @@ import java.util.List;
 
 public interface IUserDAO {  
     public List<User> displayUsers();
-    public String insertUser(User user);
-    public String updateUser(User user);
+    public String insertUser(User user,String profiles);
+    public String updateUser(User user,String profiles);
     public String deleteUser(User user);
     public String retrieveUser(User user);
-    public String verifyCreationData(String user, String mail);
+    public String verifyCreationData(String user, String mail, String profilesF);
     public String verifyLoginData(String user, String pwd, int profile);
-    public boolean verifyUpdateData(int idUser, String user, String mail);
+    public boolean verifyUpdateData(int idUser, String user, String mail, String profiles);
     public String deactivateUser(int idUser);
 }
