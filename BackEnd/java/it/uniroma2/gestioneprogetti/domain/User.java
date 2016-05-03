@@ -17,10 +17,13 @@ public class User {
     private String skill;
     private Boolean isDeactivated;
     private int seniority;
+
+    public User() {
+    }
     
     public User(
             int id, String username, String password, String email, String name, String surname,
-            String skill, Boolean isDeactivated, int seniority) {
+            String skill, Boolean isDeactivated) {
         
         this.id = id;
         this.username = username;
@@ -30,7 +33,6 @@ public class User {
         this.surname = surname;
         this.skill = skill;
         this.isDeactivated = isDeactivated;
-        this.seniority = seniority;
         
     }
     
