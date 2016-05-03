@@ -6,48 +6,48 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-@Component("daoFactory")
+@Component ("daoFactory")
 @Scope("singleton")
 public class DAOFactory implements IDAOFactory {
-
+    
     private final static Logger LOGGER = Logger.getLogger(DAOFactory.class.getName());
     private final static String LAYERLBL = "****DAO FACTORY LAYER**** ";
-
+    
     @Autowired
-    IUserDAO userDao;
+    IProjectDAO userDao;
     @Autowired
     IProjectDAO projectDao;
     @Autowired
     ITimesheetDAO timesheetDao;
 
     /**
-     *
-     * @return
+     * 
+     * @return 
      */
     @Override
-    public IUserDAO getUserDao() {
+    public IProjectDAO getUserDao() {
         LOGGER.log(Level.INFO, LAYERLBL + "Recupero UserDao");
         return userDao;
     }
-
+    
     /**
-     *
-     * @return
+     * 
+     * @return 
      */
     @Override
     public IProjectDAO getProjectDao() {
         LOGGER.log(Level.INFO, LAYERLBL + "Recupero ProjectDao");
         return projectDao;
     }
-
+    
     /**
-     *
-     * @return
+     * 
+     * @return 
      */
     @Override
     public ITimesheetDAO getTimesheetDao() {
         LOGGER.log(Level.INFO, LAYERLBL + "Recupero TimesheetDao");
         return timesheetDao;
     }
-
+    
 }
