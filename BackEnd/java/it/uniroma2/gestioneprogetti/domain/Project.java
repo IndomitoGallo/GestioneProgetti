@@ -16,6 +16,9 @@ public class Project {
     private double cost;
     private int projectManager;
     
+    public Project() {
+    }
+    
     public Project(
             int id, String name, String description, String status, 
             double budget, double cost, int projectManager) {

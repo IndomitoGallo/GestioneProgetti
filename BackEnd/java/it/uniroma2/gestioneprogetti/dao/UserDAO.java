@@ -72,14 +72,11 @@ public class UserDAO implements IUserDAO {
      * Il metodo insertUser(User u) sfrutta i metodi forniti dalla classe UtilDB
      * per inserire i dati di un utente nel Database.
      * @param user User
-     * @param profiles String è una stringa che indica il tipo di profilo
-     * associato all'utente: DIP se dipendente, PM se project manager, DIPPM se
-     * entrambi.
      * @return String esito dell'inserimento
-     * @author Lorenzo Svezia, Davide Vitiello
+     * @author Lorenzo Svezia
      */
     @Override
-    public String insertUser(User user, String profiles) {
+    public String insertUser(User user) {
         LOGGER.log(Level.INFO, LAYERLBL + "insert user {0}", user.getName());
 
         Connection conn = null;
@@ -88,46 +85,24 @@ public class UserDAO implements IUserDAO {
             conn = utilDB.createConnection();	//connessione al DB
             stmt = conn.createStatement();	//creazione dello Statement
             //inserimento SQL
-            String sql1 = "INSERT INTO user VALUES(NULL, '" + user.getName() + "', '"
+            String sql = "INSERT INTO user VALUES(NULL, '" + user.getName() + "', '"
                     + user.getSurname() + "', '"
                     + user.getUsername() + "', '"
                     + user.getEmail() + "', '"
                     + user.getPassword() + "', '"
-                    + user.getSkill() + "', '"
-                    + '0' + "', '" //l'utente che viene creato all'inizio è attivo (non è 'deattivato')
+                    + user.getSkill() + "', "
+                    + '0' + ", " //l'utente che viene creato all'inizio è attivo (non è 'deattivato')
                     + "NULL" // La seniority non è assegnata dall'amministratore
-                    + "');";
-            // controllo che il formato del parametro profiles sia esatto
-            if (profiles.equals("DIP") || profiles.equals("PM") || profiles.equals("DIPPM")) {
-                utilDB.manipulate(stmt, sql1); //eseguo l'inserimento dell'utente nella tabella user
-                String sql2 = "SELECT id FROM user WHERE username='" + user.getUsername() + "'";
-                ResultSet rs = utilDB.query(stmt, sql2);
-                rs.next();
-                int idUser = rs.getInt(1);
-                String sql3;//sql3 conterrà la query che esegue l'associazione dell'user ai profili scrivendo nella tabella 'userprofiles'
-                if (profiles.equals("DIP")) {
-                    sql3 = "INSERT INTO userprofiles VALUES(" + idUser + ", 3);";
-                    utilDB.manipulate(stmt, sql3);
-                }
-
-                if (profiles.equals("PM")) {
-                    sql3 = "INSERT INTO userprofiles VALUES(" + idUser + ", 4);";
-                    utilDB.manipulate(stmt, sql3);
-                }
-
-                if (profiles.equals("DIPPM")) {
-                    sql3 = "INSERT INTO userprofiles VALUES(" + idUser + ", 3), (" + idUser + ", 4);";
-                    utilDB.manipulate(stmt, sql3);
-                }
-
-            } else {
-                return "fail";
-            }
-
+                    + ");";
+            utilDB.manipulate(stmt, sql);	//esecuzione del comando SQL
+            sql = "SELECT id FROM user WHERE username='" + user.getUsername() + "'";
+            ResultSet rs = utilDB.query(stmt, sql);
+            rs.next();
+            user.setId(rs.getInt(1)); //set del campo id dell'utente 
         } catch (SQLException e) {	//il metodo intercetta un'eccezione proveniente dal DB	    	 
             System.err.println("Database Error!");
             e.printStackTrace();
-            return "fail";
+            return FAIL;
         } finally {
             try {
                 if (stmt != null) {
@@ -139,25 +114,21 @@ public class UserDAO implements IUserDAO {
             } catch (SQLException y) {
                 System.err.println("Closing Resources Error!");
                 y.printStackTrace();
-                return "fail";
+                return FAIL;
             }
         }
-        return "success";
+        return SUCCESS;
     }
 
     /**
      * Il metodo updateUser(User user) sfrutta i metodi forniti dalla classe
-     * UtilDB per modificare i dati di un utente nel Database. Viene fatto un
-     * controllo sul parametro profiles: esso deve essere una delle tre sigle:
-     * 'PM', 'DIP', 'DIPPM' che rappresentano i profili associati all'utente.
+     * UtilDB per modificare i dati di un utente nel Database.
      * @param user User utente da modificare nel DB
-     * @param profiles String stringa che rappresenta i profili associati
-     * all'utente
      * @return String esito della modifica
-     * @author Luca Talocci, Davide Vitiello
+     * @author Luca Talocci
      */
     @Override
-    public String updateUser(User user, String profiles) {
+    public String updateUser(User user) {
         LOGGER.log(Level.INFO, LAYERLBL + "Update user {0}", user.getUsername());
 
         Connection conn = null;
@@ -167,33 +138,15 @@ public class UserDAO implements IUserDAO {
             stmt = conn.createStatement();  //creazione dello Statement
             int userId = user.getId();
             //SQL insert
-            String sql1 = "UPDATE user SET name='" + user.getName() + "', "
+            String sql = "UPDATE user SET name='" + user.getName() + "', "
                     + "surname='" + user.getSurname() + "', "
                     + "username='" + user.getUsername() + "', "
                     + "email='" + user.getEmail() + "', "
                     + "password='" + user.getPassword() + "', "
-                    + "skill='" + user.getSkill() + ", "
+                    + "skill='" + user.getSkill() + "', "
                     + "isDeactivated=" + user.getIsDeactivated() + ", "
-                    + "seniority=" + user.getSeniority() + " "
                     + "WHERE id=" + userId + ";";
-            //esecuzione del comando SQL
-            String sql2;
-            switch (profiles) {
-                case "DIP":
-                    sql2 = "REPLACE INTO userprofiles VALUES(" + userId + ", 3);";
-                    break;
-                case "PM":
-                    sql2 = "REPLACE INTO userprofiles VALUES(" + userId + ", 4);";
-                    break;
-                case "DIPPM":
-                    sql2 = "REPLACE INTO userprofiles VALUES(" + userId + ", 3), (" + userId + ", 4);";
-                    break;
-                default:
-                    return FAIL;
-
-            }
-            utilDB.manipulate(stmt, sql1 + sql2);
-
+            utilDB.manipulate(stmt, sql);
         } catch (SQLException e) {  //il metodo intercetta un'eccezione proveniente dal DB         
             System.err.println("Database Error!");
             e.printStackTrace();
@@ -237,12 +190,12 @@ public class UserDAO implements IUserDAO {
             //esecuzione del comando SQL
             if (utilDB.manipulate(stmt, sql) == 0) {
                 //se la query non ha interessato alcun record del DB, viene restituita una stringa di errore
-                return "fail";
+                return FAIL;
             }
         } catch (SQLException e) { //il metodo intercetta un'eccezione proveniente dal DB	    	 
             System.err.println("Database Error!");
             e.printStackTrace();
-            return "fail";
+            return FAIL;
         } finally {
             try {
                 if (stmt != null) {
@@ -254,10 +207,10 @@ public class UserDAO implements IUserDAO {
             } catch (SQLException e) {
                 System.err.println("Closing Resources Error!");
                 e.printStackTrace();
-                return "fail";
+                return FAIL;
             }
         }
-        return "success";
+        return SUCCESS;
     }
 
     /**
@@ -378,48 +331,45 @@ public class UserDAO implements IUserDAO {
      * @param user String lo username dell'utente
      * @param mail String l'e-mail dell'utente
      * @return String esito della verifica
-     * @author Lorenzo Bernabei, Davide Vitiello
+     * @author Lorenzo Bernabei
      */
-    public String verifyCreationData(String user, String mail, String profiles) {
-        LOGGER.log(Level.INFO, LAYERLBL + "Verify project creation data");
+    @Override
+    public String verifyCreationData(String user, String mail) {
+        LOGGER.log(Level.INFO, LAYERLBL + " Verify project creation data");
         Connection conn = null;
         Statement stmt = null;
-        if (profiles.equals("")) { // controllo che ci siano profili da associare 
-            return "false";
-        } else {
+        try {
+            conn = utilDB.createConnection();	//connessione al DB
+            stmt = conn.createStatement();	//creazione dello Statement
+            //SQL select
+            String sql1 = "SELECT * FROM user WHERE username='" + user + "'";
+            String sql2 = "SELECT * FROM user WHERE email='" + mail + "'";
+            //memorizzazione del risultato delle query in due ResultSet
+            ResultSet rs1 = utilDB.query(stmt, sql1);
+            if (rs1.next()) {
+                return "false";	//username passato in ingresso al metodo già presente nel database
+            }
+            ResultSet rs2 = utilDB.query(stmt, sql2);
+            if (rs2.next()) {
+                return "false";	//mail passata in ingresso al metodo già presente nel database
+            }
+            return "true"; //username e mail passati in ingresso al metodo non sono presenti nel database
+        } catch (SQLException e) {      //catch di un'eccezione proveniente dal DB	    	 
+            System.err.println("Database Error!");
+            e.printStackTrace();
+            return FAIL;
+        } finally {
             try {
-                conn = utilDB.createConnection();	//connessione al DB
-                stmt = conn.createStatement();	//creazione dello Statement
-                //SQL select
-                String sql1 = "SELECT * FROM user WHERE username='" + user + "'";
-                String sql2 = "SELECT * FROM user WHERE email='" + mail + "'";
-                //memorizzazione del risultato delle query in due ResultSet
-                ResultSet rs1 = utilDB.query(stmt, sql1);
-                if (rs1.next()) {
-                    return "false";	//username passato in ingresso al metodo già presente nel database
+                if (stmt != null) {
+                    utilDB.closeStatement(stmt);
                 }
-                ResultSet rs2 = utilDB.query(stmt, sql2);
-                if (rs2.next()) {
-                    return "false";	//mail passata in ingresso al metodo già presente nel database
+                if (conn != null) {
+                    utilDB.closeConnection(conn);
                 }
-                return "true"; //username e mail passati in ingresso al metodo non sono presenti nel database
-            } catch (SQLException e) {      //catch di un'eccezione proveniente dal DB	    	 
-                System.err.println("Database Error!");
+            } catch (SQLException e) {
+                System.err.println("Closing Resources Error!");
                 e.printStackTrace();
                 return FAIL;
-            } finally {
-                try {
-                    if (stmt != null) {
-                        utilDB.closeStatement(stmt);
-                    }
-                    if (conn != null) {
-                        utilDB.closeConnection(conn);
-                    }
-                } catch (SQLException e) {
-                    System.err.println("Closing Resources Error!");
-                    e.printStackTrace();
-                    return FAIL;
-                }
             }
         }
     }
@@ -428,56 +378,49 @@ public class UserDAO implements IUserDAO {
      * Il metodo verifyUpdateData(int idUser, String user, String mail) verifica
      * che i dati di aggiornamento del profilo inseriti dall'utente, in
      * particolare username e email, non siano già presenti nel database.
-     * Verifica inoltre che la stringa profiles, che rappresenta i profili da
-     * associare con l'utente non sia vuota. Il valore di ritorno è true se i
-     * dati inseriti sono corretti, false altrimenti. In caso di errori, viene
-     * sollevato un RuntimeException.
+     * Il valore di ritorno è true se i dati inseriti sono corretti, false altrimenti.
+     * In caso di eccezioni viene restituito fail.
      * @param idUser int l'id dell'utente, per poter effettuare la verifica su
      * tutti gli altri utenti
      * @param user String lo username dell'utente
      * @param mail String l'e-mail dell'utente
-     * @param profiles String sigla che rappresenta i profili da associare
      * @return boolean esito della verifica
-     * @author Francesco Gaudenzi, Davide Vitiello
+     * @author Francesco Gaudenzi
      */
-    public boolean verifyUpdateData(int idUser, String user, String mail, String profiles) {
+    @Override
+    public String verifyUpdateData(int idUser, String user, String mail) {
         Connection conn = null;
         Statement stmt = null;
-        if (profiles.equals("")) { //devo avere dei profili da associare
-            return false;
-        } else {
+        try {
+            conn = utilDB.createConnection();   //connection to DB
+            stmt = conn.createStatement();    //creazione dello Statement
+            //SQL select
+            String sql1 = "SELECT * FROM user WHERE username='" + user + "' AND id<>" + idUser;
+            String sql2 = "SELECT * FROM user WHERE email='" + mail + "' AND id<>" + idUser;
+            //memorizzazione del risultato delle query in un ResultSet
+            ResultSet rs1 = utilDB.query(stmt, sql1);
+            if (rs1.next()) {
+                return "false"; //username passato in ingresso al metodo già presente nel database
+            }
+            ResultSet rs2 = utilDB.query(stmt, sql2);
+            if (rs2.next()) {
+                return "false"; //mail passata in ingresso al metodo già presente nel database
+            }
+            return "true"; //username e mail passati in ingresso al metodo non sono presenti nel database
+        } catch (SQLException e) { //il metodo intercetta un'eccezione proveniente dal DB 
+            System.err.println("Database Error!");
+            return FAIL;
+        } finally {
             try {
-                conn = utilDB.createConnection();   //connection to DB
-                stmt = conn.createStatement();    //creazione dello Statement
-                //SQL select
-                String sql1 = "SELECT * FROM user WHERE username='" + user + "' AND id<>" + idUser;
-                String sql2 = "SELECT * FROM user WHERE email='" + mail + "' AND id<>" + idUser;
-                //memorizzazione del risultato delle query in un ResultSet
-                ResultSet rs1 = utilDB.query(stmt, sql1);
-                if (rs1.next()) {
-                    return false; //username passato in ingresso al metodo già presente nel database
+                if (stmt != null) {
+                    utilDB.closeStatement(stmt);
                 }
-                ResultSet rs2 = utilDB.query(stmt, sql2);
-                if (rs2.next()) {
-                    return false; //mail passata in ingresso al metodo già presente nel database
+                if (conn != null) {
+                    utilDB.closeConnection(conn);
                 }
-                return true; //username e mail passati in ingresso al metodo non sono presenti nel database
-            } catch (SQLException e) { //il metodo intercetta un'eccezione proveniente dal DB 
-                System.err.println("Database Error!");
-                throw new RuntimeException(e);
-
-            } finally {
-                try {
-                    if (stmt != null) {
-                        utilDB.closeStatement(stmt);
-                    }
-                    if (conn != null) {
-                        utilDB.closeConnection(conn);
-                    }
-                } catch (SQLException e) {
-                    System.err.println("Closing Resources Error!");
-                    throw new RuntimeException(e);
-                }
+            } catch (SQLException e) {
+                System.err.println("Closing Resources Error!");
+                return FAIL;
             }
         }
     }
@@ -500,7 +443,7 @@ public class UserDAO implements IUserDAO {
         try {
             conn = utilDB.createConnection();
             stm = conn.createStatement();
-            String update = "UPDATE user set isDeactiveted=true where id=" + idUser;
+            String update = "UPDATE user set isDeactiveted=1 where id=" + idUser;
             int res = utilDB.manipulate(stm, update);
             if (res != 1) {
                 return FAIL;
@@ -524,6 +467,100 @@ public class UserDAO implements IUserDAO {
             }
         }
         return SUCCESS;
+    }
+    
+    /**
+     * Il metodo insertProfilesAssociation(int idUser, int[] profiles) sfrutta i metodi
+     * forniti dalla classe UtilDB per inserire nel Database le associazioni di un utente con
+     * i profili. Il valore di ritorno è "SUCCESS" se l'inserimento è andato a buon fine o
+     * "FAIL" in caso di eccezioni.
+     * @param idUser int
+     * @param profiles int[] array con gli id dei profili
+     * @return String esito dell'inserimento delle associazioni
+     * @author Lorenzo Bernabei
+     */
+    @Override
+    public String insertProfilesAssociation(int idUser, int[] profiles) {
+        LOGGER.log(Level.INFO, LAYERLBL + " Insert user-profiles association");
+        Connection conn = null;	
+        Statement stmt = null;	
+        try {
+            conn = utilDB.createConnection();	//connection to DB
+            stmt = conn.createStatement();	//creazione dello Statement
+            for(int idPro : profiles){	//per ognuna dei profili associati all'utente
+                    //SQL insert
+                    String sql = "INSERT INTO profileUser VALUES(" + idUser + ", " + idPro + ")";
+                    utilDB.manipulate(stmt, sql);	//esecuzione del comando SQL
+            }
+        } catch (SQLException e) {	//il metodo intercetta un'eccezione proveniente dal DB	    	 
+            System.err.println("Database Error!");
+            e.printStackTrace();
+            return FAIL;
+        } finally {
+            try{
+                if(stmt!=null)
+                    utilDB.closeStatement(stmt);
+                if(conn!=null)
+                    utilDB.closeConnection(conn);
+            } catch(SQLException e){
+                System.err.println("Closing Resources Error!");
+                e.printStackTrace();
+                return FAIL;
+            }
+        }
+
+        return SUCCESS;
+    }
+    
+    /**
+     * Il metodo verifyProfiles(int idUser) sfrutta i metodi forniti dalla classe UtilDB
+     * per effettuare una codifica in stringa dei profili associati all'utente identificato
+     * da idUser passato come parametro. In particolare viene restituito:
+     * - "DIP" se l'utente è un Dipendente;
+     * - "PM" se l'utente è un Project Manager;
+     * - "DIPPM" se l'utente è sia Dipendente che Project Manager.
+     * In caso di eccezioni viene restituito "FAIL".
+     * @param idUser int l'id dell'utente su cui effettuare la verifica
+     * @return String codice che rappresenta il risultato della verifica
+     * @author Lorenzo Bernabei
+     */
+    @Override
+    public String verifyProfiles(int idUser) {
+        LOGGER.log(Level.INFO, LAYERLBL + " Verify user profiles");
+        Connection conn = null;	
+        Statement stmt = null;
+        String result = "";
+        try {
+            conn = utilDB.createConnection();	//connection to DB
+            stmt = conn.createStatement();	//creazione dello Statement
+            String sql = "SELECT profile.name FROM profileUser, profile "
+                                            + "WHERE profileUser.profile = profile.id"
+                                            + "ORDER BY profile.name";
+            ResultSet rs = utilDB.query(stmt, sql);	//esecuzione del comando SQL
+            while(rs.next()){
+                if(rs.getString(1).equals("Dipendente"))
+                    result = result + "DIP";
+                if(rs.getString(1).equals("Project Manager"))
+                    result = result + "PM";
+            }
+        } catch (SQLException e) {	//il metodo intercetta un'eccezione proveniente dal DB	    	 
+            System.err.println("Database Error!");
+            e.printStackTrace();
+            return FAIL;
+        } finally {
+            try{
+                if(stmt!=null)
+                    utilDB.closeStatement(stmt);
+                if(conn!=null)
+                    utilDB.closeConnection(conn);
+            } catch(SQLException e){
+                System.err.println("Closing Resources Error!");
+                e.printStackTrace();
+                return FAIL;
+            }
+        }
+        
+        return result;
     }
 
 }

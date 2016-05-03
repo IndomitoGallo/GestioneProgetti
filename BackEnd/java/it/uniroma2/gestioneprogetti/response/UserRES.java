@@ -18,6 +18,10 @@ public class UserRES extends AbstractRES {
     private String skill;
     private Boolean isDeactivated;
 
+    public UserRES() {
+        
+    }
+    
     public UserRES(int id, String username, String password, String email, String name, String surname, String skill, Boolean isDeactivated) {
         this.id = id;
         this.username = username;

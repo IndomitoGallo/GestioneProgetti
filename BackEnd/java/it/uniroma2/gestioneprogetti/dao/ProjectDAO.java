@@ -91,7 +91,7 @@ public class ProjectDAO implements IProjectDAO {
                          "0.0, " +      //il costo è inizialmente settato a 0.0
                          project.getProjectManager() + ")";
             utilDB.manipulate(stmt, sql);	//esecuzione del comando SQL
-            sql = "SELECT MAX(id) FROM project";
+            sql = "SELECT id FROM project WHERE name='" + project.getName() + "'";
             ResultSet rs = utilDB.query(stmt, sql);
             rs.next();
             //set del campo id del progetto, verrà usato nella insert delle associazioni con i dipendenti
@@ -209,7 +209,7 @@ public class ProjectDAO implements IProjectDAO {
      * Restituisce SUCCESS se il recupero e il settaggio dei dati e' andato a buon fine, FAIL altrimenti.
      * @param p Project
      * @return String esito del recupero dei dati
-     * @autor L.Camerlengo
+     * @author L.Camerlengo
      */ 
     @Override
     public String retrieveProject(Project p){

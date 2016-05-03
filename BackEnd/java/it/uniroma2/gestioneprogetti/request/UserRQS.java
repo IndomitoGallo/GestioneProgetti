@@ -11,12 +11,27 @@ public class UserRQS extends AbstractRQS {
     private int id;
     private String username;
     private String password;
-    private String email;
+    private String email;    
     private String name;
     private String surname;
     private String skill;
     private Boolean isDeactivated;
 
+    public UserRQS() {
+        
+    }
+    
+    public UserRQS(int id, String username, String password, String email, String name, String surname, String skill, Boolean isDeactivated) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+        this.skill = skill;
+        this.isDeactivated = isDeactivated;
+    }
+    
     public int getId() {
         return id;
     }
