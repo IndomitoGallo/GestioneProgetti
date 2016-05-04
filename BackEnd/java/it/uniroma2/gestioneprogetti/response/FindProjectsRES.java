@@ -11,6 +11,15 @@ import java.util.List;
  */
 public class FindProjectsRES extends AbstractRES {
     
-     private List<ProjectRES> projectsList;
+    private List<ProjectRES> projectsList;
+
+    public List<ProjectRES> getProjectsList() {
+        return projectsList;
+    }
+
+    public void setProjectsList(List<ProjectRES> projectsList) {
+        this.projectsList = projectsList;
+    }
+    
     
 }

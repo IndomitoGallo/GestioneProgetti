@@ -15,14 +15,8 @@ public class Project {
     private double budget;
     private double cost;
     private int projectManager;
-    
-    public Project() {
-    }
-    
-    public Project(
-            int id, String name, String description, String status, 
-            double budget, double cost, int projectManager) {
-        
+
+    public Project(int id, String name, String description, String status, double budget, double cost, int projectManager) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -30,8 +24,9 @@ public class Project {
         this.budget = budget;
         this.cost = cost;
         this.projectManager = projectManager;
-        
     }
+    
+    
     
     public int getId() {
         return id;
