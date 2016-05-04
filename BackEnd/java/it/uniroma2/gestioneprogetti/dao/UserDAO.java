@@ -563,4 +563,52 @@ public class UserDAO implements IUserDAO {
         return result;
     }
 
+    /**
+     * Il metodo updateProfilesAssociation(int idUser, int[] profiles) sfrutta i metodi
+     * forniti dalla classe UtilDB per aggiornare nel Database le associazioni di un utente con
+     * i profili. L'aggiornamento viene effettuato cancellando tutte le occorrenze
+     * di profileUser di un determinato utente e inserendo quelle nuove.
+     * Il valore di ritorno è "SUCCESS" se l'aggiornamento è andato a buon fine o "FAIL" in caso di eccezioni.
+     * @param idUser int
+     * @param profiles int[] array con gli id dei profili
+     * @return String esito dell'aggiornamento delle associazioni
+     * @author Francesco Gaudenzi
+     */
+    @Override
+    public String updateProfilesAssociation(int idUser, int[] profiles) {
+        LOGGER.log(Level.INFO, LAYERLBL + " Update user-profiles association");
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            conn = utilDB.createConnection();	//connection to DB
+            stmt = conn.createStatement();	//creazione dello Statement
+
+            String sqlDelete = "DELETE FROM profileUser WHERE user=" + idUser; // Cancello tutte le occorrenze
+            utilDB.manipulate(stmt, sqlDelete);	//esecuzione del comando SQL
+
+            for(int idPro : profiles){	//per ognuna dei profili associati all'utente
+                //SQL insert
+                String sqlInsert = "INSERT INTO profileUser VALUES(" + idUser + ", " + idPro + ")";
+                utilDB.manipulate(stmt, sqlInsert);	//esecuzione del comando SQL
+            }
+
+        } catch (SQLException e) {	//il metodo intercetta un'eccezione proveniente dal DB
+            System.err.println("Database Error!");
+            e.printStackTrace();
+            return FAIL;
+        } finally {
+            try{
+                if(stmt!=null)
+                    utilDB.closeStatement(stmt);
+                if(conn!=null)
+                    utilDB.closeConnection(conn);
+            } catch(SQLException e){
+                System.err.println("Closing Resources Error!");
+                e.printStackTrace();
+                return FAIL;
+            }
+        }
+        return SUCCESS;
+    }
+
 }
