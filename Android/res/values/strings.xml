@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Gestione Progetti</string>
+
+    <!-- LOGIN ACTIVITY -->
+    <string name="login_username">Utente</string>
+    <string name="login_password">Password</string>
+    <string name="login_loginButton">Login</string>
+
+    <!-- MAIN ACTIVITY -->
+    <string name="project_viewButton">Visualizza</string>
+    <string name="main_projects">Progetti</string>
+
+    <!-- SHOW PROJECT ACTIVITY -->
+    <string name="showProject_descriptionText">Descrizione</string>
+    <string name="showProject_budgetText">Budget</string>
+    <string name="showProject_statusText">Status</string>
+    <string name="showProject_costText">Costo</string>
+    <string name="showProject_dipendentiText">Dipendenti</string>
+
+    <string-array name="login_profiles">
+        <item>Admin</item>
+        <item>Controller</item>
+        <item>Project Manager</item>
+    </string-array>
+</resources>
