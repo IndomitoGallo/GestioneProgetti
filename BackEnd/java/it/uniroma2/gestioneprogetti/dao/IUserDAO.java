@@ -14,6 +14,7 @@ public interface IUserDAO {
     public String verifyUpdateData(int idUser, String user, String mail);
     public String deactivateUser(int idUser);
     public String insertProfilesAssociation(int idUser, int[] profiles);
+    public String retrieveProfilesAssociation(int idUser, int[] profiles);
     public String updateProfilesAssociation(int idUser, int[] profiles);
     public String verifyProfiles(int idUser);
 }

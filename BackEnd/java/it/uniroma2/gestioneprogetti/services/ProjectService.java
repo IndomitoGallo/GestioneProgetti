@@ -88,6 +88,79 @@ public class ProjectService implements IProjectService {
         return response;
     }
     
+    /** 
+     * Il metodo deleteProject prende l'oggetto ProjectRQS proveniente dallo strato "Application", 
+     * ovvero quello del Controller, che contiene l'id del progetto da cancellare.
+     * L'esito dell'operazione viene memorizzato in una EmptyRES (perché non bisogna restitutire nessun dato)
+     * all'interno del quale viene settato un messaggio di fallimento o successo.
+     * @param request ProjectRQS oggetto che incapsula i dati della richiesta 
+     * @return EmptyRES response
+     * @author Lorenzo Svezia, Luca Talocci
+     */
+    
+    public EmptyRES deleteProject(ProjectRQS request) {
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio deleteProject");
+        Project project = new Project();
+        project.setId(request.getId());
+        
+        String message = daoFactory.getProjectDao().deleteProject(project);
+        
+        EmptyRES response = new EmptyRES();
+        if (message.equals("FAIL")) {
+            response.setMessage(message);
+            response.setErrorCode("1");
+            response.setEsito(false);
+        }else{
+            response.setMessage(message);
+            response.setErrorCode("0");
+            response.setEsito(true); 	
+	}
+        return response;
+    }
+        
+    /** 
+     * Il metodo retrieveProject prende un oggetto ProjectRQS proveniente dallo strato "Application", 
+     * ovvero quello del Controller, contenente solo l'id del progetto da visualizzare.
+     * Questo metodo sfrutta i metodi forniti dallo strato "Domain" per effettuare la retrieve 
+     * del progetto.
+     * L'esito dell'operazione viene memorizzato in un oggetto ProjectRES all'interno del quale 
+     * viene settato un messaggio di fallimento o successo.
+     * @param request ProjectRQS oggetto che incapsula i dati della richiesta 
+     * @return ProjectRES response
+     * @author Lorenzo Svezia, Luca Talocci
+     */
+
+    public ProjectRES retrieveProject(ProjectRQS request) {
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio retrieveProject");
+        ProjectRES response = new ProjectRES();
+                
+        Project project = new Project();
+        project.setId(request.getId());
+        
+        String result = daoFactory.getProjectDao().retrieveProject(project);
+        
+        if (result.equals("FAIL")) {
+            response.setMessage(result);
+            response.setErrorCode("1");
+            response.setEsito(false);
+            return response;
+        }
+        
+        response.setId(project.getId());
+        response.setName(project.getName());
+        response.setDescription(project.getDescription());
+        response.setStatus(project.getStatus());
+        response.setBudget(project.getBudget());
+        response.setCost(project.getCost());
+        response.setProjectManager(project.getProjectManager());
+        
+        
+        response.setMessage(result);
+        response.setErrorCode("0");
+        response.setEsito(true);
+        return response;
+    }
+    
     /**
      * Il metodo findAllProjects prende l'EmptyRQS proveniente dallo strato "Application"
      * soltanto per convenzione. Inizializza una lista di progetti che viene riempita dal 
