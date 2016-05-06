@@ -8,8 +8,10 @@ import it.uniroma2.gestioneprogetti.response.FindUserRES;
 import it.uniroma2.gestioneprogetti.response.UserProfilesRES;
 
 public interface IUserService {
+    
     public EmptyRES insertUser(UserProfilesRQS request);
     public EmptyRES updateUser(UserProfilesRQS request);
     public UserProfilesRES retrieveUser(UserRQS request);
     public FindUserRES displayUsers(EmptyRQS request);
+    
 }

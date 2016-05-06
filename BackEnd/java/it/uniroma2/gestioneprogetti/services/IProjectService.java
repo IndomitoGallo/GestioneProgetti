@@ -12,5 +12,4 @@ public interface IProjectService {
     EmptyRES updateProject(ProjectRQS request);
     FindProjectsRES findAllProjects(EmptyRQS request);
     
-  
 }
