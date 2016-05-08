@@ -4,11 +4,25 @@ import { HTTP_PROVIDERS }    from 'angular2/http';
 //librerie per il meccanismo di Routing
 import { RouteConfig, ROUTER_DIRECTIVES, RouterOutlet, ROUTER_PROVIDERS } from 'angular2/router';
 
-import { LoginComponent }    from './login.component';
-import { AdminComponent }    from './admin/admin.component';
-import { ControllerComponent }    from './controller/controller.component';
-import { EmployeeComponent }    from './employee/employee.component';
-import { PMComponent }    from './pm/pm.component';
+/*
+ * Qui di seguito importiamo tutti i Componenti che agiscono nell'applicazione
+ * per dichiarare i path relativi ai vari Workflows.
+ */
+//Login
+import { LoginComponent }             from './login/login.component';
+//Admin's Workflows
+import { AdminComponent }             from './admin/admin.component';
+import { AdminAddUserComponent }      from './admin/admin-addUser.component';
+import { AdminViewUserComponent }     from './admin/admin-viewUser.component';
+import { AdminUpdateUserComponent }   from './admin/admin-updateUser.component';
+//Controller's Workflows
+import { ControllerComponent }        from './controller/controller.component';
+import { CtrlProjectsComponent }      from './controller/projects/ctrl-projects.component';
+import { CtrlEmployeesComponent }     from './controller/employees/ctrl-employees.component';
+//Employee's Workflows
+import { EmployeeComponent }          from './employee/employee.component';
+//ProjectManager's Workflows
+import { PMComponent }                from './pm/pm.component';
 
 /*
  * Qui di seguito dichiariamo che il @Component AppComponent si riferisce al tag <my-app>,
@@ -40,13 +54,22 @@ import { PMComponent }    from './pm/pm.component';
  * Quando l'URL del browser matcha con una delle Route dichiarate, viene creata o
  * restituita un'istanza del Componente associato e viene mostrato nella Single-Page.
  */
-
 @RouteConfig([
-    {path:'/',               name: 'Login',         component: LoginComponent, useAsDefault: true},
-    {path:'/admin',          name: 'Admin',         component: AdminComponent},
-    {path:'/controller',     name: 'Controller',    component: ControllerComponent},
-    {path:'/employee',       name: 'Employee',      component: EmployeeComponent},
-    {path:'/pm',             name: 'PM',            component: PMComponent}
+    //Login
+    {path:'/',                          name: 'Login',               component: LoginComponent, useAsDefault: true},
+    //Admin's Workflows
+    {path:'/admin',                     name: 'Admin',               component: AdminComponent},
+    {path:'/admin/addUser',             name: 'AddUser',             component: AdminAddUserComponent},
+    {path:'/admin/viewUser',            name: 'ViewUser',            component: AdminViewUserComponent},
+    {path:'/admin/updateUser',          name: 'UpdateUser',          component: AdminUpdateUserComponent},
+    //Controller's Workflows
+    {path:'/controller',                name: 'Controller',          component: ControllerComponent},
+    {path:'/controller/projects',       name: 'CtrlProjects',        component: CtrlProjectsComponent},
+    {path:'/controller/employees',      name: 'CtrlEmployees',       component: CtrlEmployeesComponent},
+    //Employee's Workflows
+    {path:'/employee',                  name: 'Employee',            component: EmployeeComponent},
+    //ProjectManager's Workflows
+    {path:'/pm',                        name: 'PM',                  component: PMComponent}
 ])
 
 export class AppComponent { }

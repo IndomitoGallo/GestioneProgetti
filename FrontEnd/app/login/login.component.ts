@@ -2,8 +2,8 @@ import { Component }           from 'angular2/core';
 import { HTTP_PROVIDERS }      from 'angular2/http';
 import { Router, ROUTER_DIRECTIVES } from 'angular2/router';
 
-import { Profile }             from './model/profile';
-import { User }                from './model/user';
+import { Profile }             from '../model/profile';
+import { User }                from '../model/user';
 import { LoginService }       from './login.service';
 
 /*
@@ -11,7 +11,7 @@ import { LoginService }       from './login.service';
  * che viene tradotto nel contenuto del campo "templateUrl", ovvero nel file "login-form.html".
  */
 @Component({
-    templateUrl: 'app/login-form.html',
+    templateUrl: 'app/login/login-form.html',
     directives: [ ROUTER_DIRECTIVES ]
 })
 
@@ -62,27 +62,6 @@ export class LoginComponent {
         if(profile == 4) {
           this._router.navigate( ['PM'] );
         }
-        /*
-        switch(profile) {
-            case 1:
-                console.log(1);
-                this._router.navigate( ['Admin'] );
-                break;
-            case 2:
-                console.log(2);
-                this._router.navigate( ['Controller'] );
-                break;
-            case 3:
-                console.log(3);
-                this._router.navigate( ['Employee'] );
-                break;
-            case 4:
-                console.log(4);
-                this._router.navigate( ['PM'] );
-                break;
-            default:
-                console.log("Caso default?!?");
-        }*/
 
     }
 

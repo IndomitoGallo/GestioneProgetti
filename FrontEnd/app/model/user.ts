@@ -8,8 +8,7 @@ export class User {
         public email:string,
         public password:string,
         public skill:string,
-        public isDeactivated:boolean,
-        public seniority:number
+        public isDeactivated:boolean
       ) { }
 
 }

@@ -1,5 +1,25 @@
 <h2>Admin's personal page</h2>
 <br><br>
-<p style="text-align: center;">
-    Work in progress: questa parte verrà implementata totalmente
-</p>
+
+<div class="container">
+    <button type="button" (click)="redirectCreation()" class="btn btn-default custom-width">Crea nuovo utente</button>
+    <br><br>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="#user of users">
+              <td> {{user.username}} </td>
+              <td width="30%">
+                  <button type="button" (click)="displayUser(user.id)" class="btn btn-info custom-width">Visualizza</button>
+                  <button type="button" (click)="updateUser(user.id)" class="btn btn-success custom-width">Modifica</button>
+                  <button type="button" (click)="deleteUser(user.id)" class="btn btn-danger custom-width">Elimina</button>
+              </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
