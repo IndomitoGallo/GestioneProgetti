@@ -11,5 +11,6 @@ public interface IProjectService {
     EmptyRES insertProject(ProjectRQS request);
     EmptyRES updateProject(ProjectRQS request);
     FindProjectsRES findAllProjects(EmptyRQS request);
+    EmptyRES deleteProject(ProjectRQS requeste);
     
 }

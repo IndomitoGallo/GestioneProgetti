@@ -13,5 +13,6 @@ public interface IUserService {
     public EmptyRES updateUser(UserProfilesRQS request);
     public UserProfilesRES retrieveUser(UserRQS request);
     public FindUserRES displayUsers(EmptyRQS request);
+    public EmptyRES verifyLoginData(UserRQS request);
     
 }

@@ -16,13 +16,14 @@ public class UserRQS extends AbstractRQS {
     private String surname;
     private String skill;
     private Boolean isDeactivated;
+    private int profile;
 
     public UserRQS(int id, String username) {
         this.id = id;
         this.username = username;
     }
-    
-    public UserRQS(){
+       
+    public UserRQS() {
         
     }
     
@@ -99,6 +100,14 @@ public class UserRQS extends AbstractRQS {
 
     public void setIsDeactivated(Boolean isDeactivated) {
         this.isDeactivated = isDeactivated;
+    }
+
+    public int getProfile() {
+        return profile;
+    }
+
+    public void setProfile(int profile) {
+        this.profile = profile;
     }
     
     

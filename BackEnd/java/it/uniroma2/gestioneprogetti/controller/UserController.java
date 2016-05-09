@@ -140,4 +140,31 @@ public class UserController {
         //Esito posiivo delle operazioni
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }}
+    
+    /**
+     * Il metodo intercetta le richieste del Front-End che richiedono di effettuare il login per un determinato
+     * utente. Viene quindi creato l'oggetto UserRQS che incapsula la richiesta e viene memorizzata la response
+     * in un EmptyRES. Se la response restituita dal servizio del livello sottostante contiene un esito positivo, viene creata una
+     * sessione per l'utente che ha effettuato il Login e viene restituito l'http status OK, altrimenti lo status
+     * restituito è SERVICE_UNAVAILABLE.
+     * @param username String
+     * @param password String
+     * @param profile String
+     * @return ResponseEntity response
+     * @author L.Camerlengo
+     */
+    @RequestMapping(value="/",method=RequestMethod.POST)
+    public ResponseEntity login(@PathVariable("username") String username,@PathVariable("password") String password,@PathVariable("profile")int profile){
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest user controller method login");
+        UserRQS request=new UserRQS();
+        request.setUsername(username);
+        request.setPassword(password);
+        request.setProfile(profile);
+        EmptyRES response=serviceFactory.getUserService().verifyLoginData(request);
+        if(!response.isEsito()){
+            return new ResponseEntity(HttpStatus.SERVICE_UNAVAILABLE);
+        }
+        SessionController.add(String.valueOf(profile));
+        return new ResponseEntity(HttpStatus.OK);      
+    }
 }

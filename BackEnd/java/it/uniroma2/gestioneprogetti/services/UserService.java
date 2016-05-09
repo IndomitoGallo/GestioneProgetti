@@ -215,12 +215,15 @@ public class UserService implements IUserService {
     }
     
     /**
-     * Il metodo displayUsers(EmptyRQS request) inizializza una lista di utenti che
-     * viene riempita dal metodo displayUsers dello strato "Domain" e poi viene inizializzato 
-     * l'oggetto FindUserRES tramite la lista precedentemente riempita.
-     * Infine viene anche settato un messaggio per comunicare l'esito dell'operazione.
+     * Il metodo displayUsers(EmptyRQS request) inizializza una lista di utenti
+     * che viene riempita dal metodo displayUsers dello strato "Domain" e poi
+     * viene inizializzato l'oggetto FindUserRES tramite la lista
+     * precedentemente riempita. Infine viene anche settato un messaggio per
+     * comunicare l'esito dell'operazione.
+     *
      * @param request EmptyRQS oggetto di richiesta "vuoto"
-     * @return FindUserRES oggetto che incapsula la lista di usenti e l'esito del servizio 
+     * @return FindUserRES oggetto che incapsula la lista di usenti e l'esito
+     * del servizio
      * @author Davide Vitiello
      */
     @Override
@@ -228,27 +231,58 @@ public class UserService implements IUserService {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio displayUsers");
         List<User> usersList = daoFactory.getUserDao().displayUsers();
         FindUserRES response = new FindUserRES();
-        
+
         if (usersList == null) {
             response.setMessage("FAIL");
             response.setErrorCode("1");
             response.setEsito(false);
             return response;
         }
-        
+
         List<UserRES> heroesResList = new ArrayList<>();
         for (User usr : usersList) {
             UserRES heroRES = new UserRES(usr.getId(), usr.getUsername(), usr.getPassword(), usr.getEmail(),
-                                          usr.getName(), usr.getSurname(), usr.getSkill(), usr.getIsDeactivated());
+                    usr.getName(), usr.getSurname(), usr.getSkill(), usr.getIsDeactivated());
             heroesResList.add(heroRES);
         }
         response.setUsersList(heroesResList);
-        
+
         response.setMessage("SUCCESS");
         response.setErrorCode("0");
         response.setEsito(true);
 
         return response;
     }
-    
+
+    /**
+     * Il metodo verifyLoginData non fa altro che chiamare il metodo del livello
+     * sottostante di UserDAO per verificare che i dati di login di un utente
+     * contenuti nella request rispettino i vincoli necessari. Viene restituita
+     * una response contenente un messaggio di errore nel caso in cui i vincoli
+     * non sono stati rispettati. Altrimenti se i vincoli sono stati soddisfatti
+     * viene restituita una response contenente un messaggio di avvenuto
+     * successo.
+     * @param request UserRQS
+     * @return EmptyRES response
+     * @author L.Camerlengo
+     */
+    @Override
+    public EmptyRES verifyLoginData(UserRQS request) {
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio verifyLoginData");
+        EmptyRES response = new EmptyRES();
+        String user = request.getUsername();
+        String pass = request.getPassword();
+        int profile = request.getProfile();
+        if (daoFactory.getUserDao().verifyLoginData(user, pass, profile).equals("false")) {
+            response.setMessage("FAIL");
+            response.setErrorCode("1");
+            response.setEsito(false);
+            return response;
+        } else {
+            response.setMessage("SUCCESS");
+            response.setErrorCode("0");
+            response.setEsito(true);
+        }
+        return response;
+    }
 }
