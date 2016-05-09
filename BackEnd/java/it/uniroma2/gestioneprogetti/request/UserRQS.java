@@ -17,7 +17,12 @@ public class UserRQS extends AbstractRQS {
     private String skill;
     private Boolean isDeactivated;
 
-    public UserRQS() {
+    public UserRQS(int id, String username) {
+        this.id = id;
+        this.username = username;
+    }
+    
+    public UserRQS(){
         
     }
     

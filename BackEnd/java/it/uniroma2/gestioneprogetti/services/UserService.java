@@ -18,6 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+/*
+*@author Davide Vitiello
+*/
+
 @Service("userService")
 public class UserService implements IUserService {
 

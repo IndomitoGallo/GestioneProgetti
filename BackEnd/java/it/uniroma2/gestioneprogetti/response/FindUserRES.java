@@ -18,4 +18,8 @@ public class FindUserRES extends AbstractRES {
         this.usersList = usersList;
     }
 
+    public List<UserRES> getUsersList() {
+        return usersList;
+    }
+
 }
