@@ -22,8 +22,8 @@ export class AdminComponent {
     users = [
          new User(1, 'Nome', 'Cognome', 'IndomitoGallo', 'ciccio@example.it', 'pellicciaus', 'segaiolo', false),
          new User(2, 'Nome', 'Cognome', 'LorenzoB', 'ciccio@example.it', 'pellicciaus', 'segaiolo', false),
-         new User(3, 'Nome', 'Cognome', 'Gaudo', 'ciccio@example.it', 'pellicciaus', 'segaiolo', false),
-         new User(4, 'Nome', 'Cognome', 'Aizevs', 'ciccio@example.it', 'pellicciaus', 'segaiolo', false),
+         new User(3, 'Nome', 'Cognome', 'Gaudo', 'ciccio@example.it', 'pellicciaus', 'segaiolo', true),
+         new User(4, 'Nome', 'Cognome', 'Aizevs', 'ciccio@example.it', 'pellicciaus', 'segaiolo', true),
          new User(3, 'Nome', 'Cognome', 'LukCame', 'ciccio@example.it', 'pellicciaus', 'segaiolo', false),
          new User(4, 'Nome', 'Cognome', 'Dav33', 'ciccio@example.it', 'pellicciaus', 'segaiolo', false)
     ];

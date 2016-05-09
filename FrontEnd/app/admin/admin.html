@@ -17,7 +17,7 @@
               <td width="30%">
                   <button type="button" (click)="displayUser(user.id)" class="btn btn-info custom-width">Visualizza</button>
                   <button type="button" (click)="updateUser(user.id)" class="btn btn-success custom-width">Modifica</button>
-                  <button type="button" (click)="deleteUser(user.id)" class="btn btn-danger custom-width">Elimina</button>
+                  <button type="button" *ngIf="user.isDeactivated == false" (click)="deleteUser(user.id)" class="btn btn-danger custom-width">Elimina</button>
               </td>
             </tr>
         </tbody>

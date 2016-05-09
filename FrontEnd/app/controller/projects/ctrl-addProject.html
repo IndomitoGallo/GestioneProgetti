@@ -1,0 +1,57 @@
+<div class="container">
+		<h2>Creazione Progetto</h2>
+
+    <form id="addProject_form" name="addProject" #addProjectForm="ngForm">
+				<div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
+				<div class="form-group">
+						<label for="name">Name</label>
+		        <input #name="ngForm" type="text" class="form-control" id="name" name="name" placeholder="Name" required ngControl="name" maxlength="60"/>
+		        <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
+		            Name is required
+		        </div>
+				</div>
+        <div class="form-group">
+						<label for="description">Description</label>
+            <textarea #description="ngForm" class="form-control" id="description" name="description" maxlength="255" placeholder="Scrivi qui la descrizione del progetto" rows="8" required ngControl="skill"></textarea>
+		        <div [hidden]="description.valid || description.pristine" class="alert alert-danger">
+		           Description is required
+		        </div>
+				</div>
+        <div class="form-group">
+						<label for="budget">Budget</label>
+		        <input #budget="ngForm" type="text" class="form-control" id="budget" name="budget" placeholder="budget" required ngControl="budget"/>
+		        <div [hidden]="budget.valid || budget.pristine" class="alert alert-danger">
+		            Username is required
+		        </div>
+				</div>
+        <div class="form-group">
+		        <label for="pm">Project Manager</label>
+		        <select class="form-control" id="pm" name="pm" required ngControl="pm" #pm="ngForm">
+		            <option *ngFor="#pm of managers" [value]="pm.id">{{pm.username}}</option>
+		        </select>
+		        <div [hidden]="pm.valid || pm.pristine" class="alert alert-danger">
+		            Profile is required
+		        </div>
+				</div>
+        <strong>Scegli uno o più dipendenti da assegnare al progetto:</strong>
+				<div class="checkbox">
+						<label>
+								<input #dipendente id="dipendente" name="dipendente" type="checkbox" value="true" (click)="isSelected('dip')"/>
+								Andrea D'Ambrogio
+						</label>
+						<label>
+								<input #dipendente id="dipendente" name="dipendente" type="checkbox" value="true" (click)="isSelected('dip')"/>
+								Benedetto Intrigila
+						</label>
+        </div>
+        <button class="btn btn-default" (click)="addProject($event, name.value, description.value, budget.value);" [disabled]="!addProjectForm.form.valid">
+						Crea
+				</button>
+    </form>
+
+</div>
+
+<!--
+Per quanto riguarda le checkbox, il valore assunto è True o False, in modo tale che il
+rispettivo Component possa controllare se e quali checkbox sono state selezionate.
+-->

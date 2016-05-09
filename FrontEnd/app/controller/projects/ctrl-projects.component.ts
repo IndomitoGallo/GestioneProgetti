@@ -32,4 +32,19 @@ export class CtrlProjectsComponent {
     //Costruttore inizializzato con ControllerService e Router (Dependency Injection)
     constructor(/*private _controllerService: ControllerService,*/ private _router: Router) { }
 
+    displayProject(projectId) {
+        //Il Controller viene reindirizzato alla pagina di visualizzazione di un progetto
+        this._router.navigate( ['ViewProject'] );
+    }
+
+    updateProject(projectId) {
+        //Il Controller viene reindirizzato alla pagina di aggiornamento di un progetto
+        this._router.navigate( ['UpdateProject'] );
+    }
+
+    redirectCreation() {
+        //Il Controller viene reindirizzato alla pagina di creazione di un progetto
+        this._router.navigate( ['AddProject'] );
+    }
+
 }

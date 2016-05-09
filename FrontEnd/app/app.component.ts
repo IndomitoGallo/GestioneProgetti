@@ -18,6 +18,7 @@ import { AdminUpdateUserComponent }   from './admin/admin-updateUser.component';
 //Controller's Workflows
 import { ControllerComponent }        from './controller/controller.component';
 import { CtrlProjectsComponent }      from './controller/projects/ctrl-projects.component';
+import { CtrlAddProjectComponent }    from './controller/projects/ctrl-addProject.component';
 import { CtrlEmployeesComponent }     from './controller/employees/ctrl-employees.component';
 //Employee's Workflows
 import { EmployeeComponent }          from './employee/employee.component';
@@ -56,20 +57,21 @@ import { PMComponent }                from './pm/pm.component';
  */
 @RouteConfig([
     //Login
-    {path:'/',                          name: 'Login',               component: LoginComponent, useAsDefault: true},
+    {path:'/',                                name: 'Login',               component: LoginComponent, useAsDefault: true},
     //Admin's Workflows
-    {path:'/admin',                     name: 'Admin',               component: AdminComponent},
-    {path:'/admin/addUser',             name: 'AddUser',             component: AdminAddUserComponent},
-    {path:'/admin/viewUser',            name: 'ViewUser',            component: AdminViewUserComponent},
-    {path:'/admin/updateUser',          name: 'UpdateUser',          component: AdminUpdateUserComponent},
+    {path:'/admin',                           name: 'Admin',               component: AdminComponent},
+    {path:'/admin/addUser',                   name: 'AddUser',             component: AdminAddUserComponent},
+    {path:'/admin/viewUser',                  name: 'ViewUser',            component: AdminViewUserComponent},
+    {path:'/admin/updateUser',                name: 'UpdateUser',          component: AdminUpdateUserComponent},
     //Controller's Workflows
-    {path:'/controller',                name: 'Controller',          component: ControllerComponent},
-    {path:'/controller/projects',       name: 'CtrlProjects',        component: CtrlProjectsComponent},
-    {path:'/controller/employees',      name: 'CtrlEmployees',       component: CtrlEmployeesComponent},
+    {path:'/controller',                      name: 'Controller',          component: ControllerComponent},
+    {path:'/controller/projects',             name: 'CtrlProjects',        component: CtrlProjectsComponent},
+    {path:'/controller/projects/addProject',  name: 'AddProject',          component: CtrlAddProjectComponent},
+    {path:'/controller/employees',            name: 'CtrlEmployees',       component: CtrlEmployeesComponent},
     //Employee's Workflows
-    {path:'/employee',                  name: 'Employee',            component: EmployeeComponent},
+    {path:'/employee',                        name: 'Employee',            component: EmployeeComponent},
     //ProjectManager's Workflows
-    {path:'/pm',                        name: 'PM',                  component: PMComponent}
+    {path:'/pm',                              name: 'PM',                  component: PMComponent}
 ])
 
 export class AppComponent { }
