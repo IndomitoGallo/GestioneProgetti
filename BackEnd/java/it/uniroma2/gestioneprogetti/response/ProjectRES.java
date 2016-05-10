@@ -16,6 +16,9 @@ public class ProjectRES extends AbstractRES {
     private double cost;
     private int projectManager;
 
+    public ProjectRES() {        
+    }
+    
     public ProjectRES(int id, String name, String description, String status, double budget, double cost, int projectManager) {
         this.id = id;
         this.name = name;
@@ -25,8 +28,6 @@ public class ProjectRES extends AbstractRES {
         this.cost = cost;
         this.projectManager = projectManager;
     }
-
-    public ProjectRES() { }
 
     public int getId() {
         return id;

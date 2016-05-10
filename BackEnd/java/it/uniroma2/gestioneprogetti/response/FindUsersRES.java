@@ -10,7 +10,7 @@ import java.util.List;
  * @author Luca Talocci, Davide Vitiello
  * @version 1.1 03/05/2016
  */
-public class FindUserRES extends AbstractRES {
+public class FindUsersRES extends AbstractRES {
 
     private List<UserRES> usersList;
 

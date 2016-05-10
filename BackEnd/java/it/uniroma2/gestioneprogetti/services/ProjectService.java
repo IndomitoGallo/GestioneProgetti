@@ -20,10 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- *
- * @author L.Camerlengo
+ * 
+ * @author Team Talocci
  */
-
 @Service("ProjectService")
 public class ProjectService implements IProjectService {
     
@@ -44,6 +43,7 @@ public class ProjectService implements IProjectService {
      * @return EmptyRES response
      * @author L.Camerlengo
      */
+    @Override
     public EmptyRES insertProject(ProjectRQS request){
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio insertProject");
         Project project= new Project(request.getId(),request.getName(),request.getDescription(),request.getStatus(),request.getBudget(),request.getCost(),request.getProjectManager());
@@ -71,6 +71,7 @@ public class ProjectService implements IProjectService {
      * @return EmptyRES response
      * @author L.Camerlengo
      */
+    @Override
     public EmptyRES updateProject(ProjectRQS request){
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio updateProject");
         Project project= new Project(request.getId(),request.getName(),request.getDescription(),request.getStatus(),request.getBudget(),request.getCost(),request.getProjectManager());
@@ -96,8 +97,8 @@ public class ProjectService implements IProjectService {
      * @param request ProjectRQS oggetto che incapsula i dati della richiesta 
      * @return EmptyRES response
      * @author Lorenzo Svezia, Luca Talocci
-     */
-    
+     */    
+    @Override
     public EmptyRES deleteProject(ProjectRQS request) {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio deleteProject");
         Project project = new Project();
@@ -129,7 +130,7 @@ public class ProjectService implements IProjectService {
      * @return ProjectRES response
      * @author Lorenzo Svezia, Luca Talocci
      */
-
+    @Override
     public ProjectRES retrieveProject(ProjectRQS request) {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio retrieveProject");
         ProjectRES response = new ProjectRES();
@@ -162,7 +163,7 @@ public class ProjectService implements IProjectService {
     }
     
     /**
-     * Il metodo findAllProjects prende l'EmptyRQS proveniente dallo strato "Application"
+     * Il metodo displayProjects prende l'EmptyRQS proveniente dallo strato "Application"
      * soltanto per convenzione. Inizializza una lista di progetti che viene riempita dal 
      * metodo displayProjects dello strato "Domain" e poi viene inizializzato 
      * l'oggetto FindProjectsRES tramite la lista precedentemente riempita.
@@ -171,7 +172,8 @@ public class ProjectService implements IProjectService {
      * @return FindProjectsRES response
      * @author L.Camerlengo
      */
-    public FindProjectsRES findAllProjects(EmptyRQS request){
+    @Override
+    public FindProjectsRES displayProjects(EmptyRQS request){
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio findAllProjects");
         List<Project> projectsList=daoFactory.getProjectDao().displayProjects();
         FindProjectsRES response=new FindProjectsRES();
@@ -185,12 +187,13 @@ public class ProjectService implements IProjectService {
             response.setErrorCode("0");
             response.setEsito(true);           
         }
-        List<ProjectRES> projectsRESList=new ArrayList<ProjectRES>();
+        List<ProjectRES> projectsRESList=new ArrayList<>();
         for (Project pr:projectsList){
             ProjectRES projectRES= new ProjectRES(pr.getId(),pr.getName(),pr.getDescription(),pr.getStatus(),pr.getBudget(),pr.getCost(),pr.getProjectManager());
             projectsRESList.add(projectRES);
         }
         response.setProjectsList(projectsRESList);
         return response;
-    }  
+    }
+    
 }

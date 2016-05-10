@@ -15,6 +15,19 @@ public class ProjectRQS extends AbstractRQS {
     private double budget;
     private double cost;
     private int projectManager;
+
+    public ProjectRQS() {
+    }    
+    
+    public ProjectRQS(int id, String name, String description, String status, double budget, double cost, int projectManager) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.budget = budget;
+        this.cost = cost;
+        this.projectManager = projectManager;
+    }
        
     public int getId() {
         return id;

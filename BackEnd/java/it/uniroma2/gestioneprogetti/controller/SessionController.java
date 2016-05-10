@@ -1,39 +1,36 @@
 package it.uniroma2.gestioneprogetti.controller;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import org.apache.commons.lang3.RandomStringUtils;
 
 /**
  * Classe che gestisce le sessioni degli utenti connessi all'applicazione
- * tramite un dizionario implementato con una struttura dati HashMap<key, value>,
- * dove la key è l'id della sessione e value rappresenta il profilo dell'utente connesso. 
- * @author Luca Talocci
+ * tramite una lista di valori numerici identificativi della sessione stessa. 
+ * @author Luca Talocci, Lorenzo Bernabei
  * @version 1.0
  */
 public class SessionController {
     
-    public static HashMap<String, String> sessions;
+    public static ArrayList<String> sessions;
     
     /**
-     * Il metodo add(String profile) riceve in ingresso il profilo dell'utente che vuole loggarsi
-     * e crea un id di sessione rappresentato da una stringa alfanumerica che viene inserito 
-     * insieme al profilo dell'utente nell'HashMap. L'id di sessione generato viene poi restituito 
+     * Il metodo add() crea un id di sessione rappresentato da una stringa alfanumerica che
+     * viene inserita nella lista. L'id di sessione generato viene poi restituito 
      * al Controller che ha invocato tale metodo.
-     * @param profile String profilo dell'utente che vuole loggarsi
      * @return String id della sessione 
      * @author Luca Talocci
      */
-    public static String add(String profile) {
+    public static String add() {
         
         String sessionId = RandomStringUtils.randomAlphanumeric(20);
-        sessions.put(sessionId, profile);
+        sessions.add(sessionId);
         return sessionId;
         
     }
     
     /**
      * Il metodo remove(String sessionId) riceve in ingresso l'id di sessione dell'utente
-     * che vuole fare logout e cancella dall'HashMap l'id di sessione in modo da chiuderla
+     * che vuole fare logout e cancella dalla lista l'id di sessione in modo da chiuderla
      * definitivamente.
      * @param sessionId String id di sessione dell'utente che vuole fare logout
      * @author Luca Talocci
@@ -54,7 +51,7 @@ public class SessionController {
      */
     public static boolean verify(String sessionId) {
         
-        return sessions.containsKey(sessionId);
+        return sessions.contains(sessionId);
         
     }
     

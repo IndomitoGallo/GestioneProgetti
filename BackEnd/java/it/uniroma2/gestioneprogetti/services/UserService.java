@@ -11,17 +11,17 @@ import org.springframework.stereotype.Service;
 
 import it.uniroma2.gestioneprogetti.request.UserRQS;
 import it.uniroma2.gestioneprogetti.response.EmptyRES;
-import it.uniroma2.gestioneprogetti.response.FindUserRES;
+import it.uniroma2.gestioneprogetti.response.FindUsersRES;
 import it.uniroma2.gestioneprogetti.response.UserProfilesRES;
 import it.uniroma2.gestioneprogetti.response.UserRES;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-/*
-*@author Davide Vitiello
-*/
-
+/**
+ * 
+ * @author Team Talocci
+ */
 @Service("userService")
 public class UserService implements IUserService {
 
@@ -149,7 +149,7 @@ public class UserService implements IUserService {
             return response;
         }
         
-        //result = daoFactory.getUserDao().updateProfilesAssociation(user.getId(), profiles);
+        result = daoFactory.getUserDao().updateProfilesAssociation(user.getId(), profiles);
         
         if (result.equals("FAIL")) {
             response.setMessage(result);
@@ -217,20 +217,20 @@ public class UserService implements IUserService {
     /**
      * Il metodo displayUsers(EmptyRQS request) inizializza una lista di utenti
      * che viene riempita dal metodo displayUsers dello strato "Domain" e poi
-     * viene inizializzato l'oggetto FindUserRES tramite la lista
+     * viene inizializzato l'oggetto FindUsersRES tramite la lista
      * precedentemente riempita. Infine viene anche settato un messaggio per
      * comunicare l'esito dell'operazione.
      *
      * @param request EmptyRQS oggetto di richiesta "vuoto"
-     * @return FindUserRES oggetto che incapsula la lista di usenti e l'esito
+     * @return FindUsersRES oggetto che incapsula la lista di usenti e l'esito
      * del servizio
      * @author Davide Vitiello
      */
     @Override
-    public FindUserRES displayUsers(EmptyRQS request) {
+    public FindUsersRES displayUsers(EmptyRQS request) {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio displayUsers");
         List<User> usersList = daoFactory.getUserDao().displayUsers();
-        FindUserRES response = new FindUserRES();
+        FindUsersRES response = new FindUsersRES();
 
         if (usersList == null) {
             response.setMessage("FAIL");
@@ -258,10 +258,9 @@ public class UserService implements IUserService {
      * Il metodo verifyLoginData non fa altro che chiamare il metodo del livello
      * sottostante di UserDAO per verificare che i dati di login di un utente
      * contenuti nella request rispettino i vincoli necessari. Viene restituita
-     * una response contenente un messaggio di errore nel caso in cui i vincoli
-     * non sono stati rispettati. Altrimenti se i vincoli sono stati soddisfatti
-     * viene restituita una response contenente un messaggio di avvenuto
-     * successo.
+     * una response contenente: "FAIL" in caso di eccezioni, "false"
+     * nel caso in cui i vincoli non sono stati rispettati e "SUCCESS" se i vincoli
+     * sono stati soddisfatti.
      * @param request UserRQS
      * @return EmptyRES response
      * @author L.Camerlengo
@@ -273,16 +272,24 @@ public class UserService implements IUserService {
         String user = request.getUsername();
         String pass = request.getPassword();
         int profile = request.getProfile();
-        if (daoFactory.getUserDao().verifyLoginData(user, pass, profile).equals("false")) {
-            response.setMessage("FAIL");
+        String result = daoFactory.getUserDao().verifyLoginData(user, pass, profile);
+        
+        if (result.equals("false")) {
+            response.setMessage("false");
             response.setErrorCode("1");
             response.setEsito(false);
             return response;
-        } else {
-            response.setMessage("SUCCESS");
-            response.setErrorCode("0");
-            response.setEsito(true);
+        } 
+        if (result.equals("FAIL")) {
+            response.setMessage(result);
+            response.setErrorCode("1");
+            response.setEsito(false);
+            return response;
         }
+        
+        response.setMessage("SUCCESS");
+        response.setErrorCode("0");
+        response.setEsito(true);
         return response;
     }
 }
