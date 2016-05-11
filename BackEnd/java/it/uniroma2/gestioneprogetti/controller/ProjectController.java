@@ -98,4 +98,104 @@ public class ProjectController {
         else
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);     
     }
+
+     /**
+     * Il metodo insertProject intercetta le richieste del Front-End per creare nel database un nuovo
+     * record nella tabella projects prendendo i valori che servono dal body della richiesta passato in ingresso.
+     * Angular inserirà all'interno della richiesta HTTP un JSON contenente: un oggetto di tipo Project.
+     * Inoltre viene inserito anche l'id della sessione.
+     * Viene quindi creato l'oggetto ProjectRQS per trasportare le informazioni verso lo 
+     * strato dei servizi e viene memorizzato l'esito dell'operazione in un'EmptyRES.
+     * Se la response contiene "SUCCESS" viene restituito l'HTTP status OK,
+     * altrimenti se la response contiene "false" lo status restituito è BAD_REQUEST e se contiente "FAIL" lo
+     * status restituito è SERVICE_UNAVAILABLE .
+     * @param body String
+     * @return ResponseEntity risposta HTTP contentente l'esito dell'operazione, viene passata allo strato superiore
+     * @author Lorenzo Svezia
+     */
+    @RequestMapping(value = "/projects", method = RequestMethod.POST)
+    public ResponseEntity insertProject(@RequestBody String body) {
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method insertProject");        
+        
+        //viene parsata la stringa con i dati della richiesta in un oggetto JSONObject
+        
+	JSONObject jsonRequest = new JSONObject(body);
+
+        //viene prelevato dall'oggetto JSONObject il valore con chiave "user" che è a sua volta un JSONObject
+        
+	JSONObject jsonProject = jsonRequest.getJSONObject("project");
+        
+	//ricavo il progetto
+
+        ProjectRQS projectRequest = new ProjectRQS(jsonproject.getInt("id"), jsonProject.getString("name"),
+                                          jsonProject.getString("description"), jsonProject.getString("status"),
+                                          jsonProject.getDouble("budget"), jsonProject.getDouble("cost"),
+                                          jsonProject.getInt("projectManager"));
+
+        
+        //viene prelevato dall'oggetto JSONObject il valore con chiave "sessionId"
+        String sessionId = jsonRequest.getString("sessionId");        
+        
+        if (!SessionController.verify(sessionId))
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED); //la sessione è expired
+
+        ProjectRQS request = new ProjectRQS(projectRequest);
+        EmptyRES response = serviceFactory.getProjectService().insertProject(request);
+        if (response.getMessage().equals("FAIL"))
+            return new ResponseEntity(HttpStatus.SERVICE_UNAVAILABLE); 
+        if(response.getMessage().equals("false"))
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        
+        return new ResponseEntity(HttpStatus.CREATED);       
+
+    }
+
+
+     /**
+     * Il metodo updateProject intercetta le richieste del Front-End per aggiornare nel database il progetto
+     * con id passato nell'url della richiesta prendendo i valori che servono dal body della richiesta passato in ingresso.
+     * Angular inserirà all'interno della richiesta HTTP un JSON contenente: un oggetto di tipo Project.
+     * Inoltre viene inserito anche l'id della sessione.
+     * Viene quindi creato l'oggetto ProjectRQS per trasportare le informazioni verso lo 
+     * strato dei servizi e viene memorizzato l'esito dell'operazione in un'EmptyRES.
+     * Se la response contiene "SUCCESS" viene restituito l'HTTP status OK,
+     * altrimenti se la response contiene "false" lo status restituito è BAD_REQUEST e se contiente "FAIL" lo
+     * status restituito è SERVICE_UNAVAILABLE .
+     * @param body String
+     * @param idProject int
+     * @return ResponseEntity risposta HTTP contentente l'esito dell'operazione, viene passata allo strato superiore
+     * @author Lorenzo Svezia
+     */
+    @RequestMapping(value = "/projects/{idProject}", method = RequestMethod.PUT)
+    public ResponseEntity updateProject(@RequestBody String body, @PathVariable("idProject") int idProject) {
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method updateProject");        
+        
+        //viene parsata la stringa con i dati della richiesta in un oggetto JSONObject
+        JSONObject jsonRequest = new JSONObject(body);
+        //viene prelevato dall'oggetto JSONObject il valore con chiave "project" che è a sua volta un JSONObject
+        JSONObject jsonProject = jsonRequest.getJSONObject("project");
+        //ricavo il progetto
+        ProjectRQS projectRequest = new ProjectRQS(idProject, jsonProject.getString("name"),
+                                          jsonProject.getString("description"), jsonProject.getString("status"),
+                                          jsonProject.getDouble("budget"), jsonProject.getDouble("cost"),
+                                          jsonProject.getInt("projectManager"));
+
+     
+        //viene prelevato dall'oggetto JSONObject il valore con chiave "sessionId"
+        String sessionId = jsonRequest.getString("sessionId");        
+        
+        if (!SessionController.verify(sessionId)) 
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED); //la sessione è expired
+
+        ProjectRQS request = new ProjectRQS(projectRequest);
+        EmptyRES response = serviceFactory.getProjectService().updateProject(request);
+        if (response.getMessage().equals("FAIL"))
+            return new ResponseEntity(HttpStatus.SERVICE_UNAVAILABLE); 
+        if(response.getMessage().equals("false"))
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        
+        return new ResponseEntity(HttpStatus.CREATED);       
+
+    }
+
 }
