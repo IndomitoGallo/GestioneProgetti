@@ -211,8 +211,8 @@ public class UserDAO implements IUserDAO {
             }
         }
         return SUCCESS;
-    }
-
+    }    
+    
     /**
      * Effettua l'operazione di retrieve, ovvero il recupero dei dati
      * dell'utente passato come argomento settando tutti i parametri di esso.
@@ -513,17 +513,16 @@ public class UserDAO implements IUserDAO {
     }
     
     /**
-     * Il metodo retrieveProfilesAssociation(int idUser, int[] profiles) sfrutta i metodi
+     * Il metodo retrieveProfilesAssociation(int idUser) sfrutta i metodi
      * forniti dalla classe UtilDB per prelevare dal Database le associazioni di un utente con
-     * i profili. Il valore di ritorno è "SUCCESS" se l'inserimento è andato a buon fine o
-     * "FAIL" in caso di eccezioni.
+     * i profili. Il valore di ritorno è l'array degli id dei profili se l'inserimento è andato
+     * a buon fine o null in caso di eccezioni.
      * @param idUser int
-     * @param profiles int[] array con gli id dei profili
-     * @return String esito dell'inserimento delle associazioni
+     * @return int[] array con gli id dei profili
      * @author Luca Talocci
      */
     @Override
-    public String retrieveProfilesAssociation(int idUser, int[] profiles) {
+    public int[] retrieveProfilesAssociation(int idUser) {
         LOGGER.log(Level.INFO, LAYERLBL + "Retrieve user-profiles association");
         Connection conn = null;	
         Statement stmt = null;	
@@ -531,18 +530,24 @@ public class UserDAO implements IUserDAO {
             conn = utilDB.createConnection();	//connection to DB
             stmt = conn.createStatement();	//creazione dello Statement
             //Query SQL
-            String sql = "SELECT profile FROM profileUser WHERE user=" + idUser;
-            ResultSet rs = utilDB.query(stmt, sql);
+            String sql1 = "SELECT profile FROM profileUser WHERE user=" + idUser;
+            ResultSet rs1 = utilDB.query(stmt, sql1);
+            //Query SQL per sapere quanti profili sono associati all'utente
+            String sql2 = "SELECT COUNT(*) FROM profileUser WHERE user=" + idUser;
+            ResultSet rs2 = utilDB.query(stmt, sql2);
             //Riempio l'array passato in ingresso con i profili presi dal database
+            rs2.next();
+            int[] profiles = new int[rs2.getInt(1)];
             int i = 0;
-            while(rs.next()) {
-                profiles[i] = rs.getInt(1);
+            while(rs1.next()) {
+                profiles[i] = rs1.getInt(1);
                 i++;
             }
+            return profiles;
         } catch (SQLException e) {	//il metodo intercetta un'eccezione proveniente dal DB	    	 
             System.err.println("Database Error!");
             e.printStackTrace();
-            return FAIL;
+            return null;
         } finally {
             try{
                 if(stmt!=null)
@@ -552,11 +557,9 @@ public class UserDAO implements IUserDAO {
             } catch(SQLException e){
                 System.err.println("Closing Resources Error!");
                 e.printStackTrace();
-                return FAIL;
+                return null;
             }
-        }
-
-        return SUCCESS;
+        }        
     }
     
     /**

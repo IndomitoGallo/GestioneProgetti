@@ -1,16 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.uniroma2.gestioneprogetti.services;
 
 import it.uniroma2.gestioneprogetti.dao.IDAOFactory;
 import it.uniroma2.gestioneprogetti.domain.Project;
 import it.uniroma2.gestioneprogetti.request.EmptyRQS;
+import it.uniroma2.gestioneprogetti.request.ProjectEmployeesRQS;
 import it.uniroma2.gestioneprogetti.request.ProjectRQS;
 import it.uniroma2.gestioneprogetti.response.EmptyRES;
 import it.uniroma2.gestioneprogetti.response.FindProjectsRES;
+import it.uniroma2.gestioneprogetti.response.ProjectEmployeesRES;
 import it.uniroma2.gestioneprogetti.response.ProjectRES;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,108 +33,119 @@ public class ProjectService implements IProjectService {
     /**
      * Il metodo insertProject prende l'oggetto RQS proveniente dallo strato "Application", ovvero quello
      * del Controller, copia il contenuto di tale oggetto in un nuovo oggetto Project e lancia,
-     * tramite la DaoFactory, il metodo insertProject dello strato "Domain". L'esito dell'operazione
-     * viene memorizzato in una EmptyRES (perché non bisogna restitutire nessun dato) all'interno
-     * del quale viene settato un messaggio di fallimento o successo.
-     * @param request ProjectRQS
+     * tramite la DaoFactory, i metodi insertProject e insertEmployeesAssociation dello strato "Domain".
+     * L'esito dell'operazione viene memorizzato in una EmptyRES (perché non bisogna restitutire nessun dato)
+     * all'interno del quale viene settato un messaggio di fallimento o successo.
+     * @param request ProjectEmployeesRQS
      * @return EmptyRES response
      * @author L.Camerlengo
      */
     @Override
-    public EmptyRES insertProject(ProjectRQS request){
+    public EmptyRES insertProject(ProjectEmployeesRQS request){
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio insertProject");
-        Project project= new Project(request.getId(),request.getName(),request.getDescription(),request.getStatus(),request.getBudget(),request.getCost(),request.getProjectManager());
-        String message=daoFactory.getProjectDao().insertProject(project);
-        EmptyRES response= new EmptyRES();
-        response.setMessage(message);
+        EmptyRES response = new EmptyRES();
+        ProjectRQS projectRequest = request.getProject();
+        int[] employees = request.getEmployees();
+        
+        Project project = new Project(projectRequest.getId(),projectRequest.getName(),projectRequest.getDescription(),
+                                     projectRequest.getStatus(),projectRequest.getBudget(),projectRequest.getCost(),
+                                     projectRequest.getProjectManager());
+        
+        String message = daoFactory.getProjectDao().insertProject(project);        
+
         if(message.equals("FAIL")) {
+            response.setMessage(message);
             response.setErrorCode("1");
             response.setEsito(false);
+            return response;
         }
-        else {
-            response.setErrorCode("0");
-            response.setEsito(true);           
+        
+        //message = daoFactory.getProjectDao().insertEmployeesAssociation(project.getId(), employees);
+        
+        if (message.equals("FAIL")) {
+            /*Se viene inserito con successo il progetto ma non i dipendenti
+            bisogna abortire l'intera procedura. Si elimina il progetto inserito
+            con successo precedentemente, il che si traduce nell'eliminazione
+            del record ma anche dei dipendenti associati e inseriti fino a quel
+            momento (prima dell'eccezione).*/
+            daoFactory.getProjectDao().deleteProject(project);
+            
+            response.setMessage(message);
+            response.setErrorCode("1");
+            response.setEsito(false);
+            return response;
         }
+        
+        response.setMessage(message);
+        response.setErrorCode("0");
+        response.setEsito(true);
         return response;
     } 
     
     /**
      * Il metodo updateProject prende l'oggetto RQS proveniente dallo strato "Application", ovvero quello
      * del Controller, copia il contenuto di tale oggetto in un nuovo oggetto Project e lancia,
-     * tramite la DaoFactory, il metodo updateProject dello strato "Domain". L'esito dell'operazione
-     * viene memorizzato in una EmptyRES (perché non bisogna restitutire nessun dato) all'interno
-     * del quale viene settato un messaggio di fallimento o successo.
-     * @param request ProjectRQS
+     * tramite la DaoFactory, i metodi updateProject e updateEmployeesAssociation dello strato "Domain".
+     * L'esito dell'operazione viene memorizzato in una EmptyRES (perché non bisogna restitutire nessun dato)
+     * all'interno del quale viene settato un messaggio di fallimento o successo.
+     * @param request ProjectEmployeesRQS
      * @return EmptyRES response
      * @author L.Camerlengo
      */
     @Override
-    public EmptyRES updateProject(ProjectRQS request){
+    public EmptyRES updateProject(ProjectEmployeesRQS request){
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio updateProject");
-        Project project= new Project(request.getId(),request.getName(),request.getDescription(),request.getStatus(),request.getBudget(),request.getCost(),request.getProjectManager());
-        String message=daoFactory.getProjectDao().updateProject(project);
-        EmptyRES response= new EmptyRES();
-        response.setMessage(message);
+        EmptyRES response = new EmptyRES();
+        ProjectRQS projectRequest = request.getProject();
+        int[] employees = request.getEmployees();
+        
+        Project project = new Project(projectRequest.getId(),projectRequest.getName(),projectRequest.getDescription(),
+                                     projectRequest.getStatus(),projectRequest.getBudget(),projectRequest.getCost(),
+                                     projectRequest.getProjectManager());
+        
+        String message = daoFactory.getProjectDao().updateProject(project);        
+
         if(message.equals("FAIL")) {
+            response.setMessage(message);
             response.setErrorCode("1");
             response.setEsito(false);
+            return response;
         }
-        else {
-            response.setErrorCode("0");
-            response.setEsito(true);           
-        }
-        return response;
-    }
-    
-    /** 
-     * Il metodo deleteProject prende l'oggetto ProjectRQS proveniente dallo strato "Application", 
-     * ovvero quello del Controller, che contiene l'id del progetto da cancellare.
-     * L'esito dell'operazione viene memorizzato in una EmptyRES (perché non bisogna restitutire nessun dato)
-     * all'interno del quale viene settato un messaggio di fallimento o successo.
-     * @param request ProjectRQS oggetto che incapsula i dati della richiesta 
-     * @return EmptyRES response
-     * @author Lorenzo Svezia, Luca Talocci
-     */    
-    @Override
-    public EmptyRES deleteProject(ProjectRQS request) {
-        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio deleteProject");
-        Project project = new Project();
-        project.setId(request.getId());
         
-        String message = daoFactory.getProjectDao().deleteProject(project);
+        //message = daoFactory.getProjectDao().updateEmployeesAssociation(project.getId(), employees);
         
-        EmptyRES response = new EmptyRES();
         if (message.equals("FAIL")) {
             response.setMessage(message);
             response.setErrorCode("1");
             response.setEsito(false);
-        }else{
-            response.setMessage(message);
-            response.setErrorCode("0");
-            response.setEsito(true); 	
-	}
+            return response;
+        }
+        
+        response.setMessage(message);
+        response.setErrorCode("0");
+        response.setEsito(true);
         return response;
     }
         
     /** 
-     * Il metodo retrieveProject prende un oggetto ProjectRQS proveniente dallo strato "Application", 
+     * Il metodo displayProject prende un oggetto ProjectRQS proveniente dallo strato "Application", 
      * ovvero quello del Controller, contenente solo l'id del progetto da visualizzare.
      * Questo metodo sfrutta i metodi forniti dallo strato "Domain" per effettuare la retrieve 
-     * del progetto.
-     * L'esito dell'operazione viene memorizzato in un oggetto ProjectRES all'interno del quale 
-     * viene settato un messaggio di fallimento o successo.
+     * del progetto e la retrieve dell'associazione con i dipendenti.
+     * L'esito dell'operazione viene memorizzato in un oggetto ProjectEmployeesRES all'interno del
+     * quale viene settato un messaggio di fallimento o successo.
      * @param request ProjectRQS oggetto che incapsula i dati della richiesta 
-     * @return ProjectRES response
+     * @return ProjectEmployeesRES response
      * @author Lorenzo Svezia, Luca Talocci
      */
     @Override
-    public ProjectRES retrieveProject(ProjectRQS request) {
-        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio retrieveProject");
-        ProjectRES response = new ProjectRES();
-                
-        Project project = new Project();
-        project.setId(request.getId());
+    public ProjectEmployeesRES displayProject(ProjectRQS request) {
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio displayProject");
+        ProjectEmployeesRES response = new ProjectEmployeesRES();
         
+        Project project = new Project(request.getId(),request.getName(),request.getDescription(),
+                                      request.getStatus(),request.getBudget(),request.getCost(),
+                                      request.getProjectManager());       
         String result = daoFactory.getProjectDao().retrieveProject(project);
         
         if (result.equals("FAIL")) {
@@ -147,14 +155,20 @@ public class ProjectService implements IProjectService {
             return response;
         }
         
-        response.setId(project.getId());
-        response.setName(project.getName());
-        response.setDescription(project.getDescription());
-        response.setStatus(project.getStatus());
-        response.setBudget(project.getBudget());
-        response.setCost(project.getCost());
-        response.setProjectManager(project.getProjectManager());
+        int[] employees = null;//daoFactory.getProjectDao().retrieveEmployeesAssociation(project.getId());
         
+        if (employees == null) {
+            response.setMessage("FAIL");
+            response.setErrorCode("1");
+            response.setEsito(false);
+            return response;
+        }
+        
+        ProjectRES projectResponse = new ProjectRES(project.getId(),project.getName(),project.getDescription(),
+                                                    project.getStatus(),project.getBudget(),project.getCost(),
+                                                    project.getProjectManager());
+        response.setProject(projectResponse);
+        response.setEmployees(employees);
         
         response.setMessage(result);
         response.setErrorCode("0");
@@ -188,7 +202,7 @@ public class ProjectService implements IProjectService {
             response.setEsito(true);           
         }
         List<ProjectRES> projectsRESList=new ArrayList<>();
-        for (Project pr:projectsList){
+        for (Project pr : projectsList){
             ProjectRES projectRES= new ProjectRES(pr.getId(),pr.getName(),pr.getDescription(),pr.getStatus(),pr.getBudget(),pr.getCost(),pr.getProjectManager());
             projectsRESList.add(projectRES);
         }

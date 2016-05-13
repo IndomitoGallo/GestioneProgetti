@@ -165,7 +165,7 @@ public class UserService implements IUserService {
     }
 
     /**
-     * Il metodo retrieveUser prende un oggetto UserRQS proveniente dallo strato "Application", ovvero quello
+     * Il metodo displayUser prende un oggetto UserRQS proveniente dallo strato "Application", ovvero quello
      * del Controller, contenente solo l'id dell'utente da visualizzare.
      * Questo metodo sfrutta i metodi forniti dallo strato "Domain" per effettuare la retrieve dell'utente e
      * la retrieve dell'associazione con i profili.
@@ -177,8 +177,8 @@ public class UserService implements IUserService {
      * @author Lorenzo Bernabei
      */
     @Override
-    public UserProfilesRES retrieveUser(UserRQS request) {
-        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio retrieveUser");
+    public UserProfilesRES displayUser(UserRQS request) {
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio displayUser");
         UserProfilesRES response = new UserProfilesRES();
                 
         User user = new User(request.getId(), request.getUsername(), request.getPassword(),
@@ -193,7 +193,7 @@ public class UserService implements IUserService {
             return response;
         }
         
-        int[] profiles = null;//daoFactory.getUserDao().retrieveProfilesAssociation(user.getId(), profiles);
+        int[] profiles = daoFactory.getUserDao().retrieveProfilesAssociation(user.getId());
         
         if (profiles == null) {
             response.setMessage("FAIL");

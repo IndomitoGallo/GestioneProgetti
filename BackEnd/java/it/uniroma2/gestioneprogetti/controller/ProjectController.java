@@ -1,7 +1,9 @@
 package it.uniroma2.gestioneprogetti.controller;
 
+import it.uniroma2.gestioneprogetti.bean.ProjectEmployeesBean;
 import it.uniroma2.gestioneprogetti.domain.Project;
 import it.uniroma2.gestioneprogetti.request.EmptyRQS;
+import it.uniroma2.gestioneprogetti.request.ProjectEmployeesRQS;
 import it.uniroma2.gestioneprogetti.request.ProjectRQS;
 import it.uniroma2.gestioneprogetti.response.EmptyRES;
 import it.uniroma2.gestioneprogetti.response.FindProjectsRES;
@@ -32,35 +34,6 @@ public class ProjectController {
     private final static String LAYERLBL = "****REST CONTROLLER LAYER**** ";
     private final static Logger LOGGER = Logger.getLogger(ProjectController.class.getName());
     
-    /**
-     * Il metodo intercetta le richieste del Front-End che richiedono di cancellare il progetto che
-     * ha associato l'id passato nell'url della richiesta. Inoltre nel corpo della richiesta viene passato
-     * un id di sessione. Entrabi questi parametri sono passati in ingresso al metodo.
-     * Viene quindi creato l'oggetto ProjectRQS che incapsula la richiesta e prima di chiamare il servizio del livello
-     * sottostante viene verificato se l'utente ha una sessione attiva. In caso di esito negativo viene restituito
-     * l' http status UNAUTHORIZED altrimenti viene memorizzata la response in un EmptyRES. Se l'esito contenuto nella response
-     * e' positivo viene restituito l'http status OK, altrimenti viene restituito lo status SERVICE_UNAVAILABLE. 
-     * @param idProject int
-     * @param sessionId String
-     * @return ResponseEntity response
-     * @author L.Camerlengo
-     */
-    @RequestMapping(value = "/projects/{idProject}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteProject(@RequestBody String sessionId, @PathVariable("id") int idProject){
-        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest project controller method deleteProject");
-        if(SessionController.verify(sessionId) == false) {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        }
-        ProjectRQS request = new ProjectRQS();
-        request.setId(idProject);
-        EmptyRES response = serviceFactory.getProjectService().deleteProject(request);
-        if(response.isEsito()){
-            return new ResponseEntity(HttpStatus.OK);
-        } else {
-            return new ResponseEntity(HttpStatus.SERVICE_UNAVAILABLE);
-        }      
-    }
-
     /**
      * Il metodo displayProjects viene chiamato dal ServletDispatcher in caso di match con il mapping
      * definito dall'annotazione @RequestMapping. Il corpo della richiesta HTTP contiene l'id della
@@ -102,100 +75,83 @@ public class ProjectController {
      /**
      * Il metodo insertProject intercetta le richieste del Front-End per creare nel database un nuovo
      * record nella tabella projects prendendo i valori che servono dal body della richiesta passato in ingresso.
-     * Angular inserirà all'interno della richiesta HTTP un JSON contenente: un oggetto di tipo Project.
+     * Angular inserira' all'interno della richiesta HTTP un JSON contenente: un oggetto di tipo Projecte e una
+     * lista di numeri interi, ad indicare i dipendenti da associare con il futuro progetto.
      * Inoltre viene inserito anche l'id della sessione.
-     * Viene quindi creato l'oggetto ProjectRQS per trasportare le informazioni verso lo 
+     * Viene quindi creato l'oggetto ProjectEmployeesRQS per trasportare le informazioni verso lo 
      * strato dei servizi e viene memorizzato l'esito dell'operazione in un'EmptyRES.
      * Se la response contiene "SUCCESS" viene restituito l'HTTP status OK,
-     * altrimenti se la response contiene "false" lo status restituito è BAD_REQUEST e se contiente "FAIL" lo
-     * status restituito è SERVICE_UNAVAILABLE .
-     * @param body String
+     * altrimenti se la response contiene "false" lo status restituito e' BAD_REQUEST e se contiene "FAIL" lo
+     * status restituito e' SERVICE_UNAVAILABLE .
+     * @param peb ProjectEmployeesBean
      * @return ResponseEntity risposta HTTP contentente l'esito dell'operazione, viene passata allo strato superiore
      * @author Lorenzo Svezia
      */
     @RequestMapping(value = "/projects", method = RequestMethod.POST)
-    public ResponseEntity insertProject(@RequestBody String body) {
+    public ResponseEntity insertProject(@RequestBody ProjectEmployeesBean peb) {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method insertProject");        
         
-        //viene parsata la stringa con i dati della richiesta in un oggetto JSONObject
+        Project project = peb.getProject();
+        int[] employees = peb.getEmployees();
+        String sessionId = peb.getSessionId();
         
-	JSONObject jsonRequest = new JSONObject(body);
-
-        //viene prelevato dall'oggetto JSONObject il valore con chiave "user" che è a sua volta un JSONObject
-        
-	JSONObject jsonProject = jsonRequest.getJSONObject("project");
-        
-	//ricavo il progetto
-
-        ProjectRQS projectRequest = new ProjectRQS(jsonproject.getInt("id"), jsonProject.getString("name"),
-                                          jsonProject.getString("description"), jsonProject.getString("status"),
-                                          jsonProject.getDouble("budget"), jsonProject.getDouble("cost"),
-                                          jsonProject.getInt("projectManager"));
-
-        
-        //viene prelevato dall'oggetto JSONObject il valore con chiave "sessionId"
-        String sessionId = jsonRequest.getString("sessionId");        
+        ProjectRQS projectRequest = new ProjectRQS(project.getId(),project.getName(),project.getDescription(),
+                                                   project.getStatus(),project.getBudget(),project.getCost(),
+                                                   project.getProjectManager());        
         
         if (!SessionController.verify(sessionId))
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED); //la sessione è expired
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED); //la sessione e' expired
 
-        ProjectRQS request = new ProjectRQS(projectRequest);
+        ProjectEmployeesRQS request = new ProjectEmployeesRQS(projectRequest, employees);
         EmptyRES response = serviceFactory.getProjectService().insertProject(request);
         if (response.getMessage().equals("FAIL"))
             return new ResponseEntity(HttpStatus.SERVICE_UNAVAILABLE); 
         if(response.getMessage().equals("false"))
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         
-        return new ResponseEntity(HttpStatus.CREATED);       
-
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
 
      /**
      * Il metodo updateProject intercetta le richieste del Front-End per aggiornare nel database il progetto
      * con id passato nell'url della richiesta prendendo i valori che servono dal body della richiesta passato in ingresso.
-     * Angular inserirà all'interno della richiesta HTTP un JSON contenente: un oggetto di tipo Project.
+     * Angular inserira' all'interno della richiesta HTTP un JSON contenente: un oggetto di tipo Project e una
+     * lista di numeri interi, ad indicare i nuovi dipendenti da associare con il progetto.
      * Inoltre viene inserito anche l'id della sessione.
-     * Viene quindi creato l'oggetto ProjectRQS per trasportare le informazioni verso lo 
+     * Viene quindi creato l'oggetto ProjectEmployeesRQS per trasportare le informazioni verso lo 
      * strato dei servizi e viene memorizzato l'esito dell'operazione in un'EmptyRES.
      * Se la response contiene "SUCCESS" viene restituito l'HTTP status OK,
-     * altrimenti se la response contiene "false" lo status restituito è BAD_REQUEST e se contiente "FAIL" lo
-     * status restituito è SERVICE_UNAVAILABLE .
-     * @param body String
+     * altrimenti se la response contiene "false" lo status restituito e' BAD_REQUEST e se contiente "FAIL" lo
+     * status restituito e' SERVICE_UNAVAILABLE.
+     * @param peb ProjectEmployeesBean
      * @param idProject int
      * @return ResponseEntity risposta HTTP contentente l'esito dell'operazione, viene passata allo strato superiore
      * @author Lorenzo Svezia
      */
     @RequestMapping(value = "/projects/{idProject}", method = RequestMethod.PUT)
-    public ResponseEntity updateProject(@RequestBody String body, @PathVariable("idProject") int idProject) {
+    public ResponseEntity updateProject(@RequestBody ProjectEmployeesBean peb, @PathVariable("idProject") int idProject) {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method updateProject");        
         
-        //viene parsata la stringa con i dati della richiesta in un oggetto JSONObject
-        JSONObject jsonRequest = new JSONObject(body);
-        //viene prelevato dall'oggetto JSONObject il valore con chiave "project" che è a sua volta un JSONObject
-        JSONObject jsonProject = jsonRequest.getJSONObject("project");
-        //ricavo il progetto
-        ProjectRQS projectRequest = new ProjectRQS(idProject, jsonProject.getString("name"),
-                                          jsonProject.getString("description"), jsonProject.getString("status"),
-                                          jsonProject.getDouble("budget"), jsonProject.getDouble("cost"),
-                                          jsonProject.getInt("projectManager"));
-
-     
-        //viene prelevato dall'oggetto JSONObject il valore con chiave "sessionId"
-        String sessionId = jsonRequest.getString("sessionId");        
+        Project project = peb.getProject();
+        int[] employees = peb.getEmployees();
+        String sessionId = peb.getSessionId();
+        
+        ProjectRQS projectRequest = new ProjectRQS(idProject,project.getName(),project.getDescription(),
+                                                   project.getStatus(),project.getBudget(),project.getCost(),
+                                                   project.getProjectManager());
         
         if (!SessionController.verify(sessionId)) 
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED); //la sessione è expired
-
-        ProjectRQS request = new ProjectRQS(projectRequest);
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED); //la sessione e' expired
+        
+        ProjectEmployeesRQS request = new ProjectEmployeesRQS(projectRequest, employees);
         EmptyRES response = serviceFactory.getProjectService().updateProject(request);
         if (response.getMessage().equals("FAIL"))
             return new ResponseEntity(HttpStatus.SERVICE_UNAVAILABLE); 
         if(response.getMessage().equals("false"))
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         
-        return new ResponseEntity(HttpStatus.CREATED);       
-
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
 }

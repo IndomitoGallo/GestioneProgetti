@@ -201,8 +201,8 @@ public class ProjectDAO implements IProjectDAO {
             }
 	}	
         return SUCCESS;
-    }
-
+    }    
+    
     /**
      * Effettua l'operazione di retrieve, ovvero il recupero dei dati nel database del Project
      * passato come argomento settando tutti i parametri di esso.
@@ -255,14 +255,15 @@ public class ProjectDAO implements IProjectDAO {
     /**
      * Il metodo displayPMProjects(int idPM) sfrutta i metodi forniti dalla classe UtilDB
      * per estrapolare la lista dei progetti di un ProjectManager dal Database.
-     * @param idPM
-     * @return List<Project>
+     * @param idPM l'id del Project Manager
+     * @return List la lista con i progetti
+     * @author ?
      */
     @Override
     public List<Project> displayPMProjects(int idPM) {
         LOGGER.log(Level.INFO, LAYERLBL + "displayPMProjects");	
-        Connection conn=null;
-        Statement stmt=null;
+        Connection conn = null;
+        Statement stmt = null;
         List<Project> projectsList = null;
         try{
             conn = utilDB.createConnection();	//connessione al DB
@@ -272,11 +273,11 @@ public class ProjectDAO implements IProjectDAO {
             ResultSet rs = utilDB.query(stmt, sql);
             //setto i campi dell'oggetto del dominio con i dati letti dal database
             projectsList = utilDB.resultSetToProjectArray(rs);
-       } catch(SQLException e){
+        } catch(SQLException e){
             System.err.println("Database Error!");
             e.printStackTrace();
             return projectsList;
-       } finally{
+        } finally{
             try{
                 if(stmt!=null)
                     utilDB.closeStatement(stmt);

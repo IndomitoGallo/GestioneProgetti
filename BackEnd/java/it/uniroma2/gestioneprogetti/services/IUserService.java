@@ -11,7 +11,7 @@ public interface IUserService {
     
     public EmptyRES insertUser(UserProfilesRQS request);
     public EmptyRES updateUser(UserProfilesRQS request);
-    public UserProfilesRES retrieveUser(UserRQS request);
+    public UserProfilesRES displayUser(UserRQS request);
     public FindUsersRES displayUsers(EmptyRQS request);
     public EmptyRES verifyLoginData(UserRQS request);
     
