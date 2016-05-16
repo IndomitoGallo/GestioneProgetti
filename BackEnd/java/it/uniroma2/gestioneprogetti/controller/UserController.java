@@ -7,6 +7,7 @@ import it.uniroma2.gestioneprogetti.request.UserProfilesRQS;
 import it.uniroma2.gestioneprogetti.request.UserRQS;
 import it.uniroma2.gestioneprogetti.response.EmptyRES;
 import it.uniroma2.gestioneprogetti.response.FindUsersRES;
+import it.uniroma2.gestioneprogetti.response.UserProfilesRES;
 import it.uniroma2.gestioneprogetti.response.UserRES;
 import it.uniroma2.gestioneprogetti.services.IServiceFactory;
 import java.util.ArrayList;
@@ -116,13 +117,83 @@ public class UserController {
     }
     
     /**
+     * Il metodo deleteUser intercetta le richieste del Front-End per cancellare logicamente l'utente con
+     * id passato nell'url della richiesta. Logicamente significa che l'utente verrà disattivato e non
+     * cancellato fisicamente dal database.
+     * Angular inserirà all'interno della richiesta HTTP anche l'id della sessione.
+     * Viene quindi creato l'oggetto UserRQS per trasportare le informazioni verso lo strato dei
+     * servizi e viene memorizzato l'esito dell'operazione in un'EmptyRES.
+     * Se la response contiene "SUCCESS" viene restituito l'HTTP status OK, altrimenti se la response
+     * contiene "false" lo status restituito è BAD_REQUEST e se contiente "FAIL" lo status restituito
+     * è SERVICE_UNAVAILABLE.
+     * @param sessionId String ID della sesssione corrente
+     * @param idUser int
+     * @return ResponseEntity risposta HTTP contentente l'esito dell'operazione, viene passata allo strato superiore
+     * @author Lorenzo Bernabei
+     */
+    @RequestMapping(value = "/users/{idUser}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteUser(@RequestBody String sessionId, @PathVariable("idUser") int idUser) {
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method deleteUser");        
+        
+        UserRQS request = new UserRQS();
+        request.setId(idUser);
+        
+        if (!SessionController.verify(sessionId)) 
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED); //la sessione è expired
+        
+        EmptyRES response = serviceFactory.getUserService().deleteUser(request);
+        if (response.getMessage().equals("FAIL"))
+            return new ResponseEntity(HttpStatus.SERVICE_UNAVAILABLE); 
+        if(response.getMessage().equals("false"))
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        
+        return new ResponseEntity(HttpStatus.CREATED);
+    }    
+    
+    /**
+     * Il metodo displayUser intercetta le richieste del Front-End per fare una retrieve dell'utente
+     * con id passato nell'url della richiesta. Oltre alle informazioni dell'utente vengono recuperate
+     * anche le associazioni con i profili.
+     * Angular inserirà all'interno della richiesta HTTP anche l'id della sessione.
+     * Viene quindi creato l'oggetto UserRQS per trasportare le informazioni verso lo strato dei
+     * servizi e vengono memorizzati i dati con l'esito dell'operazione in un oggetto UserProfilesRES.
+     * Se la response contiene "SUCCESS" viene restituito l'HTTP status OK, altrimenti se la response
+     * contiente "FAIL" lo status restituito è SERVICE_UNAVAILABLE.
+     * @param sessionId String ID della sesssione corrente
+     * @param idUser int
+     * @return ResponseEntity risposta HTTP contentente i dati e l'esito dell'operazione, viene passata allo strato superiore
+     * @author Lorenzo Bernabei
+     */
+    @RequestMapping(value = "/users/{idUser}", method = RequestMethod.GET)
+    public ResponseEntity<UserProfilesBean> displayUser(@RequestBody String sessionId, @PathVariable("idUser") int idUser) {
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method displayUser");        
+        
+        UserRQS request = new UserRQS();
+        request.setId(idUser);
+        
+        if (!SessionController.verify(sessionId)) 
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); //la sessione è expired
+        
+        UserProfilesRES response = serviceFactory.getUserService().displayUser(request);
+        if (response.getMessage().equals("FAIL"))
+            return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE); 
+        
+        UserRES userResponse = response.getUser();
+        User user = new User(userResponse.getId(), userResponse.getUsername(), userResponse.getPassword(),
+                             userResponse.getEmail(), userResponse.getName(), userResponse.getSurname(),
+                             userResponse.getSkill(), userResponse.getIsDeactivated());
+        UserProfilesBean upb = new UserProfilesBean(user, response.getProfiles());
+        return new ResponseEntity<>(upb, HttpStatus.CREATED);
+    }    
+    
+    /**
      * Il metodo intercetta le richieste del Front-End per ottenere la lista degli 
      * utenti presente nel database. Viene dapprima inviata allo strato dei servizi una EmptyRQS. 
      * Se la response contiene "SUCCESS" viene restituito l'HTTP status OK con la lista degli utente,
      * altrimenti se la response contiene "false" lo status restituito è BAD_REQUEST e se contiente
      * "FAIL" lo status restituito è SERVICE_UNAVAILABLE.
      * @param sessionId String ID della sesssione corrente
-     * @return ResponseEntity risposta HTTP contentente l'esito dell'operazione, viene passata allo strato superiore
+     * @return ResponseEntity risposta HTTP contentente i dati e l'esito dell'operazione, viene passata allo strato superiore
      * @author Davide Vitiello
      */
     @RequestMapping(value = "/users", method = RequestMethod.GET)
@@ -130,7 +201,7 @@ public class UserController {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method displayUsers");
         EmptyRQS request = new EmptyRQS(); //Creo una richiesta vuota
         if (!SessionController.verify(sessionId)) //Se la sessione è expired
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         //FindUsersRES è un oggetto di appoggio che traporta al suo interno la lista degli utenti
         FindUsersRES response = serviceFactory.getUserService().displayUsers(request);
         //qui di seguito la lista viene presa da FindUsersRES e memorizzata in una nuova lista
@@ -179,6 +250,6 @@ public class UserController {
         if(response.getMessage().equals("false"))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         String sessionId = SessionController.add();
-        return new ResponseEntity(sessionId, HttpStatus.OK);      
+        return new ResponseEntity<>(sessionId, HttpStatus.OK);      
     }
 }

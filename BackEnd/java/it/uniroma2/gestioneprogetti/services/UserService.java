@@ -165,6 +165,102 @@ public class UserService implements IUserService {
     }
 
     /**
+     * Il metodo deleteUser prende l'oggetto UserRQS proveniente dallo strato "Application", ovvero quello
+     * del Controller, esso contiene l'id dell'utente da eliminare. Ricordiamo che l'eliminazione è
+     * solo logica, ovvero l'utente viene disattivato e non cancellato fisicamente dal database!
+     * Questo metodo sfrutta i metodi forniti dallo strato "Domain" per controllare i profili dell'utente.
+     * Se esso non è un PM allora viene disattivato e vengono cancellati i timesheet. Se invece l'utente è
+     * un PM si controlla che non abbia progetti con status a "in corso". Se il controllo va a buon fine viene
+     * disattivato e, qualora sia anche un Dipendente, vengono cancellati i timesheet. Se il controllo ha esito
+     * negativo allora la richiesta viene considerata errata, perchè non può essere cancellato un PM con 
+     * progetti "in corso"!
+     * L'esito dell'operazione viene memorizzato in una EmptyRES (perché non bisogna restitutire nessun dato)
+     * all'interno del quale viene settato un messaggio di fallimento o successo.
+     * @param request UserRQS oggetto che incapsula i dati della richiesta
+     * @return EmptyRES oggetto che incapsula l'esito del servizio
+     * @author Lorenzo Bernabei
+     */
+    @Override
+    public EmptyRES deleteUser(UserRQS request) {
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio deleteUser");
+        EmptyRES response = new EmptyRES();
+        int idUser = request.getId();
+        String result = null;
+        
+        String profile = daoFactory.getUserDao().verifyProfiles(idUser);
+        
+        if (profile.equals("FAIL")) {
+            response.setMessage(profile);
+            response.setErrorCode("1");
+            response.setEsito(false);
+            return response;
+        }
+        
+        if(profile.equals("DIP")) { //se l'utente non è un PM lo disattivo e cancello il timesheet
+            result = daoFactory.getUserDao().deactivateUser(idUser);
+            
+            if (result.equals("FAIL")) {
+                response.setMessage(result);
+                response.setErrorCode("1");
+                response.setEsito(false);
+                return response;            
+            }
+            
+            //result = daoFactory.getUserDao().deleteTimesheet(idUser);
+            
+            if (result.equals("FAIL")) {
+                response.setMessage(result);
+                response.setErrorCode("1");
+                response.setEsito(false);
+                return response;            
+            }
+        }
+        else { //se l'utente è un PM controllo se ha progetti "in corso"
+            //result = daoFactory.getUserDao().verifyProjectsStatus(idUser);
+            
+            if (result.equals("FAIL")) {
+                response.setMessage(result);
+                response.setErrorCode("1");
+                response.setEsito(false);
+                return response;            
+            }
+            
+            if(result.equals("true")) { //se non ha progetti "in corso" lo disattivo e cancello il timesheet se è anche Dipendente
+                result = daoFactory.getUserDao().deactivateUser(idUser);
+            
+                if (result.equals("FAIL")) {
+                    response.setMessage(result);
+                    response.setErrorCode("1");
+                    response.setEsito(false);
+                    return response;            
+                }
+                
+                if(profile.equals("DIPPM")) {
+                    //result = daoFactory.getUserDao().deleteTimesheet(idUser);
+
+                    if (result.equals("FAIL")) {
+                        response.setMessage(result);
+                        response.setErrorCode("1");
+                        response.setEsito(false);
+                        return response;            
+                    }
+                }
+            }
+            else { //se ha progetti in corso, c'è un errore, non può essere cancellato!
+                response.setMessage(result);
+                response.setErrorCode("1");
+                response.setEsito(false);
+                return response; 
+            }
+        }
+        
+        response.setMessage("SUCCESS");
+        response.setErrorCode("0");
+        response.setEsito(true);
+        return response;
+    }
+    
+    /**
      * Il metodo displayUser prende un oggetto UserRQS proveniente dallo strato "Application", ovvero quello
      * del Controller, contenente solo l'id dell'utente da visualizzare.
      * Questo metodo sfrutta i metodi forniti dallo strato "Domain" per effettuare la retrieve dell'utente e

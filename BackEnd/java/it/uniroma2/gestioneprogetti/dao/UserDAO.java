@@ -288,7 +288,7 @@ public class UserDAO implements IUserDAO {
             stmt = conn.createStatement();  //creazione dello Statement
             //SQL select
             String sql1 = "SELECT id FROM user WHERE username='" + user + "' AND "
-                    + "password='" + pwd + "'";
+                    + "password='" + pwd + "' AND isDeactivated=0";
             //memorizzazione del risultato delle query in un ResultSet
             ResultSet rs1 = utilDB.query(stmt, sql1);
             if (!rs1.next()) {

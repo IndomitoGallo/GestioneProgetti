@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS projects;
+CREATE DATABASE IF NOT EXISTS gestioneprogetti;
 
-USE projects;
+USE gestioneprogetti;
 
 CREATE TABLE seniority (
 	id INT PRIMARY KEY,

@@ -50,7 +50,7 @@ public class ProjectController {
      */
     @RequestMapping(value = "/projects", method = RequestMethod.GET)
     public ResponseEntity<List<Project>> displayProjects(@RequestBody String sessionId){
-        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest project controller method displayProjects");
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method displayProjects");
         List<Project> projects = new ArrayList<>();
         
         if(!SessionController.verify(sessionId))
