@@ -1,11 +1,14 @@
 package it.uniroma2.gestioneprogetti.dao;
 
 import it.uniroma2.gestioneprogetti.domain.Project;
+import it.uniroma2.gestioneprogetti.domain.User;
 import it.uniroma2.gestioneprogetti.util.UtilDB;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -292,4 +295,135 @@ public class ProjectDAO implements IProjectDAO {
         return projectsList;
     }
     
+    /**
+     * Il metodo displayPMsEmployees() seleziona i dipendenti e i projectManager presenti nel
+     * database, in modo tale che l'utente Controller possa visualizzarli all'interno di un form.
+     * Restituisce una List<List<User>> inizializzata a null nel caso in cui l'operazione non va a buon fine, altrimenti
+     * restituisce una List<List<User>> contente al suo interno due List<User>, dove la prima lista contiene i
+     * dipendenti e la seconda contiene i projectManager.
+     * @return List<List<User>> dipendenti e projectManager
+     * @author L.Camerlengo
+     */
+    @Override
+    public List<List<User>> displayPMsEmployees() {
+        Connection conn = null;
+        Statement stm = null;
+        List<List<User>> users = null;
+        try {
+            conn = utilDB.createConnection();
+            stm = utilDB.createStatement(conn);
+            String query1 = "select u.username,u.id,u.name,u.surname from profileUser p, user u where p.profile=3 and p.user=u.id"
+                    + " and u.isDeactivated=false";
+            String query2 = "select u.username,u.id,u.name,u.surname from profileUser p, user u where p.profile=4 and p.user=u.id"
+                    + " and u.isDeactivated=false";
+            ResultSet rs1 = utilDB.query(stm, query1);
+            ResultSet rs2 = utilDB.query(stm, query2);
+            List<User> employees = new ArrayList<>();
+            while (rs1.next()) {
+                String username = rs1.getString(1);
+                int id = rs1.getInt(2);
+                String name=rs1.getString(3);
+                String surname=rs1.getString(4);
+                User user = new User();
+                user.setId(id);
+                user.setUsername(username);
+                user.setName(name);
+                user.setSurname(surname);
+                employees.add(user);
+            }
+            List<User> pms = new ArrayList<>();
+            while (rs2.next()) {
+                String username = rs2.getString(1);
+                int id = rs2.getInt(2);
+                String name=rs2.getString(3);
+                String surname=rs2.getString(4);
+                User user = new User();
+                user.setId(id);
+                user.setUsername(username);
+                user.setName(name);
+                user.setSurname(surname);
+                pms.add(user);
+            }
+            users.add(employees);
+            users.add(pms);
+        } catch (SQLException e) {
+            System.err.println("Close Resource Error!");
+            e.printStackTrace();
+            return users;
+        } finally{
+            try{
+                if(stm!=null)
+                    utilDB.closeStatement(stm);
+                if(conn!=null)
+                    utilDB.closeConnection(conn);
+            } catch(SQLException e){
+                System.err.println("Close Resource Error!");
+                e.printStackTrace();
+                return users;
+            }
+        }
+        return users;
+    }
+    
+    /**
+     * Il metodo updateEmployeesAssociation effettua un aggiornamento nel database delle associazioni
+     * dei dipendenti che lavorano ad un determinato progetto. In particolare per il progetto passato in ingresso
+     * vengono mantenute nel database soltanto le associazioni dei dipendenti il cui id è contenuto all' interno 
+     * dell'array passato in ingresso.
+     * Restituisce SUCCESS nel caso in cui l'operazione ha esito positivo, FAIL altrimenti.
+     * @param idProject int 
+     * @param employees int[]
+     * @return String esito
+     * @author L.Camerlengo
+     */
+    @Override
+    public String updateEmployeesAssociation(int idProject, int[] employees) {
+        Connection conn = null;
+        Statement stm = null;
+        try {
+            conn = utilDB.createConnection();
+            stm = utilDB.createStatement(conn);
+            String query;
+            ResultSet res;
+            for (int id : employees) {
+                query = "select p.user,p.project from projectUser p where p.user=" + id + " and p.project=" + idProject;
+                res = utilDB.query(stm, query);
+                if (!res.next()) {
+                    String insert = "insert into projectUser values(" + id + "," + idProject + ",0)";
+                    if (utilDB.manipulate(stm, insert) != 1) {
+                        return FAIL;
+                    }
+                }
+            }
+            query = "select p.user from projectUser p where p.project=" + idProject;
+            res = utilDB.query(stm, query);
+            List emp = Arrays.asList(employees);
+            while (res.next()) {
+                if (!emp.contains(res.getInt(1))) {
+                    String delete = "delete from projectUser p where p.user=" + res.getInt(1);
+                    if (utilDB.manipulate(stm, query) != 1) {
+                        return FAIL;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Close Resource Error!");
+            e.printStackTrace();
+            return FAIL;
+        } finally {
+            try {
+                if (stm != null) {
+                    utilDB.closeStatement(stm);
+                }
+                if (conn != null) {
+                    utilDB.closeConnection(conn);
+                }
+            } catch (SQLException e) {
+                System.err.println("Close Resource Error!");
+                e.printStackTrace();
+                return FAIL;
+            }
+        }
+        return SUCCESS;
+    }
 }

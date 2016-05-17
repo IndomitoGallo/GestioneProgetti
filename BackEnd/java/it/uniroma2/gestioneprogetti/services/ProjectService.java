@@ -2,13 +2,16 @@ package it.uniroma2.gestioneprogetti.services;
 
 import it.uniroma2.gestioneprogetti.dao.IDAOFactory;
 import it.uniroma2.gestioneprogetti.domain.Project;
+import it.uniroma2.gestioneprogetti.domain.User;
 import it.uniroma2.gestioneprogetti.request.EmptyRQS;
 import it.uniroma2.gestioneprogetti.request.ProjectEmployeesRQS;
 import it.uniroma2.gestioneprogetti.request.ProjectRQS;
 import it.uniroma2.gestioneprogetti.response.EmptyRES;
 import it.uniroma2.gestioneprogetti.response.FindProjectsRES;
 import it.uniroma2.gestioneprogetti.response.ProjectEmployeesRES;
+import it.uniroma2.gestioneprogetti.response.ProjectFormRES;
 import it.uniroma2.gestioneprogetti.response.ProjectRES;
+import it.uniroma2.gestioneprogetti.response.UserRES;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -180,7 +183,7 @@ public class ProjectService implements IProjectService {
      * Il metodo displayProjects prende l'EmptyRQS proveniente dallo strato "Application"
      * soltanto per convenzione. Inizializza una lista di progetti che viene riempita dal 
      * metodo displayProjects dello strato "Domain" e poi viene inizializzato 
-     * l'oggetto FindProjectsRES tramite la lista precedentemente riempita.
+     * l'oggetto FindProjectsRES tramite la lista precedentemente riempita e restituito in output.
      * Infine viene anche settato un messaggio per comunicare l'esito dell'operazione.
      * @param request EmptyRQS
      * @return FindProjectsRES response
@@ -207,6 +210,69 @@ public class ProjectService implements IProjectService {
             projectsRESList.add(projectRES);
         }
         response.setProjectsList(projectsRESList);
+        return response;
+    }
+    
+    /**
+     * Il metodo displayProjectForm prende un oggetto ProjectRQS proveniente dallo strato "Application", 
+     * ovvero quello del Controller, contenente solo l'id di un progetto.
+     * Questo metodo sfrutta i metodi forniti dallo strato "Domain" per effettuare la retrieve 
+     * del progetto, il prelevamento dei dipendenti e dei projectManager presenti nel database e la
+     * retrive degli id dei dipendenti che lavorano al progetto passato in ingresso.
+     * L'esito delle operazioni viene memorizzato in un oggetto ProjectFormRES all'interno del
+     * quale viene settato un messaggio di fallimento o successo.
+     * @param request ProjectRQS
+     * @return ProjectFormRES response
+     * @author L.Camerlengo
+     */
+    @Override
+    public ProjectFormRES displayProjectForm(ProjectRQS request){
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio displayProjectForm");
+        ProjectFormRES response= new ProjectFormRES();
+        Project project= new Project();
+        project.setId(request.getId());
+        String result=daoFactory.getProjectDao().retrieveProject(project);
+        if (result.equals("FAIL")) {
+            response.setMessage(result);
+            response.setErrorCode("1");
+            response.setEsito(false);
+            return response;
+        }
+        List<List<User>> users=daoFactory.getProjectDao().displayPMsEmployees();
+        if(users==null){
+            response.setMessage(result);
+            response.setErrorCode("1");
+            response.setEsito(false);
+            return response;
+        }
+        /*Questo pezzo di codice va decommentanto non appena è stato implementato il metodo retrieveEmployeesAssociation
+        int[] employeesAssociation=daoFactory.getProjectDao().retrieveEmployeesAssociation(project.getId());
+        if(employeesAssociation==null){
+            response.setMessage(result);
+            response.setErrorCode("1");
+            response.setEsito(false);
+            return response;
+        }
+        */
+        ProjectRES projectRes=new ProjectRES(project.getId(),project.getName(),project.getDescription(),project.getStatus(),project.getBudget(),project.getCost(),project.getProjectManager());
+        List<User> employees=users.get(0);
+        List<User> pms=users.get(1);
+        response.setProject(projectRes);
+        List<UserRES> employeesRes= new ArrayList<>();
+        for(User u:employees){
+            UserRES ur= new UserRES(u.getId(),u.getUsername(),u.getPassword(),u.getEmail(),u.getName(),u.getSurname(),u.getSkill(),u.getIsDeactivated());
+            employeesRes.add(ur);
+        }
+        response.setEmployees(employeesRes);
+        List<UserRES> pmsRes= new ArrayList<>();
+        for(User u:pms){
+            UserRES ur= new UserRES(u.getId(),u.getUsername(),u.getPassword(),u.getEmail(),u.getName(),u.getSurname(),u.getSkill(),u.getIsDeactivated());
+            pmsRes.add(ur);
+        }
+        response.setPms(pmsRes);
+        /* Questo pezzo di codice va decommentanto non appena è stato implementato il metodo retrieveEmployeesAssociation 
+        response.setEmpolyeesAssociation(employeesAssociation);
+        */
         return response;
     }
     

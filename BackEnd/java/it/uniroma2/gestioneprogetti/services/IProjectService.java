@@ -6,6 +6,7 @@ import it.uniroma2.gestioneprogetti.request.ProjectRQS;
 import it.uniroma2.gestioneprogetti.response.EmptyRES;
 import it.uniroma2.gestioneprogetti.response.FindProjectsRES;
 import it.uniroma2.gestioneprogetti.response.ProjectEmployeesRES;
+import it.uniroma2.gestioneprogetti.response.ProjectFormRES;
 
 public interface IProjectService {
 
@@ -13,5 +14,6 @@ public interface IProjectService {
     EmptyRES updateProject(ProjectEmployeesRQS request);
     ProjectEmployeesRES displayProject(ProjectRQS request);
     FindProjectsRES displayProjects(EmptyRQS request);
+    ProjectFormRES displayProjectForm(ProjectRQS request);
 
 }
