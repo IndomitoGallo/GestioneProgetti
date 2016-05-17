@@ -20,6 +20,8 @@ public class UserDAO implements IUserDAO {
     private final static String LAYERLBL = "****DAO LAYER**** ";
     private final static String SUCCESS = "SUCCESS";
     private final static String FAIL = "FAIL";
+    private final static String TRUE = "TRUE";
+    private final static String FALSE = "FALSE";
 
     //Qui di seguito viene iniettata l'iniezione della dipendenza di UtilDB
     @Autowired
@@ -71,6 +73,7 @@ public class UserDAO implements IUserDAO {
     /**
      * Il metodo insertUser(User u) sfrutta i metodi forniti dalla classe UtilDB
      * per inserire i dati di un utente nel Database.
+     *
      * @param user User
      * @return String esito dell'inserimento
      * @author Lorenzo Svezia
@@ -123,6 +126,7 @@ public class UserDAO implements IUserDAO {
     /**
      * Il metodo updateUser(User user) sfrutta i metodi forniti dalla classe
      * UtilDB per modificare i dati di un utente nel Database.
+     *
      * @param user User utente da modificare nel DB
      * @return String esito della modifica
      * @author Luca Talocci
@@ -211,8 +215,8 @@ public class UserDAO implements IUserDAO {
             }
         }
         return SUCCESS;
-    }    
-    
+    }
+
     /**
      * Effettua l'operazione di retrieve, ovvero il recupero dei dati
      * dell'utente passato come argomento settando tutti i parametri di esso.
@@ -328,6 +332,7 @@ public class UserDAO implements IUserDAO {
      * email, non siano già presenti nel database. Il valore di ritorno è "true"
      * se i dati di registrazione sono corretti, "false" altrimenti. In caso di
      * eccezioni viene restituito fail.
+     *
      * @param user String lo username dell'utente
      * @param mail String l'e-mail dell'utente
      * @return String esito della verifica
@@ -377,9 +382,10 @@ public class UserDAO implements IUserDAO {
     /**
      * Il metodo verifyUpdateData(int idUser, String user, String mail) verifica
      * che i dati di aggiornamento del profilo inseriti dall'utente, in
-     * particolare username e email, non siano già presenti nel database.
-     * Il valore di ritorno è true se i dati inseriti sono corretti, false altrimenti.
-     * In caso di eccezioni viene restituito fail.
+     * particolare username e email, non siano già presenti nel database. Il
+     * valore di ritorno è true se i dati inseriti sono corretti, false
+     * altrimenti. In caso di eccezioni viene restituito fail.
+     *
      * @param idUser int l'id dell'utente, per poter effettuare la verifica su
      * tutti gli altri utenti
      * @param user String lo username dell'utente
@@ -468,12 +474,13 @@ public class UserDAO implements IUserDAO {
         }
         return SUCCESS;
     }
-    
+
     /**
-     * Il metodo insertProfilesAssociation(int idUser, int[] profiles) sfrutta i metodi
-     * forniti dalla classe UtilDB per inserire nel Database le associazioni di un utente con
-     * i profili. Il valore di ritorno è "SUCCESS" se l'inserimento è andato a buon fine o
-     * "FAIL" in caso di eccezioni.
+     * Il metodo insertProfilesAssociation(int idUser, int[] profiles) sfrutta i
+     * metodi forniti dalla classe UtilDB per inserire nel Database le
+     * associazioni di un utente con i profili. Il valore di ritorno è "SUCCESS"
+     * se l'inserimento è andato a buon fine o "FAIL" in caso di eccezioni.
+     *
      * @param idUser int
      * @param profiles int[] array con gli id dei profili
      * @return String esito dell'inserimento delle associazioni
@@ -482,27 +489,29 @@ public class UserDAO implements IUserDAO {
     @Override
     public String insertProfilesAssociation(int idUser, int[] profiles) {
         LOGGER.log(Level.INFO, LAYERLBL + " Insert user-profiles association");
-        Connection conn = null;	
-        Statement stmt = null;	
+        Connection conn = null;
+        Statement stmt = null;
         try {
             conn = utilDB.createConnection();	//connection to DB
             stmt = conn.createStatement();	//creazione dello Statement
-            for(int idPro : profiles){	//per ognuna dei profili associati all'utente
-                    //SQL insert
-                    String sql = "INSERT INTO profileUser VALUES(" + idUser + ", " + idPro + ")";
-                    utilDB.manipulate(stmt, sql);	//esecuzione del comando SQL
+            for (int idPro : profiles) {	//per ognuna dei profili associati all'utente
+                //SQL insert
+                String sql = "INSERT INTO profileUser VALUES(" + idUser + ", " + idPro + ")";
+                utilDB.manipulate(stmt, sql);	//esecuzione del comando SQL
             }
         } catch (SQLException e) {	//il metodo intercetta un'eccezione proveniente dal DB	    	 
             System.err.println("Database Error!");
             e.printStackTrace();
             return FAIL;
         } finally {
-            try{
-                if(stmt!=null)
+            try {
+                if (stmt != null) {
                     utilDB.closeStatement(stmt);
-                if(conn!=null)
+                }
+                if (conn != null) {
                     utilDB.closeConnection(conn);
-            } catch(SQLException e){
+                }
+            } catch (SQLException e) {
                 System.err.println("Closing Resources Error!");
                 e.printStackTrace();
                 return FAIL;
@@ -511,12 +520,14 @@ public class UserDAO implements IUserDAO {
 
         return SUCCESS;
     }
-    
+
     /**
      * Il metodo retrieveProfilesAssociation(int idUser) sfrutta i metodi
-     * forniti dalla classe UtilDB per prelevare dal Database le associazioni di un utente con
-     * i profili. Il valore di ritorno è l'array degli id dei profili se l'inserimento è andato
-     * a buon fine o null in caso di eccezioni.
+     * forniti dalla classe UtilDB per prelevare dal Database le associazioni di
+     * un utente con i profili. Il valore di ritorno è l'array degli id dei
+     * profili se l'inserimento è andato a buon fine o null in caso di
+     * eccezioni.
+     *
      * @param idUser int
      * @return int[] array con gli id dei profili
      * @author Luca Talocci
@@ -524,8 +535,8 @@ public class UserDAO implements IUserDAO {
     @Override
     public int[] retrieveProfilesAssociation(int idUser) {
         LOGGER.log(Level.INFO, LAYERLBL + "Retrieve user-profiles association");
-        Connection conn = null;	
-        Statement stmt = null;	
+        Connection conn = null;
+        Statement stmt = null;
         try {
             conn = utilDB.createConnection();	//connection to DB
             stmt = conn.createStatement();	//creazione dello Statement
@@ -539,7 +550,7 @@ public class UserDAO implements IUserDAO {
             rs2.next();
             int[] profiles = new int[rs2.getInt(1)];
             int i = 0;
-            while(rs1.next()) {
+            while (rs1.next()) {
                 profiles[i] = rs1.getInt(1);
                 i++;
             }
@@ -549,25 +560,29 @@ public class UserDAO implements IUserDAO {
             e.printStackTrace();
             return null;
         } finally {
-            try{
-                if(stmt!=null)
+            try {
+                if (stmt != null) {
                     utilDB.closeStatement(stmt);
-                if(conn!=null)
+                }
+                if (conn != null) {
                     utilDB.closeConnection(conn);
-            } catch(SQLException e){
+                }
+            } catch (SQLException e) {
                 System.err.println("Closing Resources Error!");
                 e.printStackTrace();
                 return null;
             }
-        }        
+        }
     }
-    
+
     /**
-     * Il metodo updateProfilesAssociation(int idUser, int[] profiles) sfrutta i metodi
-     * forniti dalla classe UtilDB per aggiornare nel Database le associazioni di un utente con
-     * i profili. L'aggiornamento viene effettuato cancellando tutte le occorrenze
-     * di profileUser di un determinato utente e inserendo quelle nuove.
-     * Il valore di ritorno è "SUCCESS" se l'aggiornamento è andato a buon fine o "FAIL" in caso di eccezioni.
+     * Il metodo updateProfilesAssociation(int idUser, int[] profiles) sfrutta i
+     * metodi forniti dalla classe UtilDB per aggiornare nel Database le
+     * associazioni di un utente con i profili. L'aggiornamento viene effettuato
+     * cancellando tutte le occorrenze di profileUser di un determinato utente e
+     * inserendo quelle nuove. Il valore di ritorno è "SUCCESS" se
+     * l'aggiornamento è andato a buon fine o "FAIL" in caso di eccezioni.
+     *
      * @param idUser int
      * @param profiles int[] array con gli id dei profili
      * @return String esito dell'aggiornamento delle associazioni
@@ -585,7 +600,7 @@ public class UserDAO implements IUserDAO {
             String sqlDelete = "DELETE FROM profileUser WHERE user=" + idUser; // Cancello tutte le occorrenze
             utilDB.manipulate(stmt, sqlDelete);	//esecuzione del comando SQL
 
-            for(int idPro : profiles){	//per ognuna dei profili associati all'utente
+            for (int idPro : profiles) {	//per ognuna dei profili associati all'utente
                 //SQL insert
                 String sqlInsert = "INSERT INTO profileUser VALUES(" + idUser + ", " + idPro + ")";
                 utilDB.manipulate(stmt, sqlInsert);	//esecuzione del comando SQL
@@ -596,12 +611,14 @@ public class UserDAO implements IUserDAO {
             e.printStackTrace();
             return FAIL;
         } finally {
-            try{
-                if(stmt!=null)
+            try {
+                if (stmt != null) {
                     utilDB.closeStatement(stmt);
-                if(conn!=null)
+                }
+                if (conn != null) {
                     utilDB.closeConnection(conn);
-            } catch(SQLException e){
+                }
+            } catch (SQLException e) {
                 System.err.println("Closing Resources Error!");
                 e.printStackTrace();
                 return FAIL;
@@ -609,15 +626,15 @@ public class UserDAO implements IUserDAO {
         }
         return SUCCESS;
     }
-    
+
     /**
-     * Il metodo verifyProfiles(int idUser) sfrutta i metodi forniti dalla classe UtilDB
-     * per effettuare una codifica in stringa dei profili associati all'utente identificato
-     * da idUser passato come parametro. In particolare viene restituito:
-     * - "DIP" se l'utente è un Dipendente;
-     * - "PM" se l'utente è un Project Manager;
-     * - "DIPPM" se l'utente è sia Dipendente che Project Manager.
-     * In caso di eccezioni viene restituito "FAIL".
+     * Il metodo verifyProfiles(int idUser) sfrutta i metodi forniti dalla
+     * classe UtilDB per effettuare una codifica in stringa dei profili
+     * associati all'utente identificato da idUser passato come parametro. In
+     * particolare viene restituito: - "DIP" se l'utente è un Dipendente; - "PM"
+     * se l'utente è un Project Manager; - "DIPPM" se l'utente è sia Dipendente
+     * che Project Manager. In caso di eccezioni viene restituito "FAIL".
+     *
      * @param idUser int l'id dell'utente su cui effettuare la verifica
      * @return String codice che rappresenta il risultato della verifica
      * @author Lorenzo Bernabei
@@ -625,40 +642,94 @@ public class UserDAO implements IUserDAO {
     @Override
     public String verifyProfiles(int idUser) {
         LOGGER.log(Level.INFO, LAYERLBL + " Verify user profiles");
-        Connection conn = null;	
+        Connection conn = null;
         Statement stmt = null;
         String result = "";
         try {
             conn = utilDB.createConnection();	//connection to DB
             stmt = conn.createStatement();	//creazione dello Statement
             String sql = "SELECT profile.name FROM profileUser, profile "
-                                            + "WHERE profileUser.profile = profile.id"
-                                            + "ORDER BY profile.name";
+                    + "WHERE profileUser.profile = profile.id"
+                    + "ORDER BY profile.name";
             ResultSet rs = utilDB.query(stmt, sql);	//esecuzione del comando SQL
-            while(rs.next()){
-                if(rs.getString(1).equals("Dipendente"))
+            while (rs.next()) {
+                if (rs.getString(1).equals("Dipendente")) {
                     result = result + "DIP";
-                if(rs.getString(1).equals("Project Manager"))
+                }
+                if (rs.getString(1).equals("Project Manager")) {
                     result = result + "PM";
+                }
             }
         } catch (SQLException e) {	//il metodo intercetta un'eccezione proveniente dal DB	    	 
             System.err.println("Database Error!");
             e.printStackTrace();
             return FAIL;
         } finally {
-            try{
-                if(stmt!=null)
+            try {
+                if (stmt != null) {
                     utilDB.closeStatement(stmt);
-                if(conn!=null)
+                }
+                if (conn != null) {
                     utilDB.closeConnection(conn);
-            } catch(SQLException e){
+                }
+            } catch (SQLException e) {
                 System.err.println("Closing Resources Error!");
                 e.printStackTrace();
                 return FAIL;
             }
         }
-        
+
         return result;
+    }
+
+    /**
+     * Il metodo verifyProjectsStatus(int idPM) sfrutta i metodi forniti dalla
+     * classe UtilDB per effettuare una verifica riguardante i progetti
+     * associati ad un projectManager. In particolare viene restituito: "TRUE" se il PM
+     * ha progetti in corso associati (almeno uno), "FALSE" in caso contrario.
+     *
+     * @param idPM int l'id del project manager su cui effettuare la verifica
+     * @return String codice che rappresenta il risultato della verifica
+     * @author Davide Vitiello
+     */
+    public String verifyProjectsStatus(int idPM) {
+        LOGGER.log(Level.INFO, LAYERLBL + " Verify project manager's projects' status");
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            conn = utilDB.createConnection();	//connessione al DB
+            stmt = conn.createStatement();	//creazione dello Statement
+            String sql = "SELECT status FROM project WHERE project_manager = " + idPM + ";";
+            ResultSet rs = utilDB.query(stmt, sql);	//esecuzione del comando SQL
+
+            while (rs.next()) {
+                if (rs.getString(1).equals("in corso")) {
+                    return TRUE;
+                }
+
+            }
+            return FALSE;
+
+        } catch (SQLException e) {	//il metodo intercetta un'eccezione proveniente dal DB	    	 
+            System.err.println("Database Error!");
+            e.printStackTrace();
+            return FAIL;
+        } finally {
+            try {
+                if (stmt != null) {
+                    utilDB.closeStatement(stmt);
+                }
+                if (conn != null) {
+                    utilDB.closeConnection(conn);
+                }
+            } catch (SQLException e) {
+                System.err.println("Closing Resources Error!");
+                e.printStackTrace();
+                return FAIL;
+            }
+
+        }
+
     }
 
 }

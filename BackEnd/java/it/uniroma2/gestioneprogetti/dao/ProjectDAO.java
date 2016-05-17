@@ -18,29 +18,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Repository("projectDAO")
 public class ProjectDAO implements IProjectDAO {
-    
+
     private final static Logger LOGGER = Logger.getLogger(ProjectDAO.class.getName());
     private final static String LAYERLBL = "****DAO LAYER**** ";
     private final static String SUCCESS = "SUCCESS";
     private final static String FAIL = "FAIL";
-    
+
     //Qui di seguito viene iniettata l'iniezione della dipendenza di UtilDB
     @Autowired
     private UtilDB utilDB;
-    
+
     /**
      * Il metodo displayProjects() sfrutta i metodi forniti dalla classe UtilDB
      * per estrapolare la lista dei progetti dal Database.
+     *
      * @return List<Project>
      * @author Luca Talocci
      */
     @Override
     public List<Project> displayProjects() {
-        LOGGER.log(Level.INFO, LAYERLBL + "displayProjects");	
-        Connection conn=null;
-        Statement stmt=null;
+        LOGGER.log(Level.INFO, LAYERLBL + "displayProjects");
+        Connection conn = null;
+        Statement stmt = null;
         List<Project> projectsList = null;
-        try{
+        try {
             conn = utilDB.createConnection();	//connessione al DB
             stmt = conn.createStatement();	//creazione dello Statement
             String sql = "SELECT * FROM project";
@@ -48,17 +49,19 @@ public class ProjectDAO implements IProjectDAO {
             ResultSet rs = utilDB.query(stmt, sql);
             //setto i campi dell'oggetto del dominio con i dati letti dal database
             projectsList = utilDB.resultSetToProjectArray(rs);
-       } catch(SQLException e){
+        } catch (SQLException e) {
             System.err.println("Database Error!");
             e.printStackTrace();
             return projectsList;
-       } finally{
-            try{
-                if(stmt!=null)
+        } finally {
+            try {
+                if (stmt != null) {
                     utilDB.closeStatement(stmt);
-                if(conn!=null)
+                }
+                if (conn != null) {
                     utilDB.closeConnection(conn);
-            } catch(SQLException e){
+                }
+            } catch (SQLException e) {
                 System.err.println("Close Resource Error!");
                 e.printStackTrace();
                 return projectsList;
@@ -68,31 +71,35 @@ public class ProjectDAO implements IProjectDAO {
     }
 
     /**
-     * Il metodo insertProject(Project project) sfrutta i metodi forniti dalla classe UtilDB
-     * per inserire i dati di un progetto nel Database.
-     * Inoltre, viene prelevato l'id e settato l'oggetto Project passato come parametro,
+     * Il metodo insertProject(Project project) sfrutta i metodi forniti dalla
+     * classe UtilDB per inserire i dati di un progetto nel Database. Inoltre,
+     * viene prelevato l'id e settato l'oggetto Project passato come parametro,
      * per un uso successivo dell'identificatore nello UserService.
+     *
      * @param project Project il progetto da inserire nel DB
      * @return String esito dell'inserimento
      * @author Lorenzo Bernabei
      */
     @Override
     public String insertProject(Project project) {
-        LOGGER.log(Level.INFO, LAYERLBL + "Insert project {0}", project.getName());	
-        Connection conn = null;	
-        Statement stmt = null;	
+        LOGGER.log(Level.INFO, LAYERLBL + "Insert project {0}", project.getName());
+        Connection conn = null;
+        Statement stmt = null;
         try {
             conn = utilDB.createConnection();	//connessione al DB
             stmt = conn.createStatement();	//creazione dello Statement
             //SQL insert
-            String sql = "INSERT INTO project VALUES" + 
-                         "(NULL, '"  +      //l'id è definito tramite "auto increment"
-                         project.getName() + "', '" +
-                         project.getDescription() + "', " + 
-                         "In Corso', " +       //status settato in automatico a "In Corso"
-                         project.getBudget() + ", " + 
-                         "0.0, " +      //il costo è inizialmente settato a 0.0
-                         project.getProjectManager() + ")";
+            String sql = "INSERT INTO project VALUES"
+                    + "(NULL, '"
+                    + //l'id è definito tramite "auto increment"
+                    project.getName() + "', '"
+                    + project.getDescription() + "', "
+                    + "In Corso', "
+                    + //status settato in automatico a "In Corso"
+                    project.getBudget() + ", "
+                    + "0.0, "
+                    + //il costo è inizialmente settato a 0.0
+                    project.getProjectManager() + ")";
             utilDB.manipulate(stmt, sql);	//esecuzione del comando SQL
             sql = "SELECT id FROM project WHERE name='" + project.getName() + "'";
             ResultSet rs = utilDB.query(stmt, sql);
@@ -106,24 +113,28 @@ public class ProjectDAO implements IProjectDAO {
             return FAIL;
         } finally {
             try {
-                if(stmt!=null)
+                if (stmt != null) {
                     utilDB.closeStatement(stmt);
-                if(conn!=null)
+                }
+                if (conn != null) {
                     utilDB.closeConnection(conn);
-            } catch(SQLException e){
+                }
+            } catch (SQLException e) {
                 System.err.println("Closing Resources Error!");
                 e.printStackTrace();
                 return FAIL;
             }
         }
-    } 
+    }
 
     /**
-     * Il metodo updateProject(Project project) sfrutta i metodi forniti dalla classe UtilDB
-     * per aggiornare i dati di un progetto nel Database. Prende in input un oggetto Project
-     * ed aggiorna il corrispondente progetto nel DB. L'id contenuto nell'ogetto in input
-     * serve da riferimento per individuare i dati del DB da modificare. Il resto dei dati
-     * contenuti nell'oggetto vengono invece sostituiti a quelli attuali nel DB.
+     * Il metodo updateProject(Project project) sfrutta i metodi forniti dalla
+     * classe UtilDB per aggiornare i dati di un progetto nel Database. Prende
+     * in input un oggetto Project ed aggiorna il corrispondente progetto nel
+     * DB. L'id contenuto nell'ogetto in input serve da riferimento per
+     * individuare i dati del DB da modificare. Il resto dei dati contenuti
+     * nell'oggetto vengono invece sostituiti a quelli attuali nel DB.
+     *
      * @param project Project il progetto da aggiornare
      * @return String esito dell'aggiornamento
      * @author Davide Vitiello
@@ -131,56 +142,59 @@ public class ProjectDAO implements IProjectDAO {
     @Override
     public String updateProject(Project project) {
         LOGGER.log(Level.INFO, LAYERLBL + "Update project {0}", project.getName());
-        
-        Connection conn = null;	
-        Statement stmt = null;	
+
+        Connection conn = null;
+        Statement stmt = null;
         try {
             conn = utilDB.createConnection();	//connessione al DB
             stmt = conn.createStatement();	//creazione dello Statement
             //SQL update
             String sql = "UPDATE project SET name='" + project.getName()
-			+ ", description='" + project.getDescription() + "'"
-			+ ", status='" + project.getStatus() + "'"
-			+ ", budget='" + project.getBudget() + "'"
-			+ ", project_manager" + project.getProjectManager() 
-			+ "' WHERE id=" + project.getId();
+                    + ", description='" + project.getDescription() + "'"
+                    + ", status='" + project.getStatus() + "'"
+                    + ", budget='" + project.getBudget() + "'"
+                    + ", project_manager" + project.getProjectManager()
+                    + "' WHERE id=" + project.getId();
             utilDB.manipulate(stmt, sql);	//esecuzione del comando SQL
         } catch (SQLException e) {	//il metodo intercetta un'eccezione proveniente dal DB	    	 
             System.err.println("Database Error!");
             e.printStackTrace();
             return FAIL;
         } finally {
-            try{
-                if(stmt!=null)
+            try {
+                if (stmt != null) {
                     utilDB.closeStatement(stmt);
-                if(conn!=null)
+                }
+                if (conn != null) {
                     utilDB.closeConnection(conn);
-            } catch(SQLException e){
+                }
+            } catch (SQLException e) {
                 System.err.println("Closing Resources Error!");
                 e.printStackTrace();
                 return FAIL;
             }
-	}	
+        }
         return SUCCESS;
     }
 
-   /**
-    * Il metodo deleteProject(Project project) sfrutta i metodi forniti dalla classe UtilDB
-    * per prendere in ingresso un oggetto Project
-    * ed eliminare il corrispondente progetto dal DB.
-    * L'id contenuto nell'oggetto in ingresso viene utilizzato per individuare le
-    * righe del DB che verranno eliminate: tutte quelle che nel campo 'id', nella tabella
-    * progetti, hanno lo stesso numero intero presente nel campo 'id' dell'oggetto in ingresso.
-    * @param project Project il progetto da eliminare
-    * @return String esito della cancellazione
-    * @author Davide Vitiello
-    */
+    /**
+     * Il metodo deleteProject(Project project) sfrutta i metodi forniti dalla
+     * classe UtilDB per prendere in ingresso un oggetto Project ed eliminare il
+     * corrispondente progetto dal DB. L'id contenuto nell'oggetto in ingresso
+     * viene utilizzato per individuare le righe del DB che verranno eliminate:
+     * tutte quelle che nel campo 'id', nella tabella progetti, hanno lo stesso
+     * numero intero presente nel campo 'id' dell'oggetto in ingresso.
+     *
+     * @param project Project il progetto da eliminare
+     * @return String esito della cancellazione
+     * @author Davide Vitiello
+     */
     @Override
     public String deleteProject(Project project) {
         LOGGER.log(Level.INFO, LAYERLBL + "Delete project {0}", project.getName());
-        
-        Connection conn = null;	
-        Statement stmt = null;	
+
+        Connection conn = null;
+        Statement stmt = null;
         try {
             conn = utilDB.createConnection();	//connessione al DB
             stmt = conn.createStatement();	//creazione dello Statement
@@ -192,31 +206,35 @@ public class ProjectDAO implements IProjectDAO {
             e.printStackTrace();
             return FAIL;
         } finally {
-            try{
-                if(stmt!=null)
+            try {
+                if (stmt != null) {
                     utilDB.closeStatement(stmt);
-                if(conn!=null)
+                }
+                if (conn != null) {
                     utilDB.closeConnection(conn);
-            } catch(SQLException e){
+                }
+            } catch (SQLException e) {
                 System.err.println("Closing Resources Error!");
                 e.printStackTrace();
                 return FAIL;
             }
-	}	
+        }
         return SUCCESS;
-    }    
-    
+    }
+
     /**
-     * Effettua l'operazione di retrieve, ovvero il recupero dei dati nel database del Project
-     * passato come argomento settando tutti i parametri di esso.
-     * Restituisce SUCCESS se il recupero e il settaggio dei dati e' andato a buon fine, FAIL altrimenti.
+     * Effettua l'operazione di retrieve, ovvero il recupero dei dati nel
+     * database del Project passato come argomento settando tutti i parametri di
+     * esso. Restituisce SUCCESS se il recupero e il settaggio dei dati e'
+     * andato a buon fine, FAIL altrimenti.
+     *
      * @param p Project
      * @return String esito del recupero dei dati
      * @author L.Camerlengo
-     */ 
+     */
     @Override
-    public String retrieveProject(Project p){
-        LOGGER.log(Level.INFO, LAYERLBL + "retrieve Project");	
+    public String retrieveProject(Project p) {
+        LOGGER.log(Level.INFO, LAYERLBL + "retrieve Project");
         Connection conn = null;
         Statement stm = null;
         try {
@@ -254,39 +272,43 @@ public class ProjectDAO implements IProjectDAO {
         }
         return SUCCESS;
     }
-    
+
     /**
-     * Il metodo displayPMProjects(int idPM) sfrutta i metodi forniti dalla classe UtilDB
-     * per estrapolare la lista dei progetti di un ProjectManager dal Database.
+     * Il metodo displayPMProjects(int idPM) sfrutta i metodi forniti dalla
+     * classe UtilDB per estrapolare la lista dei progetti di un ProjectManager
+     * dal Database.
+     *
      * @param idPM l'id del Project Manager
      * @return List la lista con i progetti
      * @author ?
      */
     @Override
     public List<Project> displayPMProjects(int idPM) {
-        LOGGER.log(Level.INFO, LAYERLBL + "displayPMProjects");	
+        LOGGER.log(Level.INFO, LAYERLBL + "displayPMProjects");
         Connection conn = null;
         Statement stmt = null;
         List<Project> projectsList = null;
-        try{
+        try {
             conn = utilDB.createConnection();	//connessione al DB
             stmt = conn.createStatement();	//creazione dello Statement
-            String sql="SELECT * FROM project WHERE project_manager=" + idPM;
+            String sql = "SELECT * FROM project WHERE project_manager=" + idPM;
             //memorizzazione del risultato della query in un ResultSet
             ResultSet rs = utilDB.query(stmt, sql);
             //setto i campi dell'oggetto del dominio con i dati letti dal database
             projectsList = utilDB.resultSetToProjectArray(rs);
-        } catch(SQLException e){
+        } catch (SQLException e) {
             System.err.println("Database Error!");
             e.printStackTrace();
             return projectsList;
-        } finally{
-            try{
-                if(stmt!=null)
+        } finally {
+            try {
+                if (stmt != null) {
                     utilDB.closeStatement(stmt);
-                if(conn!=null)
+                }
+                if (conn != null) {
                     utilDB.closeConnection(conn);
-            } catch(SQLException e){
+                }
+            } catch (SQLException e) {
                 System.err.println("Close Resource Error!");
                 e.printStackTrace();
                 return projectsList;
@@ -294,13 +316,16 @@ public class ProjectDAO implements IProjectDAO {
         }
         return projectsList;
     }
-    
+
     /**
-     * Il metodo displayPMsEmployees() seleziona i dipendenti e i projectManager presenti nel
-     * database, in modo tale che l'utente Controller possa visualizzarli all'interno di un form.
-     * Restituisce una List<List<User>> inizializzata a null nel caso in cui l'operazione non va a buon fine, altrimenti
-     * restituisce una List<List<User>> contente al suo interno due List<User>, dove la prima lista contiene i
-     * dipendenti e la seconda contiene i projectManager.
+     * Il metodo displayPMsEmployees() seleziona i dipendenti e i projectManager
+     * presenti nel database, in modo tale che l'utente Controller possa
+     * visualizzarli all'interno di un form. Restituisce una List<List<User>>
+     * inizializzata a null nel caso in cui l'operazione non va a buon fine,
+     * altrimenti restituisce una List<List<User>> contente al suo interno due
+     * List<User>, dove la prima lista contiene i dipendenti e la seconda
+     * contiene i projectManager.
+     *
      * @return List<List<User>> dipendenti e projectManager
      * @author L.Camerlengo
      */
@@ -322,8 +347,8 @@ public class ProjectDAO implements IProjectDAO {
             while (rs1.next()) {
                 String username = rs1.getString(1);
                 int id = rs1.getInt(2);
-                String name=rs1.getString(3);
-                String surname=rs1.getString(4);
+                String name = rs1.getString(3);
+                String surname = rs1.getString(4);
                 User user = new User();
                 user.setId(id);
                 user.setUsername(username);
@@ -335,8 +360,8 @@ public class ProjectDAO implements IProjectDAO {
             while (rs2.next()) {
                 String username = rs2.getString(1);
                 int id = rs2.getInt(2);
-                String name=rs2.getString(3);
-                String surname=rs2.getString(4);
+                String name = rs2.getString(3);
+                String surname = rs2.getString(4);
                 User user = new User();
                 user.setId(id);
                 user.setUsername(username);
@@ -350,13 +375,15 @@ public class ProjectDAO implements IProjectDAO {
             System.err.println("Close Resource Error!");
             e.printStackTrace();
             return users;
-        } finally{
-            try{
-                if(stm!=null)
+        } finally {
+            try {
+                if (stm != null) {
                     utilDB.closeStatement(stm);
-                if(conn!=null)
+                }
+                if (conn != null) {
                     utilDB.closeConnection(conn);
-            } catch(SQLException e){
+                }
+            } catch (SQLException e) {
                 System.err.println("Close Resource Error!");
                 e.printStackTrace();
                 return users;
@@ -364,14 +391,16 @@ public class ProjectDAO implements IProjectDAO {
         }
         return users;
     }
-    
+
     /**
-     * Il metodo updateEmployeesAssociation effettua un aggiornamento nel database delle associazioni
-     * dei dipendenti che lavorano ad un determinato progetto. In particolare per il progetto passato in ingresso
-     * vengono mantenute nel database soltanto le associazioni dei dipendenti il cui id è contenuto all' interno 
-     * dell'array passato in ingresso.
-     * Restituisce SUCCESS nel caso in cui l'operazione ha esito positivo, FAIL altrimenti.
-     * @param idProject int 
+     * Il metodo updateEmployeesAssociation effettua un aggiornamento nel
+     * database delle associazioni dei dipendenti che lavorano ad un determinato
+     * progetto. In particolare per il progetto passato in ingresso vengono
+     * mantenute nel database soltanto le associazioni dei dipendenti il cui id
+     * è contenuto all' interno dell'array passato in ingresso. Restituisce
+     * SUCCESS nel caso in cui l'operazione ha esito positivo, FAIL altrimenti.
+     *
+     * @param idProject int
      * @param employees int[]
      * @return String esito
      * @author L.Camerlengo
@@ -425,5 +454,58 @@ public class ProjectDAO implements IProjectDAO {
             }
         }
         return SUCCESS;
+    }
+
+    /**
+     * Il metodo retrieveEmployeesAssociation(int idProject) sfrutta i metodi
+     * forniti dalla classe UtilDB per prelevare dal Database le associazioni di
+     * un progetto con gli utenti che vi lavorano. Il valore di ritorno è
+     * l'array contentente gli id degli utenti,o null in caso di eccezioni.
+     *
+     * @param idProject int id del progetto
+     * @return int[] array con gli id dei utenti
+     * @author Davide Vitiello
+     */
+    public int[] retrieveEmployeesAssociation(int idProject) {
+        LOGGER.log(Level.INFO, LAYERLBL + "Retrieve project-employees association");
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            conn = utilDB.createConnection();	//connessione al DB
+            stmt = conn.createStatement();	//creazione dello Statement
+            //Query SQL per reperire tutti gli utenti associati al progetti
+            String sql1 = "SELECT user FROM projectuser WHERE project=" + idProject;
+            ResultSet rs1 = utilDB.query(stmt, sql1);
+
+            //Query SQL per sapere quanti impiegati sono associati al progetto
+            String sql2 = "SELECT COUNT(*) FROM projectuser WHERE project=" + idProject;
+            ResultSet rs2 = utilDB.query(stmt, sql2);
+            //Riempio l'array passato in ingresso con gli id degli impiegati
+            rs2.next();
+            int[] employees = new int[rs2.getInt(1)];
+            int i = 0;
+            while (rs1.next()) {
+                employees[i] = rs1.getInt(1);
+                i++;
+            }
+            return employees;
+        } catch (SQLException e) {	//il metodo intercetta un'eccezione proveniente dal DB	    	 
+            System.err.println("Database Error!");
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                if (stmt != null) {
+                    utilDB.closeStatement(stmt);
+                }
+                if (conn != null) {
+                    utilDB.closeConnection(conn);
+                }
+            } catch (SQLException e) {
+                System.err.println("Closing Resources Error!");
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 }
