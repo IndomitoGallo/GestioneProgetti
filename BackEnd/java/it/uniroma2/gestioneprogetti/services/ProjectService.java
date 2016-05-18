@@ -1,4 +1,4 @@
-package it.uniroma2.gestioneprogetti.services;
+﻿package it.uniroma2.gestioneprogetti.services;
 
 import it.uniroma2.gestioneprogetti.dao.IDAOFactory;
 import it.uniroma2.gestioneprogetti.domain.Project;
@@ -178,6 +178,48 @@ public class ProjectService implements IProjectService {
         response.setEsito(true);
         return response;
     }
+
+   /**
+     * Il metodo displayPMsEmployees prende l'EmptyRQS proveniente dallo strato "Application"
+     * soltanto per convenzione. Inizializza una lista di employees che viene riempita dal 
+     * metodo displayPMsEmployees dello strato "Domain" e poi viene inizializzato 
+     * l'oggetto PMsEmployeesRES tramite la lista precedentemente riempita e restituito in output.
+     *
+     * @param request EmptyRQS
+     * @return PMsEmployeesRES response
+     * @author Lorenzo Svezia
+     */
+
+    @Override
+    public PMsEmployeesRES displayPMsEmployees(EmptyRQS request){
+
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio displayPMsEmployees");
+
+        List<PMsEmployees> PMsEmployeesList=daoFactory.getProjectDao().displayPMsEmployees();
+
+        PMsEmployeesRES response = new PMsEmployeesRES();
+
+        if(PMsEmployeesList==null){
+            response.setMessage("FAIL");
+            response.setErrorCode("1");
+            response.setEsito(false);
+        }
+        else {
+            response.setMessage("SUCCESS");
+            response.setErrorCode("0");
+            response.setEsito(true);           
+        }
+
+        List<ProjectEmployeesRES> projectEmployeesRESList = new ArrayList<>();
+        for (PMsEmployees pme : PMsEmployeesList){
+            ProjectEmployeesRES projectEmployeesRES= new ProjectEmployeesRES(pme.getProject(),pme.getEmployees);
+            projectEmployeesRESList.add(projectEmployeesRES);
+        }
+
+        response.setUsersList(ProjectEmployeesRESList);
+        return response;
+    }
+    
     
     /**
      * Il metodo displayProjects prende l'EmptyRQS proveniente dallo strato "Application"

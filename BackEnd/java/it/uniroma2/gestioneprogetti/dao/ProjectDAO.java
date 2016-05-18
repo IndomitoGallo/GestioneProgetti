@@ -1,4 +1,4 @@
-package it.uniroma2.gestioneprogetti.dao;
+﻿package it.uniroma2.gestioneprogetti.dao;
 
 import it.uniroma2.gestioneprogetti.domain.Project;
 import it.uniroma2.gestioneprogetti.domain.User;
@@ -455,6 +455,58 @@ public class ProjectDAO implements IProjectDAO {
         }
         return SUCCESS;
     }
+
+    /**
+     * Il metodo insertEmployeesAssociation
+     * associa i dipendenti ad un determinato progetto.
+     * Restituisce SUCCESS nel caso in cui l'operazione ha esito positivo, FAIL altrimenti.
+     *
+     * @param idProject int
+     * @param employees int[]
+     * @return String esito
+     * @author Lorenzo Svezia
+     */
+
+    @Override
+    public String insertEmployeesAssociation(int idProject, int[] employees) {
+
+        LOGGER.log(Level.INFO, LAYERLBL + "insertEmployeesAssociation");
+        Connection conn = null;
+        Statement stm = null;
+
+        try {
+            conn = utilDB.createConnection();
+            stm = utilDB.createStatement(conn);
+
+            for (int id : employees) {
+                String insert = "INSERT INTO projectUser VALUES(" + id + "," + idProject + ",0);";
+		utilDB.manipulate(stm, insert);
+                }
+            }
+
+
+        } catch (SQLException e) {
+            System.err.println("Close Resource Error!");
+            e.printStackTrace();
+            return FAIL;
+        } finally {
+            try {
+                if (stm != null) {
+                    utilDB.closeStatement(stm);
+                }
+                if (conn != null) {
+                    utilDB.closeConnection(conn);
+                }
+            } catch (SQLException e) {
+                System.err.println("Close Resource Error!");
+                e.printStackTrace();
+                return FAIL;
+            }
+        }
+
+        return SUCCESS;
+    }
+
 
     /**
      * Il metodo retrieveEmployeesAssociation(int idProject) sfrutta i metodi

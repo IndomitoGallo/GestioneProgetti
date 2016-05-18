@@ -1,4 +1,4 @@
-package it.uniroma2.gestioneprogetti.dao;
+﻿package it.uniroma2.gestioneprogetti.dao;
 
 import it.uniroma2.gestioneprogetti.domain.User;
 import it.uniroma2.gestioneprogetti.util.UtilDB;
@@ -216,6 +216,52 @@ public class UserDAO implements IUserDAO {
         }
         return SUCCESS;
     }
+
+   /**
+     * Il metodo deleteTimesheet(User u) sfrutta i metodi forniti dalla classe UtilDB
+     * per eliminare il timesheet di un utente specifico nel Database.
+     *
+     * @param user User
+     * @return String esito della cancellazione
+     * @author Lorenzo Svezia
+     */
+    @Override
+    public String deleteTimesheet(User user) {
+        LOGGER.log(Level.INFO, LAYERLBL + "delete timesheet {0}", user.getName());
+
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            conn = utilDB.createConnection();	//connessione al DB
+            stmt = conn.createStatement();	//creazione dello Statement
+            //SQL delete
+            String sql = "DELETE FROM timesheet WHERE user=" + user.getId();
+            //esecuzione del comando SQL
+            if (utilDB.manipulate(stmt, sql) == 0) {
+                //se la query non ha interessato alcun record del DB, viene restituita una stringa di errore
+                return FAIL;
+            }
+        } catch (SQLException e) { //il metodo intercetta un'eccezione proveniente dal DB	    	 
+            System.err.println("Database Error!");
+            e.printStackTrace();
+            return FAIL;
+        } finally {
+            try {
+                if (stmt != null) {
+                    utilDB.closeStatement(stmt);
+                }
+                if (conn != null) {
+                    utilDB.closeConnection(conn);
+                }
+            } catch (SQLException e) {
+                System.err.println("Closing Resources Error!");
+                e.printStackTrace();
+                return FAIL;
+            }
+        }
+        return SUCCESS;
+    }
+
 
     /**
      * Effettua l'operazione di retrieve, ovvero il recupero dei dati
