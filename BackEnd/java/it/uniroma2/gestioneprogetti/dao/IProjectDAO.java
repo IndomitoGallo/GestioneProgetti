@@ -13,4 +13,5 @@ public interface IProjectDAO {
     public List<Project> displayPMProjects(int idPM);
     public List<List<User>> displayPMsEmployees();
     public String updateEmployeesAssociation(int idProject, int[] association);
+    public int[] retrieveEmployeesAssociation(int idProject);
 }

@@ -325,12 +325,12 @@ public class ProjectDAO implements IProjectDAO {
      * altrimenti restituisce una List<List<User>> contente al suo interno due
      * List<User>, dove la prima lista contiene i dipendenti e la seconda
      * contiene i projectManager.
-     *
      * @return List<List<User>> dipendenti e projectManager
      * @author L.Camerlengo
      */
     @Override
     public List<List<User>> displayPMsEmployees() {
+        LOGGER.log(Level.INFO, LAYERLBL + "displayPMsEmployees");
         Connection conn = null;
         Statement stm = null;
         List<List<User>> users = null;
@@ -399,7 +399,6 @@ public class ProjectDAO implements IProjectDAO {
      * mantenute nel database soltanto le associazioni dei dipendenti il cui id
      * è contenuto all' interno dell'array passato in ingresso. Restituisce
      * SUCCESS nel caso in cui l'operazione ha esito positivo, FAIL altrimenti.
-     *
      * @param idProject int
      * @param employees int[]
      * @return String esito
@@ -407,6 +406,7 @@ public class ProjectDAO implements IProjectDAO {
      */
     @Override
     public String updateEmployeesAssociation(int idProject, int[] employees) {
+        LOGGER.log(Level.INFO, LAYERLBL + "updateEmployeesAssociation");
         Connection conn = null;
         Statement stm = null;
         try {

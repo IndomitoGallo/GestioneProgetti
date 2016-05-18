@@ -17,4 +17,5 @@ public interface IUserDAO {
     public int[] retrieveProfilesAssociation(int idUser);
     public String updateProfilesAssociation(int idUser, int[] profiles);
     public String verifyProfiles(int idUser);
+    public String verifyProjectsStatus(int idPM);
 }
