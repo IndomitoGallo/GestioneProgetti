@@ -21,6 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
+ * La classe ProjectService si occupa di gestire la logica applicativa che riguarda
+ * i servizi relativi ai progetti.
+ * La classe ProjectController accede ai servizi che offre questa classe tramite un oggetto
+ * request. Essa dopo aver utilizzato i metodi messi a disposizione dalla classe ProjectDAO 
+ * restituisce come risposta un oggetto response.
  * 
  * @author Team Talocci
  */

@@ -1,6 +1,12 @@
 package it.uniroma2.gestioneprogetti.request;
 
-
+/**
+ * La classe UserProfilesRQS modella un oggetto request che incapsula al suo interno 
+ * le proprietà UserRQS e int[] "array di profili" in modo tale
+ * da trasportare i dati dallo strato Application allo strato Services.
+ * 
+ * @author Gruppo Talocci
+ */
 public class UserProfilesRQS extends AbstractRQS {
 
     private UserRQS user;

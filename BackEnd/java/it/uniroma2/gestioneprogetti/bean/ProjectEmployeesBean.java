@@ -2,6 +2,12 @@ package it.uniroma2.gestioneprogetti.bean;
 
 import it.uniroma2.gestioneprogetti.domain.Project;
 
+/**
+ * La classe ProjectEmployeesBean è utilizzata per incapsulare le richieste e le 
+ * response HTTP che sono associate al Front-End.
+ * Essa contiene le proprietà Project "progetto",int[] "dipendenti" e String "id sessione". 
+ * @author Gruppo Talocci
+ */
 public class ProjectEmployeesBean {
     private Project project;
     private int[] employees;

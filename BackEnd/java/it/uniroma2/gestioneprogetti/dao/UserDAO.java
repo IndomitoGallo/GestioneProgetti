@@ -13,6 +13,13 @@ import org.springframework.stereotype.Repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * La classe UserDAO sfrutta i metodi della classe UtilDB per effettuare
+ * operazioni sul database che riguardano i progetti. In questo modo tutte le
+ * operazioni sul database riguardanti gli utenti vengono incapsulate esclusivamente all'interno di questa
+ * classe.
+ * @author Gruppo Talocci
+ */
 @Repository("userDAO")
 public class UserDAO implements IUserDAO {
 

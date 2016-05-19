@@ -24,7 +24,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- *
+ *La classe UserController intercetta tutte le richieste del Front-End
+ *che sono inerenti alla gestione degli utenti.
+ *Essa si occupa quindi di gestire le richieste e chiamare i servizi della
+ *classe UserService e fornire in risposta un messaggio HTTP contente in alcuni
+ *casi un oggetto Model.
  * @author Team Talocci
  */
 public class UserController {
@@ -209,7 +213,8 @@ public class UserController {
 
     /**
      * Il metodo intercetta le richieste del Front-End per ottenere la lista
-     * degli utenti presente nel database. Viene dapprima inviata allo strato
+     * degli utenti presente nel database. Angular inserirà all'interno della richiesta HTTP
+     * l'id della sessione.Viene dapprima inviata allo strato
      * dei servizi una EmptyRQS. Se la response contiene "SUCCESS" viene
      * restituito l'HTTP status OK con la lista degli utente, altrimenti se la
      * response contiene "false" lo status restituito è BAD_REQUEST e se
@@ -249,8 +254,10 @@ public class UserController {
 
     /**
      * Il metodo intercetta le richieste del Front-End che richiedono di
-     * effettuare il login per un determinato utente. Viene quindi creato
-     * l'oggetto UserRQS che incapsula la richiesta e viene memorizzata la
+     * effettuare il login per un determinato utente. Angular
+     * inserirà all'interno della richiesta HTTP un JSON contenente le credenziali
+     * dell'utente.
+     * Viene quindi creato l'oggetto UserRQS che incapsula la richiesta e viene memorizzata la
      * response in un EmptyRES. Se la response restituita dal servizio del
      * livello sottostante contiene "SUCCESS", viene creata una sessione per
      * l'utente che ha effettuato il Login e viene restituito l'HTTP status OK
@@ -287,8 +294,9 @@ public class UserController {
 
     /**
      * Il metodo intercetta le richieste del Front-End che richiedono di
-     * effettuare il logout per un determinato utente. Viene rimossa la sessione
-     * per l'utente che ha effettuato il Logout e viene restituito l'HTTP status
+     * effettuare il logout per un determinato utente. Angular inserirà all'interno della richiesta HTTP
+     * l'id della sessione. Quest'ultima viene quindi rimossa
+     * per l'utente che ha effettuato il Logout, restituendo l'HTTP status
      * OK con l'id della sessione.
      *
      * @param sessionId String una stringa che identifica la sessione sulla

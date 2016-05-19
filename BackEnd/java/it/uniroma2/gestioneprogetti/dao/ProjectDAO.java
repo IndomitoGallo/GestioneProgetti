@@ -15,7 +15,13 @@ import java.util.logging.Logger;
 import org.springframework.stereotype.Repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+/**
+ * La classe ProjectDAO sfrutta i metodi della classe UtilDB per effettuare
+ * operazioni sul database che riguardano i progetti. In questo modo tutte le
+ * operazioni sul database riguardanti i progetti vengono incapsulate esclusivamente all'interno di questa
+ * classe.
+ * @author Gruppo Talocci
+ */
 @Repository("projectDAO")
 public class ProjectDAO implements IProjectDAO {
 
@@ -280,7 +286,7 @@ public class ProjectDAO implements IProjectDAO {
      *
      * @param idPM l'id del Project Manager
      * @return List la lista con i progetti
-     * @author ?
+     * @author Luca Talocci
      */
     @Override
     public List<Project> displayPMProjects(int idPM) {

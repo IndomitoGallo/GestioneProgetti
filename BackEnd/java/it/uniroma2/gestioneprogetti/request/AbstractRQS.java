@@ -1,5 +1,9 @@
 package it.uniroma2.gestioneprogetti.request;
-
+/**
+ * La classe AbstractRQS serve a mettere a fattor comunue la proprietà
+ * String message per tutte le classi RQS.
+ * @author Gruppo Talocci
+ */
 public class AbstractRQS {
     
     private String message;

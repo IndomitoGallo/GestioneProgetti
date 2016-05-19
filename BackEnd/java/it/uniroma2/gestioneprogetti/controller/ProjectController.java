@@ -24,7 +24,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
+ *La classe ProjectController intercetta tutte le richieste del Front-End
+ *che sono inerenti alla gestione dei progetti.
+ *Essa si occupa quindi di gestire le richieste e chiamare i servizi della
+ *classe ProjectService e fornire in risposta un messaggio HTTP contente in alcuni
+ *casi un oggetto Model.
  * @author Team Talocci
  */
 @RestController

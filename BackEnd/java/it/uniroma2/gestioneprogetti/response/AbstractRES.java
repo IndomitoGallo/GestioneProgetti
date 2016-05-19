@@ -1,5 +1,9 @@
 package it.uniroma2.gestioneprogetti.response;
-
+/**
+ * La classe AbstractRES serve a mettere a fattor comunue la proprietà
+ * String errorCode, String message ed boolean esito per tutte le classi RES.
+ * @author Gruppo Talocci
+ */
 public class AbstractRES {
 
     private String errorCode;

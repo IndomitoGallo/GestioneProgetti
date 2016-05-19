@@ -1,7 +1,12 @@
 package it.uniroma2.gestioneprogetti.bean;
 
 import it.uniroma2.gestioneprogetti.domain.User;
-
+/**
+ * La classe UserProfilesBean è utilizzata per incapsulare le richieste e le 
+ * response HTTP che sono associate al Front-End.
+ * Essa contiene le proprietà User "utente",int[] "profili" e String "id sessione". 
+ * @author Gruppo Talocci
+ */
 public class UserProfilesBean {
     private User user;
     private int[] profiles;

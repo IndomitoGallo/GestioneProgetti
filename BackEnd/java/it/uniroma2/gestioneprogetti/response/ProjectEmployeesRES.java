@@ -1,5 +1,10 @@
 package it.uniroma2.gestioneprogetti.response;
-
+/**
+ * La classe ProjectEmployeesRES modella un oggetto response che incapsula al suo interno 
+ * le proprietà ProjectRES "progetto" e int[] "dipendenti" in modo tale
+ * da trasportare i dati dallo strato Application allo strato Services.
+ * @author Gruppo Talocci
+ */
 public class ProjectEmployeesRES extends AbstractRES {
     private ProjectRES project;
     private int[] employees;

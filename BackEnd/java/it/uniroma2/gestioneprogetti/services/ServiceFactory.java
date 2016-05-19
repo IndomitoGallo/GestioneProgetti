@@ -6,6 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+/**
+ *
+ * La classe ServiceFactory  è una classe che implementa il pattern abstract factory singleton,
+ * esso consente di creare famiglie di oggetti correlate tra di loro attraverso
+ * l'utilizzo di un interfaccia comune.
+ * In questo modo in base al servizio scelto è possibile restituire l'oggetto Service concreto grazie all'utilizzo
+ * della annotazione Autowired.
+ * 
+ * @author Team Talocci
+ */
 @Component("serviceFactory")
 @Scope("singleton")
 public class ServiceFactory implements IServiceFactory {
