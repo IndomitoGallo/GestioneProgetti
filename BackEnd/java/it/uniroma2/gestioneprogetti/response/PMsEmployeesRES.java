@@ -1,25 +1,26 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.uniroma2.gestioneprogetti.response;
 
 import java.util.List;
 
-/**
- *
- * @author F.Camerlengo
- */
 public class PMsEmployeesRES extends AbstractRES{
 
-    private List<UserRES> usersList;
+    private List<UserRES> employeesList;
+    private List<UserRES> pmsList;
 
-    public List<UserRES> getUsersList() {
-        return usersList;
+    public List<UserRES> getEmployeesList() {
+        return employeesList;
     }
 
-    public void setUsersList(List<UserRES> usersList) {
-        this.usersList = usersList;
+    public void setEmployeesList(List<UserRES> employeesList) {
+        this.employeesList = employeesList;
     }
+
+    public List<UserRES> getPmsList() {
+        return pmsList;
+    }
+
+    public void setPmsList(List<UserRES> pmsList) {
+        this.pmsList = pmsList;
+    }
+
 }

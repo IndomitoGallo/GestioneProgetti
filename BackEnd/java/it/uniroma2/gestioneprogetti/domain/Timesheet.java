@@ -1,11 +1,12 @@
 package it.uniroma2.gestioneprogetti.domain;
 
+import java.util.Date;
+
 /**
  * La classe Timesheet modella la rispettiva entita' del Database e rappresenta
  * quindi una delle classi del dominio dell'applicazione.
  * @author Lorenzo Svezia
  */
-
 public class Timesheet {
     
     private int id;
@@ -18,8 +19,7 @@ public class Timesheet {
     public Timesheet() {
     }
     
-    public Timesheet(
-            int id, int absence, int project, int user, Date date, String content) {
+    public Timesheet(int id, int absence, int project, int user, Date date, String content) {
         
         this.id = id;
         this.absence = absence;

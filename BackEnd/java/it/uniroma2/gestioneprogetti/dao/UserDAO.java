@@ -1,4 +1,4 @@
-﻿package it.uniroma2.gestioneprogetti.dao;
+package it.uniroma2.gestioneprogetti.dao;
 
 import it.uniroma2.gestioneprogetti.domain.User;
 import it.uniroma2.gestioneprogetti.util.UtilDB;
@@ -20,8 +20,6 @@ public class UserDAO implements IUserDAO {
     private final static String LAYERLBL = "****DAO LAYER**** ";
     private final static String SUCCESS = "SUCCESS";
     private final static String FAIL = "FAIL";
-    private final static String TRUE = "TRUE";
-    private final static String FALSE = "FALSE";
 
     //Qui di seguito viene iniettata l'iniezione della dipendenza di UtilDB
     @Autowired
@@ -72,15 +70,14 @@ public class UserDAO implements IUserDAO {
 
     /**
      * Il metodo insertUser(User u) sfrutta i metodi forniti dalla classe UtilDB
-     * per inserire i dati di un utente nel Database.
-     *
+     * per inserire i dati di un utente nel Database.     *
      * @param user User
      * @return String esito dell'inserimento
      * @author Lorenzo Svezia
      */
     @Override
     public String insertUser(User user) {
-        LOGGER.log(Level.INFO, LAYERLBL + "insert user {0}", user.getName());
+        LOGGER.log(Level.INFO, LAYERLBL + "insert user {0}", user.getUsername());
 
         Connection conn = null;
         Statement stmt = null;
@@ -182,7 +179,7 @@ public class UserDAO implements IUserDAO {
      */
     @Override
     public String deleteUser(User user) {
-        LOGGER.log(Level.INFO, LAYERLBL + "delete user {0}", user.getName());
+        LOGGER.log(Level.INFO, LAYERLBL + "delete user");
 
         Connection conn = null;
         Statement stmt = null;
@@ -217,52 +214,6 @@ public class UserDAO implements IUserDAO {
         return SUCCESS;
     }
 
-   /**
-     * Il metodo deleteTimesheet(User u) sfrutta i metodi forniti dalla classe UtilDB
-     * per eliminare il timesheet di un utente specifico nel Database.
-     *
-     * @param user User
-     * @return String esito della cancellazione
-     * @author Lorenzo Svezia
-     */
-    @Override
-    public String deleteTimesheet(User user) {
-        LOGGER.log(Level.INFO, LAYERLBL + "delete timesheet {0}", user.getName());
-
-        Connection conn = null;
-        Statement stmt = null;
-        try {
-            conn = utilDB.createConnection();	//connessione al DB
-            stmt = conn.createStatement();	//creazione dello Statement
-            //SQL delete
-            String sql = "DELETE FROM timesheet WHERE user=" + user.getId();
-            //esecuzione del comando SQL
-            if (utilDB.manipulate(stmt, sql) == 0) {
-                //se la query non ha interessato alcun record del DB, viene restituita una stringa di errore
-                return FAIL;
-            }
-        } catch (SQLException e) { //il metodo intercetta un'eccezione proveniente dal DB	    	 
-            System.err.println("Database Error!");
-            e.printStackTrace();
-            return FAIL;
-        } finally {
-            try {
-                if (stmt != null) {
-                    utilDB.closeStatement(stmt);
-                }
-                if (conn != null) {
-                    utilDB.closeConnection(conn);
-                }
-            } catch (SQLException e) {
-                System.err.println("Closing Resources Error!");
-                e.printStackTrace();
-                return FAIL;
-            }
-        }
-        return SUCCESS;
-    }
-
-
     /**
      * Effettua l'operazione di retrieve, ovvero il recupero dei dati
      * dell'utente passato come argomento settando tutti i parametri di esso.
@@ -275,7 +226,7 @@ public class UserDAO implements IUserDAO {
      */
     @Override
     public String retrieveUser(User u) {
-        LOGGER.log(Level.INFO, LAYERLBL + "retrieve User");
+        LOGGER.log(Level.INFO, LAYERLBL + "retrieve user");
         Connection conn = null;
         Statement stm = null;
         try {
@@ -731,13 +682,14 @@ public class UserDAO implements IUserDAO {
     /**
      * Il metodo verifyProjectsStatus(int idPM) sfrutta i metodi forniti dalla
      * classe UtilDB per effettuare una verifica riguardante i progetti
-     * associati ad un projectManager. In particolare viene restituito: "TRUE" se il PM
-     * ha progetti in corso associati (almeno uno), "FALSE" in caso contrario.
+     * associati ad un projectManager. In particolare viene restituito: "true" se il PM
+     * ha progetti in corso associati (almeno uno), "false" in caso contrario.
      *
      * @param idPM int l'id del project manager su cui effettuare la verifica
      * @return String codice che rappresenta il risultato della verifica
      * @author Davide Vitiello
      */
+    @Override
     public String verifyProjectsStatus(int idPM) {
         LOGGER.log(Level.INFO, LAYERLBL + " Verify project manager's projects' status");
         Connection conn = null;
@@ -750,12 +702,11 @@ public class UserDAO implements IUserDAO {
 
             while (rs.next()) {
                 if (rs.getString(1).equals("in corso")) {
-                    return TRUE;
+                    return "true";
                 }
-
             }
-            return FALSE;
-
+            
+            return "false";
         } catch (SQLException e) {	//il metodo intercetta un'eccezione proveniente dal DB	    	 
             System.err.println("Database Error!");
             e.printStackTrace();
@@ -778,4 +729,47 @@ public class UserDAO implements IUserDAO {
 
     }
 
+    /**
+     * Il metodo deleteTimesheet(int idUser) sfrutta i metodi forniti dalla classe UtilDB
+     * per eliminare il timesheet di un utente specifico nel Database.
+     * @param idUser int
+     * @return String esito della cancellazione
+     * @author Lorenzo Svezia
+     */
+    @Override
+    public String deleteTimesheet(int idUser) {
+        LOGGER.log(Level.INFO, LAYERLBL + "delete user's timesheet");
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            conn = utilDB.createConnection();	//connessione al DB
+            stmt = conn.createStatement();	//creazione dello Statement
+            //SQL delete
+            String sql = "DELETE FROM timesheet WHERE user=" + idUser;
+            //esecuzione del comando SQL
+            if (utilDB.manipulate(stmt, sql) == 0) {
+                //se la query non ha interessato alcun record del DB, viene restituita una stringa di errore
+                return FAIL;
+            }
+        } catch (SQLException e) { //il metodo intercetta un'eccezione proveniente dal DB	    	 
+            System.err.println("Database Error!");
+            e.printStackTrace();
+            return FAIL;
+        } finally {
+            try {
+                if (stmt != null) {
+                    utilDB.closeStatement(stmt);
+                }
+                if (conn != null) {
+                    utilDB.closeConnection(conn);
+                }
+            } catch (SQLException e) {
+                System.err.println("Closing Resources Error!");
+                e.printStackTrace();
+                return FAIL;
+            }
+        }
+        return SUCCESS;
+    }    
+    
 }

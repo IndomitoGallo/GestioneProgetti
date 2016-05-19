@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -49,7 +50,7 @@ public class ProjectController {
      * @author Lorenzo Bernabei
      */
     @RequestMapping(value = "/projects", method = RequestMethod.GET)
-    public ResponseEntity<List<Project>> displayProjects(@RequestBody String sessionId){
+    public ResponseEntity<List<Project>> displayProjects(@RequestParam String sessionId){
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method displayProjects");
         List<Project> projects = new ArrayList<>();
         

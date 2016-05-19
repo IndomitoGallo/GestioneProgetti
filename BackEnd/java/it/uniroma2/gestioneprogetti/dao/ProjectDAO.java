@@ -1,4 +1,4 @@
-﻿package it.uniroma2.gestioneprogetti.dao;
+package it.uniroma2.gestioneprogetti.dao;
 
 import it.uniroma2.gestioneprogetti.domain.Project;
 import it.uniroma2.gestioneprogetti.domain.User;
@@ -369,6 +369,7 @@ public class ProjectDAO implements IProjectDAO {
                 user.setSurname(surname);
                 pms.add(user);
             }
+            users = new ArrayList<>();
             users.add(employees);
             users.add(pms);
         } catch (SQLException e) {
@@ -426,10 +427,15 @@ public class ProjectDAO implements IProjectDAO {
             }
             query = "select p.user from projectUser p where p.project=" + idProject;
             res = utilDB.query(stm, query);
-            List emp = Arrays.asList(employees);
+            
+            List<Integer> emp = new ArrayList<>();
+            for(int i = 0; i < employees.length; i++) {
+                emp.add(employees[i]);
+            }   
+            
             while (res.next()) {
                 if (!emp.contains(res.getInt(1))) {
-                    String delete = "delete from projectUser p where p.user=" + res.getInt(1);
+                    query = "delete from projectUser p where p.user=" + res.getInt(1);
                     if (utilDB.manipulate(stm, query) != 1) {
                         return FAIL;
                     }
@@ -457,23 +463,18 @@ public class ProjectDAO implements IProjectDAO {
     }
 
     /**
-     * Il metodo insertEmployeesAssociation
-     * associa i dipendenti ad un determinato progetto.
+     * Il metodo insertEmployeesAssociation associa i dipendenti ad un determinato progetto.
      * Restituisce SUCCESS nel caso in cui l'operazione ha esito positivo, FAIL altrimenti.
-     *
      * @param idProject int
      * @param employees int[]
      * @return String esito
      * @author Lorenzo Svezia
      */
-
     @Override
     public String insertEmployeesAssociation(int idProject, int[] employees) {
-
         LOGGER.log(Level.INFO, LAYERLBL + "insertEmployeesAssociation");
         Connection conn = null;
         Statement stm = null;
-
         try {
             conn = utilDB.createConnection();
             stm = utilDB.createStatement(conn);
@@ -481,10 +482,7 @@ public class ProjectDAO implements IProjectDAO {
             for (int id : employees) {
                 String insert = "INSERT INTO projectUser VALUES(" + id + "," + idProject + ",0);";
 		utilDB.manipulate(stm, insert);
-                }
             }
-
-
         } catch (SQLException e) {
             System.err.println("Close Resource Error!");
             e.printStackTrace();
@@ -507,7 +505,6 @@ public class ProjectDAO implements IProjectDAO {
         return SUCCESS;
     }
 
-
     /**
      * Il metodo retrieveEmployeesAssociation(int idProject) sfrutta i metodi
      * forniti dalla classe UtilDB per prelevare dal Database le associazioni di
@@ -518,6 +515,7 @@ public class ProjectDAO implements IProjectDAO {
      * @return int[] array con gli id dei utenti
      * @author Davide Vitiello
      */
+    @Override
     public int[] retrieveEmployeesAssociation(int idProject) {
         LOGGER.log(Level.INFO, LAYERLBL + "Retrieve project-employees association");
         Connection conn = null;

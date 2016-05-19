@@ -5,13 +5,15 @@ import it.uniroma2.gestioneprogetti.domain.User;
 import java.util.List;
 
 public interface IProjectDAO {  
-    public List<Project> displayProjects();
-    public String insertProject(Project project);
-    public String updateProject(Project project);
-    public String deleteProject(Project project);
-    public String retrieveProject(Project project);
-    public List<Project> displayPMProjects(int idPM);
-    public List<List<User>> displayPMsEmployees();
-    public String updateEmployeesAssociation(int idProject, int[] association);
-    public int[] retrieveEmployeesAssociation(int idProject);
+    List<Project> displayProjects();
+    String insertProject(Project project);
+    String updateProject(Project project);
+    String deleteProject(Project project);
+    String retrieveProject(Project project);
+    List<Project> displayPMProjects(int idPM);
+    List<List<User>> displayPMsEmployees();
+    String updateEmployeesAssociation(int idProject, int[] association);
+    String insertEmployeesAssociation(int idProject, int[] employees);
+    int[] retrieveEmployeesAssociation(int idProject);
+    
 }

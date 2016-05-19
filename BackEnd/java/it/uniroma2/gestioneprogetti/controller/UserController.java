@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -184,7 +185,7 @@ public class UserController {
      * @author Lorenzo Bernabei
      */
     @RequestMapping(value = "/users/{idUser}", method = RequestMethod.GET)
-    public ResponseEntity<UserProfilesBean> displayUser(@RequestBody String sessionId, @PathVariable("idUser") int idUser) {
+    public ResponseEntity<UserProfilesBean> displayUser(@RequestParam String sessionId, @PathVariable("idUser") int idUser) {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method displayUser");
 
         UserRQS request = new UserRQS();
@@ -220,7 +221,7 @@ public class UserController {
      * @author Davide Vitiello
      */
     @RequestMapping(value = "/users", method = RequestMethod.GET)
-    public ResponseEntity<List<User>> displayUsers(@RequestBody String sessionId) {
+    public ResponseEntity<List<User>> displayUsers(@RequestParam String sessionId) {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method displayUsers");
         EmptyRQS request = new EmptyRQS(); //Creo una richiesta vuota
         if (!SessionController.verify(sessionId)) //Se la sessione è expired

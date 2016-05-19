@@ -185,7 +185,7 @@ public class UserService implements IUserService {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio deleteUser");
         EmptyRES response = new EmptyRES();
         int idUser = request.getId();
-        String result = null;
+        String result;
         
         String profile = daoFactory.getUserDao().verifyProfiles(idUser);
         
@@ -206,7 +206,7 @@ public class UserService implements IUserService {
                 return response;            
             }
             
-            //result = daoFactory.getUserDao().deleteTimesheet(idUser);
+            result = daoFactory.getUserDao().deleteTimesheet(idUser);
             
             if (result.equals("FAIL")) {
                 response.setMessage(result);
@@ -216,7 +216,7 @@ public class UserService implements IUserService {
             }
         }
         else { //se l'utente è un PM controllo se ha progetti "in corso"
-            //result = daoFactory.getUserDao().verifyProjectsStatus(idUser);
+            result = daoFactory.getUserDao().verifyProjectsStatus(idUser);
             
             if (result.equals("FAIL")) {
                 response.setMessage(result);
@@ -236,7 +236,7 @@ public class UserService implements IUserService {
                 }
                 
                 if(profile.equals("DIPPM")) {
-                    //result = daoFactory.getUserDao().deleteTimesheet(idUser);
+                    result = daoFactory.getUserDao().deleteTimesheet(idUser);
 
                     if (result.equals("FAIL")) {
                         response.setMessage(result);

@@ -1,4 +1,4 @@
-﻿package it.uniroma2.gestioneprogetti.services;
+package it.uniroma2.gestioneprogetti.services;
 
 import it.uniroma2.gestioneprogetti.dao.IDAOFactory;
 import it.uniroma2.gestioneprogetti.domain.Project;
@@ -8,6 +8,7 @@ import it.uniroma2.gestioneprogetti.request.ProjectEmployeesRQS;
 import it.uniroma2.gestioneprogetti.request.ProjectRQS;
 import it.uniroma2.gestioneprogetti.response.EmptyRES;
 import it.uniroma2.gestioneprogetti.response.FindProjectsRES;
+import it.uniroma2.gestioneprogetti.response.PMsEmployeesRES;
 import it.uniroma2.gestioneprogetti.response.ProjectEmployeesRES;
 import it.uniroma2.gestioneprogetti.response.ProjectFormRES;
 import it.uniroma2.gestioneprogetti.response.ProjectRES;
@@ -184,25 +185,25 @@ public class ProjectService implements IProjectService {
      * soltanto per convenzione. Inizializza una lista di employees che viene riempita dal 
      * metodo displayPMsEmployees dello strato "Domain" e poi viene inizializzato 
      * l'oggetto PMsEmployeesRES tramite la lista precedentemente riempita e restituito in output.
-     *
      * @param request EmptyRQS
      * @return PMsEmployeesRES response
      * @author Lorenzo Svezia
      */
-
     @Override
     public PMsEmployeesRES displayPMsEmployees(EmptyRQS request){
-
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio displayPMsEmployees");
 
-        List<PMsEmployees> PMsEmployeesList=daoFactory.getProjectDao().displayPMsEmployees();
+        List<List<User>> pmsEmployeesList = daoFactory.getProjectDao().displayPMsEmployees();
 
         PMsEmployeesRES response = new PMsEmployeesRES();
-
-        if(PMsEmployeesList==null){
+        List<UserRES> employeesListRES = new ArrayList<>();
+        List<UserRES> pmsListRES = new ArrayList<>();
+        
+        if(pmsEmployeesList == null){
             response.setMessage("FAIL");
             response.setErrorCode("1");
             response.setEsito(false);
+            return response;
         }
         else {
             response.setMessage("SUCCESS");
@@ -210,13 +211,25 @@ public class ProjectService implements IProjectService {
             response.setEsito(true);           
         }
 
-        List<ProjectEmployeesRES> projectEmployeesRESList = new ArrayList<>();
-        for (PMsEmployees pme : PMsEmployeesList){
-            ProjectEmployeesRES projectEmployeesRES= new ProjectEmployeesRES(pme.getProject(),pme.getEmployees);
-            projectEmployeesRESList.add(projectEmployeesRES);
+        List<User> employeesList = pmsEmployeesList.get(0);
+        List<User> pmsList = pmsEmployeesList.get(1);
+        
+        for (User u : employeesList){
+            UserRES userRes = new UserRES(u.getId(), u.getUsername(), u.getPassword(),
+                                          u.getEmail(), u.getName(), u.getSurname(),
+                                          u.getSkill(), u.getIsDeactivated());
+            employeesListRES.add(userRes);
         }
-
-        response.setUsersList(ProjectEmployeesRESList);
+        for (User u : pmsList){
+            UserRES userRes = new UserRES(u.getId(), u.getUsername(), u.getPassword(),
+                                          u.getEmail(), u.getName(), u.getSurname(),
+                                          u.getSkill(), u.getIsDeactivated());
+            pmsListRES.add(userRes);
+        }
+        
+        response.setPmsList(pmsListRES);
+        response.setEmployeesList(employeesListRES);
+        
         return response;
     }
     

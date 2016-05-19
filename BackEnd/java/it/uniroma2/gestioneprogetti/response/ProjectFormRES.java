@@ -1,22 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.uniroma2.gestioneprogetti.response;
 
 import java.util.List;
 
-/**
- *
- * @author F.Camerlengo
- */
 public class ProjectFormRES extends AbstractRES {
     
     private ProjectRES project;
     private List<UserRES> employees;
     private List<UserRES> pms;
-    private int[] empolyeesAssociation;
+    private int[] employeesAssociation;
 
     public ProjectRES getProject() {
         return project;
@@ -43,11 +34,11 @@ public class ProjectFormRES extends AbstractRES {
     }
 
     public int[] getEmpolyeesAssociation() {
-        return empolyeesAssociation;
+        return employeesAssociation;
     }
 
-    public void setEmpolyeesAssociation(int[] empolyeesAssociation) {
-        this.empolyeesAssociation = empolyeesAssociation;
+    public void setEmpolyeesAssociation(int[] employeesAssociation) {
+        this.employeesAssociation = employeesAssociation;
     }
     
     
