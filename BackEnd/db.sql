@@ -105,14 +105,14 @@ INSERT INTO seniority VALUES(1, 'Junior', 0.0);
 INSERT INTO seniority VALUES(2, 'Middle', 0.0);	
 INSERT INTO seniority VALUES(3, 'Senior', 0.0);	
 /* user */
-INSERT INTO user VALUES(NULL, 'Admin', 'Amministratore', 'Admin', 'admin@gmail.com', 'admin', 'Non richiesto', false);
-INSERT INTO user VALUES(NULL, 'Ctrl', 'Controller', 'Controller', 'ctrl@gmail.com', 'controller', 'Non richiesto', false);
-INSERT INTO user VALUES(NULL, 'Luca', 'Talocci', 'IndomitoGallo', 'pippo@gmail.com', 'talocci', 'Non eccellente', true);
-INSERT INTO user VALUES(NULL, 'Lorenzo', 'Bernabei', 'LBernabei', 'pluto@gmail.com', 'bernabei', 'Forte', false);
-INSERT INTO user VALUES(NULL, 'Luca', 'Camerlengo', 'LukeCame', 'paperino@gmail.com', 'camerlengo', 'Bravo', false);
-INSERT INTO user VALUES(NULL, 'Davide', 'Vitiello', 'Dav33', 'minnie@gmail.com', 'vitiello', 'Non eccellente', false);
-INSERT INTO user VALUES(NULL, 'Lorenzo', 'Svezia', 'Aizevs', 'quo@gmail.com', 'svezia', 'Bravissimo', false);
-INSERT INTO user VALUES(NULL, 'Francesco', 'Gaudenzi', 'Gaudo', 'qua@gmail.com', 'gaudenzi', 'Il migliore', false);
+INSERT INTO user VALUES(NULL, 'Admin', 'Amministratore', 'Admin', 'admin@gmail.com', 'admin', 'Non richiesto', false, 3);
+INSERT INTO user VALUES(NULL, 'Ctrl', 'Controller', 'Controller', 'ctrl@gmail.com', 'controller', 'Non richiesto', false, 3);
+INSERT INTO user VALUES(NULL, 'Luca', 'Talocci', 'IndomitoGallo', 'pippo@gmail.com', 'talocci', 'Non eccellente', true, 2);
+INSERT INTO user VALUES(NULL, 'Lorenzo', 'Bernabei', 'LBernabei', 'pluto@gmail.com', 'bernabei', 'Forte', false, 3);
+INSERT INTO user VALUES(NULL, 'Luca', 'Camerlengo', 'LukeCame', 'paperino@gmail.com', 'camerlengo', 'Bravo', false, 1);
+INSERT INTO user VALUES(NULL, 'Davide', 'Vitiello', 'Dav33', 'minnie@gmail.com', 'vitiello', 'Non eccellente', false, 2);
+INSERT INTO user VALUES(NULL, 'Lorenzo', 'Svezia', 'Aizevs', 'quo@gmail.com', 'svezia', 'Bravissimo', false, 1);
+INSERT INTO user VALUES(NULL, 'Francesco', 'Gaudenzi', 'Gaudo', 'qua@gmail.com', 'gaudenzi', 'Il migliore', false, 3);
 /* profileUser */
 INSERT INTO profileUser VALUES(1, 1);
 INSERT INTO profileUser VALUES(2, 2);
