@@ -6,8 +6,10 @@ import java.util.Calendar;
         
 /**
  * Classe che gestisce le sessioni degli utenti connessi all'applicazione
- * tramite una mappa di valori numerici identificativi della sessione stessa con la data
- * e l'ora del login.
+ * tramite due mappe:
+ * la prima con valori alfanumerici identificativi della sessione stessa insieme a data
+ * e ora del login;
+ * la seconda con lo stesso valore alfanumerico, ma con l'id dell'utente loggato. 
  * Per evitare che lo stesso utente, loggandosi più volte, lasci per un tempo indefinito
  * questi id nella mappa, periodicamente avviene un controllo sul tempo di permanenza degli
  * id. Se supera le 2 ore, la sessione viene brutalmente chiusa.
@@ -16,34 +18,38 @@ import java.util.Calendar;
  */
 public class SessionController {
     
-    public static HashMap<String,Calendar> sessions = new HashMap<>();
+    private static HashMap<String,Calendar> sessionTime = new HashMap<>();
+    private static HashMap<String,Integer> sessionUser = new HashMap<>();
     
     /**
-     * Il metodo add() crea un id di sessione rappresentato da una stringa alfanumerica che
-     * viene inserita come chiave della mappa, insieme alla data e all'ora correnti.
+     * Il metodo add(int userId) crea un id di sessione rappresentato da una stringa alfanumerica che
+     * viene inserita come chiave delle mappe, insieme alla data e all'ora correnti e all'id dell'utente.
      * L'id di sessione generato viene poi restituito al Controller che ha invocato tale metodo.
      * Nota: prima di creare la nuova sessione viene effettuato il controllo sulla durata della
      * permanenza delle altre sessioni, chiamando il metodo expire.
+     * @param userId int id dell'utente
      * @return String id della sessione 
      * @author Luca Talocci, Lorenzo Bernabei
      */
-    public static String add() {
+    public static String add(int userId) {
         expire();
         String sessionId = RandomStringUtils.randomAlphanumeric(20);
-        sessions.put(sessionId, Calendar.getInstance());
+        sessionTime.put(sessionId, Calendar.getInstance());
+        sessionUser.put(sessionId, userId);
         return sessionId;
         
     }
     
     /**
      * Il metodo remove(String sessionId) riceve in ingresso l'id di sessione dell'utente
-     * che vuole fare logout e cancella dalla mappa l'id di sessione in modo da chiuderla
+     * che vuole fare logout e cancella dalle mappe l'id di sessione in modo da chiuderla
      * definitivamente.
      * @param sessionId String id di sessione dell'utente che vuole fare logout
      * @author Luca Talocci, Lorenzo Bernabei
      */
     public static void remove(String sessionId) {        
-        sessions.remove(sessionId);        
+        sessionTime.remove(sessionId);  
+        sessionUser.remove(sessionId);
     }
     
     /**
@@ -55,20 +61,22 @@ public class SessionController {
      * @author Luca Talocci, Lorenzo Bernabei
      */
     public static boolean verify(String sessionId) {        
-        return sessions.containsKey(sessionId);       
+        return sessionTime.containsKey(sessionId) && sessionUser.containsKey(sessionId);       
     }
     
     /**
-     * Il metodo expire() itera sulla mappa e, se trova una sessione aperta da più di
-     * due ore, la chiude.
+     * Il metodo expire() itera sulle coppie della prima mappa e, se trova una sessione aperta da più di
+     * due ore, la chiude eliminando le coppie da entrambe le mappe.
      */
     private static void expire() {
-        for (HashMap.Entry<String,Calendar> pair : sessions.entrySet()) {
+        for (HashMap.Entry<String,Calendar> pair : sessionTime.entrySet()) {
             long timeNow = Calendar.getInstance().getTimeInMillis();
             long timeSession = pair.getValue().getTimeInMillis();
             long soglia = 7200000;
-            if((timeNow - timeSession) > soglia)
-                sessions.remove(pair.getKey());
+            if((timeNow - timeSession) > soglia) {
+                sessionTime.remove(pair.getKey());
+                sessionUser.remove(pair.getKey());
+            }
         }
     }
     

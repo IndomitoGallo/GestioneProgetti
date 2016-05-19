@@ -277,17 +277,17 @@ public class UserDAO implements IUserDAO {
      * Il metodo verifyLoginData(String user, String pwd, int profile) verifica
      * che i dati di Login inseriti dall'utente corrispondano ai dati immessi in
      * fase di registrazione dall'utente che deve effettuare l'accesso. Il
-     * valore di ritorno è "true" se i dati di login sono corretti, "false"
-     * altrimenti. In caso di eccezioni viene restituito fail.
+     * valore di ritorno è l'id dell'utente se i dati di login sono corretti, 0
+     * altrimenti. In caso di eccezioni viene restituito -1.
      *
      * @param user String lo username dell'utente
      * @param pwd String la password dell'utente
      * @param profile int il profilo con cui l'utente vuole accedere
-     * @return String esito della verifica
+     * @return int esito della verifica
      * @author Luca Talocci
      */
     @Override
-    public String verifyLoginData(String user, String pwd, int profile) {
+    public int verifyLoginData(String user, String pwd, int profile) {
         LOGGER.log(Level.INFO, LAYERLBL + "Verify user login data");
         Connection conn = null;
         Statement stmt = null;
@@ -300,17 +300,20 @@ public class UserDAO implements IUserDAO {
             //memorizzazione del risultato delle query in un ResultSet
             ResultSet rs1 = utilDB.query(stmt, sql1);
             if (!rs1.next()) {
-                return "data_fail"; //username o password passati in ingresso al metodo inesistenti
+                return 0; //username o password passati in ingresso al metodo inesistenti
             }            //Verifico che l'utente sia associato al profilo richiesto
             String sql2 = "SELECT * FROM profileUser WHERE user=" + rs1.getInt(1) + " AND profile=" + profile;
             ResultSet rs2 = utilDB.query(stmt, sql2);
             if (!rs2.next()) {
-                return "unauthorized_profile"; //il profilo richiesto non è associato all'utente
+                return 0; //il profilo richiesto non è associato all'utente
             }
+            //username e password passati in ingresso al metodo sono presenti nel database 
+            //e l'utente è associato al profilo richiesto
+            return rs1.getInt(1);
         } catch (SQLException e) {      //catch di un'eccezione proveniente dal DB         
             System.err.println("Database Error!");
             e.printStackTrace();
-            return FAIL;
+            return -1;
         } finally {
             try {
                 if (stmt != null) {
@@ -322,12 +325,9 @@ public class UserDAO implements IUserDAO {
             } catch (SQLException e) {
                 System.err.println("Closing Resources Error!");
                 e.printStackTrace();
-                return FAIL;
+                return -1;
             }
         }
-        //username e password passati in ingresso al metodo sono presenti nel database 
-        //e l'utente è associato al profilo richiesto
-        return "true";
     }
 
     /**

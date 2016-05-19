@@ -4,7 +4,7 @@ package it.uniroma2.gestioneprogetti.response;
  * String errorCode, String message ed boolean esito per tutte le classi RES.
  * @author Gruppo Talocci
  */
-public class AbstractRES {
+public abstract class AbstractRES {
 
     private String errorCode;
     private String message;

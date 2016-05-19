@@ -361,28 +361,28 @@ public class UserService implements IUserService {
      * contenuti nella request rispettino i vincoli necessari. Viene restituita
      * una response contenente: "FAIL" in caso di eccezioni, "false"
      * nel caso in cui i vincoli non sono stati rispettati e "SUCCESS" se i vincoli
-     * sono stati soddisfatti.
+     * sono stati soddisfatti. In caso di successo, viene restituito anche l'id dell'utente.
      * @param request UserRQS
-     * @return EmptyRES response
+     * @return UserRES response
      * @author L.Camerlengo
      */
     @Override
-    public EmptyRES verifyLoginData(UserRQS request) {
+    public UserRES verifyLoginData(UserRQS request) {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio verifyLoginData");
-        EmptyRES response = new EmptyRES();
+        UserRES response = new UserRES();
         String user = request.getUsername();
         String pass = request.getPassword();
         int profile = request.getProfile();
-        String result = daoFactory.getUserDao().verifyLoginData(user, pass, profile);
+        int result = daoFactory.getUserDao().verifyLoginData(user, pass, profile);
         
-        if (result.equals("false")) {
+        if (result == 0) {
             response.setMessage("false");
             response.setErrorCode("1");
             response.setEsito(false);
             return response;
         } 
-        if (result.equals("FAIL")) {
-            response.setMessage(result);
+        if (result == -1) {
+            response.setMessage("FAIL");
             response.setErrorCode("1");
             response.setEsito(false);
             return response;
@@ -391,6 +391,7 @@ public class UserService implements IUserService {
         response.setMessage("SUCCESS");
         response.setErrorCode("0");
         response.setEsito(true);
+        response.setId(result);
         return response;
     }
 }

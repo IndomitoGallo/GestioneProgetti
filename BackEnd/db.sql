@@ -38,7 +38,8 @@ CREATE TABLE profileUser (
 	ON UPDATE CASCADE,
 	FOREIGN KEY(profile) REFERENCES profile(id)
 	ON DELETE CASCADE
-	ON UPDATE CASCADE
+	ON UPDATE CASCADE,
+	PRIMARY KEY(user, profile)
 ) Engine=InnoDB;
 
 CREATE TABLE project (
@@ -63,7 +64,8 @@ CREATE TABLE projectUser (
 	ON UPDATE CASCADE,
 	FOREIGN KEY(project) REFERENCES project(id)
 	ON DELETE CASCADE
-	ON UPDATE CASCADE
+	ON UPDATE CASCADE,
+	PRIMARY KEY(user, project)
 ) Engine=InnoDB;
 
 CREATE TABLE absence (

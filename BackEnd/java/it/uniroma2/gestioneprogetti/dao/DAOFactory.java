@@ -28,8 +28,6 @@ public class DAOFactory implements IDAOFactory {
     IUserDAO userDao;
     @Autowired
     IProjectDAO projectDao;
-    @Autowired
-    ITimesheetDAO timesheetDao;
 
     /**
      *Restituisce un oggetto IUserDAO contenente un oggetto concreto UserDAO al suo interno.
@@ -49,16 +47,6 @@ public class DAOFactory implements IDAOFactory {
     public IProjectDAO getProjectDao() {
         LOGGER.log(Level.INFO, LAYERLBL + "Recupero ProjectDao");
         return projectDao;
-    }
-
-    /**
-     *Restituisce un oggetto ITimesheetDAO contenente un oggetto concreto TimesheetDAO al suo interno.
-     * @return ITimesheetDAO
-     */
-    @Override
-    public ITimesheetDAO getTimesheetDao() {
-        LOGGER.log(Level.INFO, LAYERLBL + "Recupero TimesheetDao");
-        return timesheetDao;
     }
 
 }

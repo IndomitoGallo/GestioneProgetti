@@ -4,7 +4,7 @@ package it.uniroma2.gestioneprogetti.request;
  * String message per tutte le classi RQS.
  * @author Gruppo Talocci
  */
-public class AbstractRQS {
+public abstract class AbstractRQS {
     
     private String message;
    

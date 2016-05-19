@@ -11,7 +11,7 @@ public interface IUserDAO {
     String deleteUser(User user);
     String retrieveUser(User user);
     String verifyCreationData(String user, String mail);
-    String verifyLoginData(String user, String pwd, int profile);
+    int verifyLoginData(String user, String pwd, int profile);
     String verifyUpdateData(int idUser, String user, String mail);
     String deactivateUser(int idUser);
     String insertProfilesAssociation(int idUser, int[] profiles);

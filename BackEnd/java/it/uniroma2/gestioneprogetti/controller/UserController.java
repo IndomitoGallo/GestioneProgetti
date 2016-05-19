@@ -258,12 +258,12 @@ public class UserController {
      * inserirà all'interno della richiesta HTTP un JSON contenente le credenziali
      * dell'utente.
      * Viene quindi creato l'oggetto UserRQS che incapsula la richiesta e viene memorizzata la
-     * response in un EmptyRES. Se la response restituita dal servizio del
+     * response in una UserRES contenente l'id dell'utente. Se la response restituita dal servizio del
      * livello sottostante contiene "SUCCESS", viene creata una sessione per
-     * l'utente che ha effettuato il Login e viene restituito l'HTTP status OK
-     * con l'id della sessione, altrimenti se la response contiene "false" lo
-     * status restituito è BAD_REQUEST e se contiente "FAIL" lo status
-     * restituito è SERVICE_UNAVAILABLE.
+     * l'utente che ha effettuato il Login all'interno della quale viene memorizzato il suo id;
+     * viene poi restituito l'HTTP status OK con l'id della sessione, 
+     * altrimenti se la response contiene "false" lo status restituito è BAD_REQUEST e 
+     * se contiente "FAIL" lo status restituito è SERVICE_UNAVAILABLE.
      *
      * @param loginData String un array con username, password e profilo
      * @return ResponseEntity response
@@ -281,14 +281,14 @@ public class UserController {
         request.setUsername(username);
         request.setPassword(password);
         request.setProfile(profile);
-        EmptyRES response = serviceFactory.getUserService().verifyLoginData(request);
+        UserRES response = serviceFactory.getUserService().verifyLoginData(request);
         if (response.getMessage().equals("FAIL")) {
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
         }
         if (response.getMessage().equals("false")) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        String sessionId = SessionController.add();
+        String sessionId = SessionController.add(response.getId());
         return new ResponseEntity<>(sessionId, HttpStatus.OK);
     }
 
