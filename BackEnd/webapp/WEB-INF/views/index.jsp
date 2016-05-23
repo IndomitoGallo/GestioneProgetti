@@ -1,10 +1,3 @@
-<%-- 
-    Document   : index
-    Created on : 19-mag-2016, 14.23.12
-    Author     : lucat
---%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>

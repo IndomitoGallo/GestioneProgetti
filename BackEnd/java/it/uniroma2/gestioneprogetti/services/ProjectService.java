@@ -9,7 +9,7 @@ import it.uniroma2.gestioneprogetti.request.ProjectRQS;
 import it.uniroma2.gestioneprogetti.response.EmptyRES;
 import it.uniroma2.gestioneprogetti.response.FindProjectsRES;
 import it.uniroma2.gestioneprogetti.response.PMsEmployeesRES;
-import it.uniroma2.gestioneprogetti.response.ProjectEmployeesRES;
+import it.uniroma2.gestioneprogetti.response.ProjectEmployeesHoursRES;
 import it.uniroma2.gestioneprogetti.response.ProjectFormRES;
 import it.uniroma2.gestioneprogetti.response.ProjectRES;
 import it.uniroma2.gestioneprogetti.response.UserRES;
@@ -69,7 +69,7 @@ public class ProjectService implements IProjectService {
             return response;
         }
         
-        //message = daoFactory.getProjectDao().insertEmployeesAssociation(project.getId(), employees);
+        message = daoFactory.getProjectDao().insertEmployeesAssociation(project.getId(), employees);
         
         if (message.equals("FAIL")) {
             /*Se viene inserito con successo il progetto ma non i dipendenti
@@ -121,7 +121,7 @@ public class ProjectService implements IProjectService {
             return response;
         }
         
-        //message = daoFactory.getProjectDao().updateEmployeesAssociation(project.getId(), employees);
+        message = daoFactory.getProjectDao().updateEmployeesAssociation(project.getId(), employees);
         
         if (message.equals("FAIL")) {
             response.setMessage(message);
@@ -140,17 +140,18 @@ public class ProjectService implements IProjectService {
      * Il metodo displayProject prende un oggetto ProjectRQS proveniente dallo strato "Application", 
      * ovvero quello del Controller, contenente solo l'id del progetto da visualizzare.
      * Questo metodo sfrutta i metodi forniti dallo strato "Domain" per effettuare la retrieve 
-     * del progetto e la retrieve dell'associazione con i dipendenti.
-     * L'esito dell'operazione viene memorizzato in un oggetto ProjectEmployeesRES all'interno del
+     * del progetto, la retrieve dell'associazione con i dipendenti e il totale delle ore lavorate
+     * e, infine, la retrieve del nome e del cognome del PM.
+     * L'esito dell'operazione viene memorizzato in un oggetto ProjectEmployeesHoursRES all'interno del
      * quale viene settato un messaggio di fallimento o successo.
      * @param request ProjectRQS oggetto che incapsula i dati della richiesta 
-     * @return ProjectEmployeesRES response
+     * @return ProjectEmployeesHoursRES response
      * @author Lorenzo Svezia, Luca Talocci
      */
     @Override
-    public ProjectEmployeesRES displayProject(ProjectRQS request) {
+    public ProjectEmployeesHoursRES displayProject(ProjectRQS request) {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio displayProject");
-        ProjectEmployeesRES response = new ProjectEmployeesRES();
+        ProjectEmployeesHoursRES response = new ProjectEmployeesHoursRES();
         
         Project project = new Project(request.getId(),request.getName(),request.getDescription(),
                                       request.getStatus(),request.getBudget(),request.getCost(),
@@ -164,9 +165,18 @@ public class ProjectService implements IProjectService {
             return response;
         }
         
-        int[] employees = null;//daoFactory.getProjectDao().retrieveEmployeesAssociation(project.getId());
+        List<List<Integer>> employeesHours = null; //daoFactory.getProjectDao().retrieveEmployeesAndHours(project.getId());
         
-        if (employees == null) {
+        if (employeesHours == null) {
+            response.setMessage("FAIL");
+            response.setErrorCode("1");
+            response.setEsito(false);
+            return response;
+        }
+        
+        String pmName = null; //daoFactory.getProjectDao().retrievePMName(project.getProjectManager());
+        
+        if (pmName.equals("FAIL")) {
             response.setMessage("FAIL");
             response.setErrorCode("1");
             response.setEsito(false);
@@ -177,7 +187,9 @@ public class ProjectService implements IProjectService {
                                                     project.getStatus(),project.getBudget(),project.getCost(),
                                                     project.getProjectManager());
         response.setProject(projectResponse);
-        response.setEmployees(employees);
+        response.setEmployees(employeesHours.get(0));
+        response.setHours(employeesHours.get(1));
+        response.setPmName(pmName);
         
         response.setMessage(result);
         response.setErrorCode("0");
@@ -334,21 +346,22 @@ public class ProjectService implements IProjectService {
         response.setEmpolyeesAssociation(employeesAssociation);
         return response;
     }
-    
+
     /**
      * Il metodo displayPMProjects prende un oggetto ProjectRQS proveniente
      * dallo strato "Application", ovvero quello del Controller, contenente solo
      * l'id di un projectManager.
-     * Questo metodo sfrutta i metodi forniti dallo strato
-     * "Domain" per effettuare il prelevamento dei progetti presenti nel database
-     * per il projectManager passato in ingresso. L'esito
-     * delle operazioni viene memorizzato in un oggetto FindProjectsRES
-     * all'interno del quale viene settato un messaggio di fallimento o di successo.
+     * Questo metodo sfrutta i metodi forniti dallo strato "Domain" per effettuare
+     * il prelevamento dei progetti presenti nel database per il projectManager
+     * passato in ingresso. L'esito delle operazioni viene memorizzato in un oggetto
+     * FindProjectsRES all'interno del quale viene settato un messaggio di fallimento
+     * o di successo.
      * 
      * @param request ProjectRQS
      * @return FindProjectRES response
      * @author L.Camerlengo
      */
+    @Override
     public FindProjectsRES displayPMProjects(ProjectRQS request) {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio displayPMProjects");
         int idPM = request.getProjectManager();
@@ -358,11 +371,13 @@ public class ProjectService implements IProjectService {
             response.setMessage("FAIL");
             response.setErrorCode("1");
             response.setEsito(false);
-        } else {
-            response.setMessage("SUCCESS");
-            response.setErrorCode("0");
-            response.setEsito(true);
-        }
+            return response;
+        } 
+        
+        response.setMessage("SUCCESS");
+        response.setErrorCode("0");
+        response.setEsito(true);
+
         List<ProjectRES> projectsRES = new ArrayList<>();
         for (Project p : projects) {
             ProjectRES project = new ProjectRES(p.getId(), p.getName(), p.getDescription(), p.getStatus(), p.getBudget(), p.getCost(), p.getProjectManager());
@@ -370,6 +385,6 @@ public class ProjectService implements IProjectService {
         }
         response.setProjectsList(projectsRES);
         return response;
-    }
+    }    
     
 }

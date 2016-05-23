@@ -4,7 +4,7 @@ import it.uniroma2.gestioneprogetti.domain.User;
 /**
  * La classe UserProfilesBean è utilizzata per incapsulare le richieste e le 
  * response HTTP che sono associate al Front-End.
- * Essa contiene le proprietà User "utente",int[] "profili" e String "id sessione". 
+ * Essa contiene le proprietà User "utente", int[] "profili" e String "id sessione".
  * @author Gruppo Talocci
  */
 public class UserProfilesBean {
@@ -35,7 +35,7 @@ public class UserProfilesBean {
     public void setProfiles(int[] profiles) {
         this.profiles = profiles;
     }
-    
+
     public String getSessionId() {
         return sessionId;
     }
@@ -43,4 +43,5 @@ public class UserProfilesBean {
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
+
 }

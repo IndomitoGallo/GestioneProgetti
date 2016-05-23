@@ -80,4 +80,14 @@ public class SessionController {
         }
     }
     
+    /**
+     * Il metodo getUserId(String sessionId) interroga la mappa sessionUser per
+     * ottenere l'id dell'utente associato ad un dato id di sessione.
+     * @param sessionId
+     * @return 
+     */
+    public static int getUserId(String sessionId) {
+        return sessionUser.get(sessionId);
+    }
+    
 }

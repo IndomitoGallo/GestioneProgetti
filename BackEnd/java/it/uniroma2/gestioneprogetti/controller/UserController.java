@@ -22,15 +22,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- *La classe UserController intercetta tutte le richieste del Front-End
- *che sono inerenti alla gestione degli utenti.
- *Essa si occupa quindi di gestire le richieste e chiamare i servizi della
- *classe UserService e fornire in risposta un messaggio HTTP contente in alcuni
- *casi un oggetto Model.
+ * La classe UserController intercetta tutte le richieste del Front-End
+ * che sono inerenti alla gestione degli utenti.
+ * Essa si occupa quindi di gestire le richieste e chiamare i servizi della
+ * classe UserService e fornire in risposta un messaggio HTTP contente in alcuni
+ * casi un oggetto Model.
  * @author Team Talocci
  */
+@RestController
 public class UserController {
 
     //Qui di seguito viene iniettata la dipendenza della ServiceFactory
@@ -205,8 +207,8 @@ public class UserController {
 
         UserRES userResponse = response.getUser();
         User user = new User(userResponse.getId(), userResponse.getUsername(), userResponse.getPassword(),
-                userResponse.getEmail(), userResponse.getName(), userResponse.getSurname(),
-                userResponse.getSkill(), userResponse.getIsDeactivated());
+                             userResponse.getEmail(), userResponse.getName(), userResponse.getSurname(),
+                             userResponse.getSkill(), userResponse.getIsDeactivated());
         UserProfilesBean upb = new UserProfilesBean(user, response.getProfiles());
         return new ResponseEntity<>(upb, HttpStatus.CREATED);
     }
