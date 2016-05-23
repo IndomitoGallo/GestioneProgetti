@@ -281,7 +281,7 @@ public class ProjectService implements IProjectService {
      * dipendenti e dei projectManager presenti nel database e la retrive degli
      * id dei dipendenti che lavorano al progetto passato in ingresso. L'esito
      * delle operazioni viene memorizzato in un oggetto ProjectFormRES
-     * all'interno del quale viene settato un messaggio di fallimento o
+     * all'interno del quale viene settato un messaggio di fallimento o di
      * successo.
      *
      * @param request ProjectRQS
@@ -334,5 +334,42 @@ public class ProjectService implements IProjectService {
         response.setEmpolyeesAssociation(employeesAssociation);
         return response;
     }
-
+    
+    /**
+     * Il metodo displayPMProjects prende un oggetto ProjectRQS proveniente
+     * dallo strato "Application", ovvero quello del Controller, contenente solo
+     * l'id di un projectManager.
+     * Questo metodo sfrutta i metodi forniti dallo strato
+     * "Domain" per effettuare il prelevamento dei progetti presenti nel database
+     * per il projectManager passato in ingresso. L'esito
+     * delle operazioni viene memorizzato in un oggetto FindProjectsRES
+     * all'interno del quale viene settato un messaggio di fallimento o di successo.
+     * 
+     * @param request ProjectRQS
+     * @return FindProjectRES response
+     * @author L.Camerlengo
+     */
+    public FindProjectsRES displayPMProjects(ProjectRQS request) {
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio displayPMProjects");
+        int idPM = request.getProjectManager();
+        FindProjectsRES response = new FindProjectsRES();
+        List<Project> projects = daoFactory.getProjectDao().displayPMProjects(idPM);
+        if (projects == null) {
+            response.setMessage("FAIL");
+            response.setErrorCode("1");
+            response.setEsito(false);
+        } else {
+            response.setMessage("SUCCESS");
+            response.setErrorCode("0");
+            response.setEsito(true);
+        }
+        List<ProjectRES> projectsRES = new ArrayList<>();
+        for (Project p : projects) {
+            ProjectRES project = new ProjectRES(p.getId(), p.getName(), p.getDescription(), p.getStatus(), p.getBudget(), p.getCost(), p.getProjectManager());
+            projectsRES.add(project);
+        }
+        response.setProjectsList(projectsRES);
+        return response;
+    }
+    
 }

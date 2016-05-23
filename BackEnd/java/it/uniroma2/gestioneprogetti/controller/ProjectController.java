@@ -2,12 +2,15 @@ package it.uniroma2.gestioneprogetti.controller;
 
 import it.uniroma2.gestioneprogetti.bean.ProjectEmployeesBean;
 import it.uniroma2.gestioneprogetti.domain.Project;
+import it.uniroma2.gestioneprogetti.domain.User;
 import it.uniroma2.gestioneprogetti.request.EmptyRQS;
 import it.uniroma2.gestioneprogetti.request.ProjectEmployeesRQS;
 import it.uniroma2.gestioneprogetti.request.ProjectRQS;
 import it.uniroma2.gestioneprogetti.response.EmptyRES;
 import it.uniroma2.gestioneprogetti.response.FindProjectsRES;
+import it.uniroma2.gestioneprogetti.response.PMsEmployeesRES;
 import it.uniroma2.gestioneprogetti.response.ProjectRES;
+import it.uniroma2.gestioneprogetti.response.UserRES;
 import it.uniroma2.gestioneprogetti.services.IServiceFactory;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +86,9 @@ public class ProjectController {
      * Angular inserira' all'interno della richiesta HTTP un JSON contenente: un oggetto di tipo Projecte e una
      * lista di numeri interi, ad indicare i dipendenti da associare con il futuro progetto.
      * Inoltre viene inserito anche l'id della sessione.
-     * Viene quindi creato l'oggetto ProjectEmployeesRQS per trasportare le informazioni verso lo 
+     * Come prima cosa viene verificato se l'utente ha una sessione attiva. In caso di esito negativo
+     * viene restituito l'HTTP status UNAUTHORIZED.
+     * Altrimenti Viene creato l'oggetto ProjectEmployeesRQS per trasportare le informazioni verso lo 
      * strato dei servizi e viene memorizzato l'esito dell'operazione in un'EmptyRES.
      * Se la response contiene "SUCCESS" viene restituito l'HTTP status OK,
      * altrimenti se la response contiene "false" lo status restituito e' BAD_REQUEST e se contiene "FAIL" lo
@@ -124,7 +129,9 @@ public class ProjectController {
      * Angular inserira' all'interno della richiesta HTTP un JSON contenente: un oggetto di tipo Project e una
      * lista di numeri interi, ad indicare i nuovi dipendenti da associare con il progetto.
      * Inoltre viene inserito anche l'id della sessione.
-     * Viene quindi creato l'oggetto ProjectEmployeesRQS per trasportare le informazioni verso lo 
+     * Come prima cosa viene verificato se l'utente ha una sessione attiva. In caso di esito negativo
+     * viene restituito l'HTTP status UNAUTHORIZED.
+     * Altrimenti viene creato l'oggetto ProjectEmployeesRQS per trasportare le informazioni verso lo 
      * strato dei servizi e viene memorizzato l'esito dell'operazione in un'EmptyRES.
      * Se la response contiene "SUCCESS" viene restituito l'HTTP status OK,
      * altrimenti se la response contiene "false" lo status restituito e' BAD_REQUEST e se contiente "FAIL" lo
@@ -157,6 +164,53 @@ public class ProjectController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         
         return new ResponseEntity(HttpStatus.CREATED);
+    }
+    
+    /**
+     * Il metodo displayPMsEmployees intercetta le richieste del Front-End per mostrare la lista di dipendenti e 
+     * project manager presenti all'interno del database, prendendo i valori che servono dal body della richiesta passato in ingresso.
+     * Angular inserira' all'interno della richiesta HTTP un JSON contenente l'id della sessione.
+     * Come prima cosa viene verificato se l'utente ha una sessione attiva. In caso di esito negativo
+     * viene restituito l'HTTP status UNAUTHORIZED.
+     * Altrimenti, viene creato l'oggetto EmpyRQS che rappresenta la richiesta priva di dati e viene
+     * chiamato l'appropriato servizio del livello sottostante e viene memorizzato l'esito in un oggetto PMsEmployeesRES.
+     * Se la response contiene "SUCCESS" viene restituita una risposta HTTP contenente lo status OK e la lista dei dipendenti
+     * e dei projectManager che verranno mappate in JSON tramite Angular,
+     * altrimenti se la response contiene "FAIL" viene ristituita una risposta HTTP contenente lo status SERVICE_UNAVAILABLE
+     * e un oggetto inizializzato a null.
+     * 
+     * @param sessionId String
+     * @return ResponseEntity<List<List<User>>> risposta HTTP
+     * @author L.Camerlengo
+     */
+    @RequestMapping(value = "/projects/pmemployees", method = RequestMethod.GET)
+    public ResponseEntity<List<List<User>>> displayPMsEmployees(@RequestParam String sessionId) {
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method displayPMsEmployees");
+        List<List<User>> users = null;
+        if (!SessionController.verify(sessionId)) {
+            return new ResponseEntity<>(users, HttpStatus.UNAUTHORIZED); //la sessione e' expired
+        }
+        EmptyRQS request = new EmptyRQS();
+        PMsEmployeesRES response = serviceFactory.getProjectService().displayPMsEmployees(request);
+        if (response.getMessage().equals("FAIL")) {
+            return new ResponseEntity<>(users, HttpStatus.SERVICE_UNAVAILABLE);
+        }
+        users = new ArrayList<>();
+        List<UserRES> employeesRES = response.getEmployeesList();
+        List<User> employees = new ArrayList<>();
+        for (UserRES u : employeesRES) {
+            User user = new User(u.getId(), u.getUsername(), u.getPassword(), u.getEmail(), u.getName(), u.getSurname(), u.getSkill(), u.getIsDeactivated());
+            employees.add(user);
+        }
+        List<UserRES> pmsRES = response.getPmsList();
+        List<User> pms = new ArrayList<>();
+        for (UserRES u : employeesRES) {
+            User user = new User(u.getId(), u.getUsername(), u.getPassword(), u.getEmail(), u.getName(), u.getSurname(), u.getSkill(), u.getIsDeactivated());
+            pms.add(user);
+        }
+        users.add(employees);
+        users.add(pms);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
 }

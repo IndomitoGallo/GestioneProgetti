@@ -13,7 +13,7 @@ import org.springframework.web.servlet.view.JstlView;
 @Configuration
 @EnableWebMvc
 @Import({DataBaseConfig.class})
-@ComponentScan(basePackages = "it.uniroma2.toh")
+@ComponentScan(basePackages = "it.uniroma2.gestioneprogetti")
 public class AngularJsSpringConfiguration extends WebMvcConfigurerAdapter{
      
     @Override
