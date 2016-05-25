@@ -231,6 +231,7 @@ public class ProjectService implements IProjectService {
             return response;
         }
         
+        List<List<Integer>> employeesHours = daoFactory.getProjectDao().retrieveEmployeesAndHours(project.getId());
         
         if (employeesHours == null) {
             response.setMessage("FAIL");
@@ -239,6 +240,7 @@ public class ProjectService implements IProjectService {
             return response;
         }
         
+        String pmName = daoFactory.getProjectDao().retrievePMName(project.getProjectManager());
         
         if (pmName.equals("FAIL")) {
             response.setMessage("FAIL");
