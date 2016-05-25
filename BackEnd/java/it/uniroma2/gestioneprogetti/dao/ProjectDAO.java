@@ -1,4 +1,4 @@
-package it.uniroma2.gestioneprogetti.dao;
+﻿package it.uniroma2.gestioneprogetti.dao;
 
 import it.uniroma2.gestioneprogetti.domain.Project;
 import it.uniroma2.gestioneprogetti.domain.User;
@@ -514,6 +514,59 @@ public class ProjectDAO implements IProjectDAO {
             }
         }
 
+        return SUCCESS;
+    }
+
+  /**
+     * Effettua l'operazione di retrieve, ovvero il recupero dei dati nel
+     * database del PM passato come argomento settando il nome.
+     * Restituisce SUCCESS se il recupero e il settaggio e'
+     * andato a buon fine, FAIL altrimenti.
+     *
+     * @param idPM id Project Manager
+     * @return String esito del recupero dei dati
+     * @author Lorenzo Svezia
+     */
+
+    @Override
+    public String retrievePMName(int idPM) {
+        LOGGER.log(Level.INFO, LAYERLBL + "retrieve PM name");
+
+        Connection conn = null;
+        Statement stm = null;
+
+        try {
+            conn = utilDB.createConnection();
+            stm = conn.createStatement();
+
+            String query = "SELECT name FROM user WHERE id="+ idPM +";";
+
+            ResultSet rs = utilDB.query(stm, query);
+
+            if (!rs.next()) {
+                return FAIL;
+            }
+
+            PM.setName(rs.getString(5));
+
+        } catch (SQLException e) {
+            System.err.println("Database Error!");
+            e.printStackTrace();
+            return FAIL;
+        } finally {
+            try {
+                if (stm != null) {
+                    utilDB.closeStatement(stm);
+                }
+                if (conn != null) {
+                    utilDB.closeConnection(conn);
+                }
+            } catch (SQLException e) {
+                System.err.println("Database Error!");
+                e.printStackTrace();
+                return FAIL;
+            }
+        }
         return SUCCESS;
     }
 
