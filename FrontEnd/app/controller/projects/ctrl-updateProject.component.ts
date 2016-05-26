@@ -59,7 +59,7 @@ export class CtrlUpdateProjectComponent implements OnInit {
         //Recupero l'id dell'utente da visualizzare
         this.projectId = this.routeParams.get('projectId');
         console.log("UpdateProject PROJECT: " + this.projectId);
-        //carico dal server le info dell'utente da visualizzare
+        //carico dal server le info del progetto da visualizzare
     }
 
 }

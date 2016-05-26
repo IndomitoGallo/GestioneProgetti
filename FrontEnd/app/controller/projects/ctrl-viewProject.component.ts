@@ -5,6 +5,7 @@ import { Router, RouteParams, ROUTER_DIRECTIVES } from 'angular2/router';
 import { User }       from '../../model/user';
 import { Profile }    from '../../model/profile';
 import { Project }    from '../../model/project';
+import { Employee }    from '../../model/employee';
 
 import { ControllerService } from '../controller.service';
 
@@ -29,10 +30,13 @@ export class CtrlViewProjectComponent implements OnInit {
     active: boolean = false;
 
     //Project data
+    //Project data
     project: Project;
+    dipendenti: User[];
+    hours: number[];
     projectManager: string;
-    employees: string;
-    hours: number;
+
+    employees: Employee[] = [];
 
     //Costruttore inizializzato con ControllerService e Router (Dependency Injection)
     constructor(private _ctrlService: ControllerService, private _router: Router, private routeParams: RouteParams) { }
@@ -48,17 +52,36 @@ export class CtrlViewProjectComponent implements OnInit {
         this._ctrlService.getProject(this.sessionId, this.projectId)
                          .subscribe(
                                projectEmployeesHours => {
-
-                                  this.project = projectEmployeesHours.project;
-                                  this.projectManager = projectEmployeesHours.pm;
-                                  this.employees = projectEmployeesHours.employees;
-                                  this.hours = projectEmployeesHours.hours;
-
-                                  this.active = true;
+                                   console.log("ResponseBody = " + JSON.stringify(projectEmployeesHours));
+                                   this.project = projectEmployeesHours.project;
+                                   this.dipendenti = projectEmployeesHours.employees;
+                                   this.projectManager = projectEmployeesHours.pmName;
+                                   this.hours = projectEmployeesHours.hours;
+                                   console.log("Project = " + JSON.stringify(this.project));
+                                   console.log("Dipendenti = " + JSON.stringify(this.dipendenti));
+                                   console.log("Hours = " + JSON.stringify(this.hours));
+                                   console.log("PM = " + JSON.stringify(this.projectManager));
+                                   this.parseEmployees();
+                                   console.log("Employees = " + JSON.stringify(this.employees));
+                                   this.active = true;
                                },
                                error =>  this.errorMessage = "Impossibile visualizzare le info del progetto selezionato"
                           );
 
+    }
+
+    /*
+     * Questa funzione serve a parsare i dipendenti e le ore lavorative passate dal server.
+     */
+    parseEmployees() {
+        var user: User;
+        var hour: number;
+        for(var i=0; i < this.dipendenti.length; i++) {
+            user = this.dipendenti.shift();
+            hour = this.hours.shift();
+            var employee = new Employee(user.name + user.surname, hour);
+            this.employees.push(employee);
+        }
     }
 
     /*

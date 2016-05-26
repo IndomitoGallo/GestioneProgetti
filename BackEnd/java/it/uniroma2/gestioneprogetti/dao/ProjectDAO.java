@@ -579,14 +579,16 @@ public class ProjectDAO implements IProjectDAO {
      */
     @Override
     public List<List<Object>> retrieveEmployeesAndHours(int idProject) {
-        LOGGER.log(Level.INFO, LAYERLBL + "displayPMsEmployees");
+        LOGGER.log(Level.INFO, LAYERLBL + "retrieveEmployeesAndHours");
         Connection conn = null;
         Statement stm = null;
         List<List<Object>> employeesAndHours = null;
         try {
             conn = utilDB.createConnection();
             stm = utilDB.createStatement(conn);
-            String sql1 = "select p.total_hours from projectUser p order by p.id asc";
+            String sql1 = "select total_hours from projectUser where project=" 
+                            + idProject 
+                            + " order by user asc";
             ResultSet rs1 = utilDB.query(stm, sql1);
             List<Object> hours = new ArrayList<>();
             while (rs1.next()) {
@@ -594,7 +596,9 @@ public class ProjectDAO implements IProjectDAO {
                 hours.add(totalHours);
             }
             List<Object> employees = new ArrayList<>();
-            String sql2 = "select * from user order by id asc";
+            String sql2 = "select u.* from user u, projectUser p where u.id=p.user and p.project=" 
+                            + idProject 
+                            + " order by u.id asc";
             ResultSet rs2 = utilDB.query(stm, sql2);
             while(rs2.next()) {
                 Object u = new User(rs2.getInt(1), rs2.getString(2), rs2.getString(3), 

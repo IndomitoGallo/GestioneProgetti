@@ -31,14 +31,14 @@ export class CtrlProjectsComponent implements OnInit {
     //Costruttore inizializzato con ControllerService e Router (Dependency Injection)
     constructor(private _ctrlService: ControllerService, private _router: Router, private routeParams: RouteParams) { }
 
-    displayProject(projectId) {
+    displayProject(projId) {
         //Il Controller viene reindirizzato alla pagina di visualizzazione di un progetto
-        this._router.navigate( ['ViewProject'] );
+        this._router.navigate( ['ViewProject', { sessionId : this.sessionId, projectId: projId }] );
     }
 
-    updateProject(projectId) {
+    updateProject(projId) {
         //Il Controller viene reindirizzato alla pagina di aggiornamento di un progetto
-        this._router.navigate( ['UpdateProject'] );
+        this._router.navigate( ['UpdateProject', { sessionId : this.sessionId, projectId: projId }] );
     }
 
     redirectCreation() {
@@ -54,7 +54,7 @@ export class CtrlProjectsComponent implements OnInit {
         this._ctrlService.getProjects(this.sessionId)
                          .subscribe(
                                projects  => this.projects = projects,
-                               error =>  this.errorMessage = <any>error
+                               error =>  this.errorMessage = "Errore durante il caricamento dei progetti"
                           );
     }
 

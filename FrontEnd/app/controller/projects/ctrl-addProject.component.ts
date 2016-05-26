@@ -1,4 +1,4 @@
-import { Component }           from 'angular2/core';
+import { Component, OnInit }           from 'angular2/core';
 import { HTTP_PROVIDERS }      from 'angular2/http';
 import { Router, RouteParams, ROUTER_DIRECTIVES } from 'angular2/router';
 
@@ -16,14 +16,16 @@ import { ControllerService }   from '../controller.service';
     providers: [ControllerService]
 })
 
-export class CtrlAddProjectComponent {
+export class CtrlAddProjectComponent implements OnInit {
 
     errorMessage: string;
 
-    //Costruttore inizializzato con ControllerService e Router (Dependency Injection)
-    constructor(private _router: Router) { }
+    sessionId: string;
 
     managers: User[];
+
+    //Costruttore inizializzato con ControllerService e Router (Dependency Injection)
+    constructor(private _ctrlService: ControllerService, private _router: Router, private routeParams: RouteParams) { }
 
     /*
      * La funzione addProject prende in input tutti i campi del form di creazione
@@ -35,8 +37,13 @@ export class CtrlAddProjectComponent {
         event.preventDefault();
 
         //Torno alla pagina principale dell'Amministratore
-        this._router.navigate( ['CtrlProjects'] );
+        this._router.navigate( ['CtrlProjects', {sessionId : this.sessionId}] );
 
+    }
+
+    ngOnInit() {
+        //Recupero l'id della sessione
+        this.sessionId = this.routeParams.get('sessionId');
     }
 
     /*

@@ -19,13 +19,14 @@ import { AdminUpdateUserComponent }   from './admin/admin-updateUser.component';
 import { ControllerComponent }        from './controller/controller.component';
 import { CtrlProjectsComponent }      from './controller/projects/ctrl-projects.component';
 import { CtrlAddProjectComponent }    from './controller/projects/ctrl-addProject.component';
-import { CtrlViewProjectComponent }    from './controller/projects/ctrl-viewProject.component';
-import { CtrlUpdateProjectComponent }    from './controller/projects/ctrl-updateProject.component';
+import { CtrlViewProjectComponent }   from './controller/projects/ctrl-viewProject.component';
+import { CtrlUpdateProjectComponent } from './controller/projects/ctrl-updateProject.component';
 import { CtrlEmployeesComponent }     from './controller/employees/ctrl-employees.component';
 //Employee's Workflows
 import { EmployeeComponent }          from './employee/employee.component';
 //ProjectManager's Workflows
 import { PMComponent }                from './pm/pm.component';
+import { ViewPMProjectComponent }     from './pm/viewProject.component';
 
 /*
  * Qui di seguito dichiariamo che il @Component AppComponent si riferisce al tag <my-app>,
@@ -73,7 +74,8 @@ import { PMComponent }                from './pm/pm.component';
     //Employee's Workflows
     {path:'/employee/:sessionId',                        name: 'Employee',      component: EmployeeComponent},
     //ProjectManager's Workflows
-    {path:'/pm/:sessionId',                              name: 'PM',            component: PMComponent}
+    {path:'/pm/:sessionId',                              name: 'PM',            component: PMComponent},
+    {path:'/pm/viewProject/:sessionId/:projectId',       name: 'ViewPMProject', component: ViewPMProjectComponent}
 ])
 
 export class AppComponent { }

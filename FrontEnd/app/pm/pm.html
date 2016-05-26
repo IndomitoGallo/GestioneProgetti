@@ -1,5 +1,25 @@
 <h2>PM's personal page</h2>
-<br><br>
-<p style="text-align: center;">
-    Work in progress: questa parte verrà implementata totalmente
-</p>
+
+<div class="container">
+    <p style="text-align: right;">
+        <button type="button" (click)="logout()" class="btn btn-primary custom-width">Logout</button>
+    </p>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="#project of projects">
+              <td> {{project.name}} </td>
+              <td width="20%">
+                  <button type="button" (click)="displayProject(project.id)" class="btn btn-info custom-width">Visualizza</button>
+              </td>
+            </tr>
+        </tbody>
+    </table>
+    <br><br>
+    <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
+</div>

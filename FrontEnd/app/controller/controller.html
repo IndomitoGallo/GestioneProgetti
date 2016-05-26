@@ -1,9 +1,11 @@
 <h2>Controller's personal page</h2>
 
-<ul class="pager">
-    <li><a (click)="goToProjects()">Visualizza Progetti</a></li>
-    <li><a (click)="goToUsers()">Visualizza Dipendenti</a></li>
-</ul>
-<p style="text-align: center;">
-  <button type="button" (click)="logout()" class="btn btn-primary custom-width">Logout</button>
-</p>
+<div class="container">
+    <p style="text-align: right;">
+        <button type="button" (click)="logout()" class="btn btn-primary custom-width">Logout</button>
+    </p>
+    <ul class="pager">
+        <li><a (click)="goToProjects()">Visualizza Progetti</a></li>
+        <li><a (click)="goToUsers()">Visualizza Dipendenti</a></li>
+    </ul>
+</div>

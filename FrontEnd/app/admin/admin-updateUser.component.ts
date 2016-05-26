@@ -114,7 +114,7 @@ export class AdminUpdateUserComponent implements OnInit {
                                }
                                //userProfiles  => this.userProfiles = userProfiles
                                ,
-                               error =>  this.errorMessage = <any>error
+                               error =>  this.errorMessage = "Errore durante il caricamento dei dati dell'utente"
                           );
     }
 

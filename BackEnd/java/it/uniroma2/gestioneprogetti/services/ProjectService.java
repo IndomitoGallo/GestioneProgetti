@@ -456,7 +456,6 @@ public class ProjectService implements IProjectService {
                                           u.getSkill(), u.getIsDeactivated());
             employees.add(userRes);
         }
-        response.setEmployees(employees);
         List<Integer> hours = new ArrayList<>();
         for(Object o : employeesHours.get(1)) {
             Integer i = (Integer) o;
