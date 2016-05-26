@@ -1,6 +1,9 @@
 <h2>Controller's personal page</h2>
 
 <ul class="pager">
-    <li><a [routerLink]="['CtrlProjects']">Visualizza Progetti</a></li>
-    <li><a [routerLink]="['CtrlEmployees']">Visualizza Dipendenti</a></li>
+    <li><a (click)="goToProjects()">Visualizza Progetti</a></li>
+    <li><a (click)="goToUsers()">Visualizza Dipendenti</a></li>
 </ul>
+<p style="text-align: center;">
+  <button type="button" (click)="logout()" class="btn btn-primary custom-width">Logout</button>
+</p>

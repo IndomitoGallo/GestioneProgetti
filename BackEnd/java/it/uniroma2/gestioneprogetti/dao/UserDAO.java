@@ -92,11 +92,11 @@ public class UserDAO implements IUserDAO {
             conn = utilDB.createConnection();	//connessione al DB
             stmt = conn.createStatement();	//creazione dello Statement
             //inserimento SQL
-            String sql = "INSERT INTO user VALUES(NULL, '" + user.getName() + "', '"
-                    + user.getSurname() + "', '"
-                    + user.getUsername() + "', '"
-                    + user.getEmail() + "', '"
+            String sql = "INSERT INTO user VALUES(NULL, '" + user.getUsername() + "', '"
                     + user.getPassword() + "', '"
+                    + user.getEmail() + "', '"
+                    + user.getName() + "', '"
+                    + user.getSurname() + "', '"
                     + user.getSkill() + "', "
                     + '0' + ", " //l'utente che viene creato all'inizio è attivo (non è 'deattivato')
                     + "NULL" // La seniority non è assegnata dall'amministratore
@@ -294,6 +294,7 @@ public class UserDAO implements IUserDAO {
         try {
             conn = utilDB.createConnection(); //connessione al DB
             stmt = conn.createStatement();  //creazione dello Statement
+            int userId; //id dell'utente che vuole loggarsi
             //SQL select
             String sql1 = "SELECT id FROM user WHERE username='" + user + "' AND "
                     + "password='" + pwd + "' AND isDeactivated=0";
@@ -302,6 +303,7 @@ public class UserDAO implements IUserDAO {
             if (!rs1.next()) {
                 return 0; //username o password passati in ingresso al metodo inesistenti
             }            //Verifico che l'utente sia associato al profilo richiesto
+            else userId = rs1.getInt(1);
             String sql2 = "SELECT * FROM profileUser WHERE user=" + rs1.getInt(1) + " AND profile=" + profile;
             ResultSet rs2 = utilDB.query(stmt, sql2);
             if (!rs2.next()) {
@@ -309,7 +311,7 @@ public class UserDAO implements IUserDAO {
             }
             //username e password passati in ingresso al metodo sono presenti nel database 
             //e l'utente è associato al profilo richiesto
-            return rs1.getInt(1);
+            return userId;
         } catch (SQLException e) {      //catch di un'eccezione proveniente dal DB         
             System.err.println("Database Error!");
             e.printStackTrace();
@@ -544,18 +546,18 @@ public class UserDAO implements IUserDAO {
         try {
             conn = utilDB.createConnection();	//connection to DB
             stmt = conn.createStatement();	//creazione dello Statement
-            //Query SQL
-            String sql1 = "SELECT profile FROM profileUser WHERE user=" + idUser;
-            ResultSet rs1 = utilDB.query(stmt, sql1);
             //Query SQL per sapere quanti profili sono associati all'utente
-            String sql2 = "SELECT COUNT(*) FROM profileUser WHERE user=" + idUser;
-            ResultSet rs2 = utilDB.query(stmt, sql2);
+            String sql1 = "SELECT COUNT(*) FROM profileUser WHERE user=" + idUser;
+            ResultSet rs1 = utilDB.query(stmt, sql1);
             //Riempio l'array passato in ingresso con i profili presi dal database
-            rs2.next();
-            int[] profiles = new int[rs2.getInt(1)];
+            rs1.next();
+            int[] profiles = new int[rs1.getInt(1)];
             int i = 0;
-            while (rs1.next()) {
-                profiles[i] = rs1.getInt(1);
+            //Query SQL
+            String sql2 = "SELECT profile FROM profileUser WHERE user=" + idUser;
+            ResultSet rs2 = utilDB.query(stmt, sql2);
+            while (rs2.next()) {
+                profiles[i] = rs2.getInt(1);
                 i++;
             }
             return profiles;

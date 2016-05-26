@@ -4,6 +4,7 @@ import { Router, RouteParams, ROUTER_DIRECTIVES } from 'angular2/router';
 
 import { User }       from '../../model/user';
 import { Profile }    from '../../model/profile';
+import { ControllerService }   from '../controller.service';
 
 /*
  * Qui di seguito dichiariamo il @Component CtrlAddProjectComponent,
@@ -11,7 +12,8 @@ import { Profile }    from '../../model/profile';
  */
 @Component({
     templateUrl: 'app/controller/projects/ctrl-addProject.html',
-    directives: [ ROUTER_DIRECTIVES ]
+    directives: [ ROUTER_DIRECTIVES ],
+    providers: [ControllerService]
 })
 
 export class CtrlAddProjectComponent {
@@ -20,12 +22,8 @@ export class CtrlAddProjectComponent {
 
     //Costruttore inizializzato con ControllerService e Router (Dependency Injection)
     constructor(private _router: Router) { }
-    
-    managers = [
-         new User(1, 'Nome', 'Cognome', 'IndomitoGallo', 'ciccio@example.it', 'pellicciaus', 'segaiolo', false),
-         new User(2, 'Nome', 'Cognome', 'LorenzoB', 'ciccio@example.it', 'pellicciaus', 'segaiolo', false),
-         new User(3, 'Nome', 'Cognome', 'Gaudo', 'ciccio@example.it', 'pellicciaus', 'segaiolo', true)
-    ];
+
+    managers: User[];
 
     /*
      * La funzione addProject prende in input tutti i campi del form di creazione
@@ -39,6 +37,14 @@ export class CtrlAddProjectComponent {
         //Torno alla pagina principale dell'Amministratore
         this._router.navigate( ['CtrlProjects'] );
 
+    }
+
+    /*
+     * Questa funzione viene attivata dal tasto "Torna Indietro" e riporta l'utente
+     * alla pagina precedentemente visualizzata.
+     */
+    goBack() {
+        window.history.back();
     }
 
 }

@@ -19,6 +19,8 @@ import { AdminUpdateUserComponent }   from './admin/admin-updateUser.component';
 import { ControllerComponent }        from './controller/controller.component';
 import { CtrlProjectsComponent }      from './controller/projects/ctrl-projects.component';
 import { CtrlAddProjectComponent }    from './controller/projects/ctrl-addProject.component';
+import { CtrlViewProjectComponent }    from './controller/projects/ctrl-viewProject.component';
+import { CtrlUpdateProjectComponent }    from './controller/projects/ctrl-updateProject.component';
 import { CtrlEmployeesComponent }     from './controller/employees/ctrl-employees.component';
 //Employee's Workflows
 import { EmployeeComponent }          from './employee/employee.component';
@@ -37,11 +39,9 @@ import { PMComponent }                from './pm/pm.component';
  */
 @Component({
     selector: 'my-app',
-    template: '<router-outlet></router-outlet>',
+    template: '<router-outlet [session] = "session"></router-outlet>',
     directives: [ ROUTER_DIRECTIVES ],
-    providers:  [ HTTP_PROVIDERS, ROUTER_PROVIDERS
-                  //, LoginService, AdminService, ControllerService, EmployeeService, PMService
-                ]
+    providers:  [ HTTP_PROVIDERS, ROUTER_PROVIDERS ]
 })
 
 /*
@@ -57,21 +57,23 @@ import { PMComponent }                from './pm/pm.component';
  */
 @RouteConfig([
     //Login
-    {path:'/',                                name: 'Login',               component: LoginComponent, useAsDefault: true},
+    {path:'/',                                           name: 'Login',         component: LoginComponent, useAsDefault: true},
     //Admin's Workflows
-    {path:'/admin',                           name: 'Admin',               component: AdminComponent},
-    {path:'/admin/addUser',                   name: 'AddUser',             component: AdminAddUserComponent},
-    {path:'/admin/viewUser',                  name: 'ViewUser',            component: AdminViewUserComponent},
-    {path:'/admin/updateUser',                name: 'UpdateUser',          component: AdminUpdateUserComponent},
+    {path:'/admin/:sessionId',                           name: 'Admin',         component: AdminComponent},
+    {path:'/admin/addUser/:sessionId',                   name: 'AddUser',       component: AdminAddUserComponent},
+    {path:'/admin/viewUser/:sessionId/:userId',          name: 'ViewUser',      component: AdminViewUserComponent},
+    {path:'/admin/updateUser/:sessionId/:userId',        name: 'UpdateUser',    component: AdminUpdateUserComponent},
     //Controller's Workflows
-    {path:'/controller',                      name: 'Controller',          component: ControllerComponent},
-    {path:'/controller/projects',             name: 'CtrlProjects',        component: CtrlProjectsComponent},
-    {path:'/controller/projects/addProject',  name: 'AddProject',          component: CtrlAddProjectComponent},
-    {path:'/controller/employees',            name: 'CtrlEmployees',       component: CtrlEmployeesComponent},
+    {path:'/controller/:sessionId',                      name: 'Controller',    component: ControllerComponent},
+    {path:'/controller/projects/:sessionId',             name: 'CtrlProjects',  component: CtrlProjectsComponent},
+    {path:'/controller/projects/addProject/:sessionId',  name: 'AddProject',    component: CtrlAddProjectComponent},
+    {path:'/controller/projects/viewProject/:sessionId/:projectId', name: 'ViewProject',    component: CtrlViewProjectComponent},
+    {path:'/controller/projects/updateProject/:sessionId/:projectId',  name: 'UpdateProject',    component: CtrlUpdateProjectComponent},
+    {path:'/controller/employees/:sessionId',            name: 'CtrlEmployees', component: CtrlEmployeesComponent},
     //Employee's Workflows
-    {path:'/employee',                        name: 'Employee',            component: EmployeeComponent},
+    {path:'/employee/:sessionId',                        name: 'Employee',      component: EmployeeComponent},
     //ProjectManager's Workflows
-    {path:'/pm',                              name: 'PM',                  component: PMComponent}
+    {path:'/pm/:sessionId',                              name: 'PM',            component: PMComponent}
 ])
 
 export class AppComponent { }

@@ -10,11 +10,11 @@ CREATE TABLE seniority (
 
 CREATE TABLE user (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(60) NOT NULL,
+    password VARCHAR(10) NOT NULL,
+    email VARCHAR(60) NOT NULL,
 	name VARCHAR(30) NOT NULL,
 	surname VARCHAR(30) NOT NULL,
-    username VARCHAR(60) NOT NULL,
-    email VARCHAR(60) NOT NULL,
-	password VARCHAR(10) NOT NULL,
 	skill VARCHAR(255) NOT NULL,
 	isDeactivated BOOLEAN NOT NULL,
 	seniority INT,
@@ -38,8 +38,7 @@ CREATE TABLE profileUser (
 	ON UPDATE CASCADE,
 	FOREIGN KEY(profile) REFERENCES profile(id)
 	ON DELETE CASCADE
-	ON UPDATE CASCADE,
-	PRIMARY KEY(user, profile)
+	ON UPDATE CASCADE
 ) Engine=InnoDB;
 
 CREATE TABLE project (
@@ -107,14 +106,14 @@ INSERT INTO seniority VALUES(1, 'Junior', 0.0);
 INSERT INTO seniority VALUES(2, 'Middle', 0.0);	
 INSERT INTO seniority VALUES(3, 'Senior', 0.0);	
 /* user */
-INSERT INTO user VALUES(NULL, 'Admin', 'Amministratore', 'Admin', 'admin@gmail.com', 'admin', 'Non richiesto', false, 3);
-INSERT INTO user VALUES(NULL, 'Ctrl', 'Controller', 'Controller', 'ctrl@gmail.com', 'controller', 'Non richiesto', false, 3);
-INSERT INTO user VALUES(NULL, 'Luca', 'Talocci', 'IndomitoGallo', 'pippo@gmail.com', 'talocci', 'Non eccellente', true, 2);
-INSERT INTO user VALUES(NULL, 'Lorenzo', 'Bernabei', 'LBernabei', 'pluto@gmail.com', 'bernabei', 'Forte', false, 3);
-INSERT INTO user VALUES(NULL, 'Luca', 'Camerlengo', 'LukeCame', 'paperino@gmail.com', 'camerlengo', 'Bravo', false, 1);
-INSERT INTO user VALUES(NULL, 'Davide', 'Vitiello', 'Dav33', 'minnie@gmail.com', 'vitiello', 'Non eccellente', false, 2);
-INSERT INTO user VALUES(NULL, 'Lorenzo', 'Svezia', 'Aizevs', 'quo@gmail.com', 'svezia', 'Bravissimo', false, 1);
-INSERT INTO user VALUES(NULL, 'Francesco', 'Gaudenzi', 'Gaudo', 'qua@gmail.com', 'gaudenzi', 'Il migliore', false, 3);
+INSERT INTO user VALUES(NULL, 'Admin', 'admin', 'admin@gmail.com', 'Amministratore', 'Admin', 'Non richiesto', false, 3);
+INSERT INTO user VALUES(NULL, 'Ctrl', 'controller', 'ctrl@gmail.com', 'Controller', 'Controller', 'Non richiesto', false, 3);
+INSERT INTO user VALUES(NULL, 'IndomitoGallo', 'talocci', 'pippo@gmail.com', 'Luca', 'Talocci', 'Non eccellente', true, 2);
+INSERT INTO user VALUES(NULL, 'LBernabei', 'bernabei', 'pluto@gmail.com', 'Lorenzo', 'Bernabei', 'Forte', false, 3);
+INSERT INTO user VALUES(NULL, 'LukeCame', 'camerlengo', 'paperino@gmail.com', 'Luca', 'Camerlengo', 'Bravo', false, 1);
+INSERT INTO user VALUES(NULL, 'Dav33', 'vitiello', 'minnie@gmail.com', 'Davide', 'Vitiello', 'Non eccellente', false, 2);
+INSERT INTO user VALUES(NULL, 'Aizevs', 'svezia', 'quo@gmail.com', 'Lorenzo', 'Svezia', 'Bravissimo', false, 1);
+INSERT INTO user VALUES(NULL, 'Gaudo', 'gaudenzi', 'qua@gmail.com', 'Francesco', 'Gaudenzi', 'Il migliore', false, 3);
 /* profileUser */
 INSERT INTO profileUser VALUES(1, 1);
 INSERT INTO profileUser VALUES(2, 2);

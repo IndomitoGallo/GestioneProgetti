@@ -15,5 +15,6 @@ public interface IProjectDAO {
     String updateEmployeesAssociation(int idProject, int[] association);
     String insertEmployeesAssociation(int idProject, int[] employees);
     int[] retrieveEmployeesAssociation(int idProject);
-    
+    List<List<Integer>> retrieveEmployeesAndHours(int idProject);
+    String retrievePMName(int idPM);
 }

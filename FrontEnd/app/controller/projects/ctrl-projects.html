@@ -20,7 +20,9 @@
             </tr>
         </tbody>
     </table>
+    <br><br>
+    <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
     <ul class="pager">
-        <li><a [routerLink]="['Controller']">Torna indietro</a></li>
+        <li><a (click)="goBack()">Torna indietro</a></li>
     </ul>
 </div>

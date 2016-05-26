@@ -1,4 +1,4 @@
-﻿package it.uniroma2.gestioneprogetti.dao;
+package it.uniroma2.gestioneprogetti.dao;
 
 import it.uniroma2.gestioneprogetti.domain.Project;
 import it.uniroma2.gestioneprogetti.domain.User;
@@ -15,13 +15,11 @@ import java.util.logging.Logger;
 import org.springframework.stereotype.Repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 /**
  * La classe ProjectDAO sfrutta i metodi della classe UtilDB per effettuare
  * operazioni sul database che riguardano i progetti. In questo modo tutte le
- * operazioni sul database riguardanti i progetti vengono incapsulate
- * esclusivamente all'interno di questa classe.
- *
+ * operazioni sul database riguardanti i progetti vengono incapsulate esclusivamente all'interno di questa
+ * classe.
  * @author Gruppo Talocci
  */
 @Repository("projectDAO")
@@ -333,7 +331,6 @@ public class ProjectDAO implements IProjectDAO {
      * altrimenti restituisce una List<List<User>> contente al suo interno due
      * List<User>, dove la prima lista contiene i dipendenti e la seconda
      * contiene i projectManager.
-     *
      * @return List<List<User>> dipendenti e projectManager
      * @author L.Camerlengo
      */
@@ -409,7 +406,6 @@ public class ProjectDAO implements IProjectDAO {
      * mantenute nel database soltanto le associazioni dei dipendenti il cui id
      * è contenuto all' interno dell'array passato in ingresso. Restituisce
      * SUCCESS nel caso in cui l'operazione ha esito positivo, FAIL altrimenti.
-     *
      * @param idProject int
      * @param employees int[]
      * @return String esito
@@ -437,12 +433,12 @@ public class ProjectDAO implements IProjectDAO {
             }
             query = "select p.user from projectUser p where p.project=" + idProject;
             res = utilDB.query(stm, query);
-
+            
             List<Integer> emp = new ArrayList<>();
-            for (int i = 0; i < employees.length; i++) {
+            for(int i = 0; i < employees.length; i++) {
                 emp.add(employees[i]);
-            }
-
+            }   
+            
             while (res.next()) {
                 if (!emp.contains(res.getInt(1))) {
                     query = "delete from projectUser p where p.user=" + res.getInt(1);
@@ -473,10 +469,8 @@ public class ProjectDAO implements IProjectDAO {
     }
 
     /**
-     * Il metodo insertEmployeesAssociation associa i dipendenti ad un
-     * determinato progetto. Restituisce SUCCESS nel caso in cui l'operazione ha
-     * esito positivo, FAIL altrimenti.
-     *
+     * Il metodo insertEmployeesAssociation associa i dipendenti ad un determinato progetto.
+     * Restituisce SUCCESS nel caso in cui l'operazione ha esito positivo, FAIL altrimenti.
      * @param idProject int
      * @param employees int[]
      * @return String esito
@@ -493,7 +487,7 @@ public class ProjectDAO implements IProjectDAO {
 
             for (int id : employees) {
                 String insert = "INSERT INTO projectUser VALUES(" + id + "," + idProject + ",0);";
-                utilDB.manipulate(stm, insert);
+		utilDB.manipulate(stm, insert);
             }
         } catch (SQLException e) {
             System.err.println("Close Resource Error!");
@@ -514,59 +508,6 @@ public class ProjectDAO implements IProjectDAO {
             }
         }
 
-        return SUCCESS;
-    }
-
-  /**
-     * Effettua l'operazione di retrieve, ovvero il recupero dei dati nel
-     * database del PM passato come argomento settando il nome.
-     * Restituisce SUCCESS se il recupero e il settaggio e'
-     * andato a buon fine, FAIL altrimenti.
-     *
-     * @param idPM id Project Manager
-     * @return String esito del recupero dei dati
-     * @author Lorenzo Svezia
-     */
-
-    @Override
-    public String retrievePMName(int idPM) {
-        LOGGER.log(Level.INFO, LAYERLBL + "retrieve PM name");
-
-        Connection conn = null;
-        Statement stm = null;
-
-        try {
-            conn = utilDB.createConnection();
-            stm = conn.createStatement();
-
-            String query = "SELECT name FROM user WHERE id="+ idPM +";";
-
-            ResultSet rs = utilDB.query(stm, query);
-
-            if (!rs.next()) {
-                return FAIL;
-            }
-
-            PM.setName(rs.getString(5));
-
-        } catch (SQLException e) {
-            System.err.println("Database Error!");
-            e.printStackTrace();
-            return FAIL;
-        } finally {
-            try {
-                if (stm != null) {
-                    utilDB.closeStatement(stm);
-                }
-                if (conn != null) {
-                    utilDB.closeConnection(conn);
-                }
-            } catch (SQLException e) {
-                System.err.println("Database Error!");
-                e.printStackTrace();
-                return FAIL;
-            }
-        }
         return SUCCESS;
     }
 
@@ -623,7 +564,7 @@ public class ProjectDAO implements IProjectDAO {
             }
         }
     }
-
+    
     /**
      * Il metodo retrieveEmployeesAndHoursdisplayPMsEmployees(int idProject)
      * seleziona gli utenti e le rispettive ore dedicate ad un progetti, in modo
@@ -680,5 +621,60 @@ public class ProjectDAO implements IProjectDAO {
         }
         return employeesAndHours;
     }
+    
+    /**
+     * Effettua l'operazione di retrieve, ovvero il recupero dei dati nel
+     * database del PM passato come argomento settando il nome.
+     * Restituisce SUCCESS se il recupero e il settaggio e'
+     * andato a buon fine, FAIL altrimenti.
+     *
+     * @param idPM id Project Manager
+     * @return String esito del recupero dei dati
+     * @author Lorenzo Svezia
+     */
+    @Override
+    public String retrievePMName(int idPM) {
+        LOGGER.log(Level.INFO, LAYERLBL + "retrieve PM name");
 
+        Connection conn = null;
+        Statement stm = null;
+        String PM;
+
+        try {
+            conn = utilDB.createConnection();
+            stm = conn.createStatement();
+
+            String query = "SELECT name FROM user WHERE id="+ idPM +";";
+
+            ResultSet rs = utilDB.query(stm, query);
+
+            if (!rs.next()) {
+                return FAIL;
+            }
+            
+            PM = rs.getString(5);
+            //PM.setName(rs.getString(5));
+
+        } catch (SQLException e) {
+            System.err.println("Database Error!");
+            e.printStackTrace();
+            return FAIL;
+        } finally {
+            try {
+                if (stm != null) {
+                    utilDB.closeStatement(stm);
+                }
+                if (conn != null) {
+                    utilDB.closeConnection(conn);
+                }
+            } catch (SQLException e) {
+                System.err.println("Database Error!");
+                e.printStackTrace();
+                return FAIL;
+            }
+        }
+        //return SUCCESS;
+        return PM;
+    }
+    
 }

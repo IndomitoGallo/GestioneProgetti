@@ -4,7 +4,7 @@ import { Router, ROUTER_DIRECTIVES } from 'angular2/router';
 
 import { Profile }             from '../model/profile';
 import { User }                from '../model/user';
-import { LoginService }       from './login.service';
+import { LoginService }        from './login.service';
 
 /*
  * Qui di seguito dichiariamo che il @Component AppComponent si riferisce al tag <my-app>,
@@ -12,7 +12,8 @@ import { LoginService }       from './login.service';
  */
 @Component({
     templateUrl: 'app/login/login-form.html',
-    directives: [ ROUTER_DIRECTIVES ]
+    directives: [ ROUTER_DIRECTIVES ],
+    providers: [LoginService]
 })
 
 /*
@@ -31,37 +32,41 @@ export class LoginComponent {
          new Profile(4, 'Project Manager')
     ];
 
-    user: User;
+    //sessionId = "sessione di prova";
+    sessionId: string;
 
     //Costruttore inizializzato con LoginService e Router (Dependency Injection)
-    constructor(/*private _loginService: LoginService,*/ private _router: Router) { }
+    constructor(private _loginService: LoginService, private _router: Router) { }
 
     //METODO DI LOGIN
     login(event, username: string, password: string, profile: number) {
 
         //La seguente riga di codice serve soltanto ad impedire il ricaricamento della pagina
         event.preventDefault();
+        //rendo visibile il router all'interno della funzione
+        var router = this._router;
 
-        /* PROCEDURA DI LOGIN
-        this._userService.login(username, password, profile)
+        // chiamata alla procedura di Login del Service
+        this._loginService.login(username, password, profile)
                          .subscribe(
-                               user  => this.user = user,
-                               error =>  this.errorMessage = <any>error
+                             function(session) {
+                                this.sessionId = session;
+                                console.log("SessionID = " + this.sessionId);
+                                if(profile == 1) {
+                                  router.navigate( ['Admin', { sessionId: this.sessionId }] );
+                                }
+                                if(profile == 2) {
+                                  router.navigate( ['Controller', { sessionId: this.sessionId }] );
+                                }
+                                if(profile == 3) {
+                                  router.navigate( ['Employee', { sessionId: this.sessionId }] );
+                                }
+                                if(profile == 4) {
+                                  router.navigate( ['PM', { sessionId: this.sessionId }] );
+                                }
+                             },
+                             error =>  this.errorMessage = "Verificare che i dati inseriti siano corretti"
                           );
-        */
-
-        if(profile == 1) {
-          this._router.navigate( ['Admin'] );
-        }
-        if(profile == 2) {
-          this._router.navigate( ['Controller'] );
-        }
-        if(profile == 3) {
-          this._router.navigate( ['Employee'] );
-        }
-        if(profile == 4) {
-          this._router.navigate( ['PM'] );
-        }
 
     }
 

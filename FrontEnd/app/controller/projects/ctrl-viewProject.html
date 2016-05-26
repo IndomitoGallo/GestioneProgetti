@@ -1,0 +1,22 @@
+<div class="container">
+
+    <h2>Visione Progetto</h2>
+    <!--href="#" -->
+    <div *ngIf="active" class="list-group">
+        <a class="list-group-item active"><strong>Nome:</strong> {{ project.name }}</a>
+        <a class="list-group-item"><strong>Descrizione:</strong> {{ project.description }}</a>
+        <a class="list-group-item"><strong>Status:</strong> {{ project.status }}</a>
+        <a class="list-group-item"><strong>Budget:</strong> {{ project.budget }}</a>
+        <a class="list-group-item"><strong>Cost:</strong> {{ project.cost }}</a>
+        <a class="list-group-item"><strong>Project Manager:</strong> {{ projectManager }}</a>
+        <a class="list-group-item"><strong>Dipendenti:</strong> {{ employees }}</a>
+        <a class="list-group-item"><strong>Totale ore spese:</strong> {{ hours }}</a>
+    </div>
+
+    <button class="btn btn-default" (click)="goBack()">
+        Torna Indietro
+    </button>
+    <br><br>
+    <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
+
+</div>

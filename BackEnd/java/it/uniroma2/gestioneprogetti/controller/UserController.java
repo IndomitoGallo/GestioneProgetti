@@ -60,7 +60,7 @@ public class UserController {
      * viene passata allo strato superiore
      * @author Davide Vitiello, Lorenzo Bernabei
      */
-    @RequestMapping(value = "/users", method = RequestMethod.POST)
+    @RequestMapping(value = "/addUser", method = RequestMethod.POST)
     public ResponseEntity insertUser(@RequestBody UserProfilesBean upb) {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method insertUser");
 
@@ -153,7 +153,7 @@ public class UserController {
      * @author Lorenzo Bernabei
      */
     @RequestMapping(value = "/users/{idUser}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteUser(@RequestBody String sessionId, @PathVariable("idUser") int idUser) {
+    public ResponseEntity deleteUser(@RequestParam String sessionId, @PathVariable("idUser") int idUser) {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method deleteUser");
 
         UserRQS request = new UserRQS();
@@ -271,13 +271,21 @@ public class UserController {
      * @return ResponseEntity response
      * @author L.Camerlengo
      */
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@RequestBody String[] loginData) {
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public ResponseEntity<String> login(/*@RequestBody String[] loginData*/
+                                            @RequestParam String user,
+                                            @RequestParam String pwd,
+                                            @RequestParam String prof
+                                        ) {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest user controller method login");
-
+        /*
         String username = loginData[0];
         String password = loginData[1];
         int profile = Integer.parseInt(loginData[2]);
+        */
+        String username = user;
+        String password = pwd;
+        int profile = Integer.parseInt(prof);
 
         UserRQS request = new UserRQS();
         request.setUsername(username);

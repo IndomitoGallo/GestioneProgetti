@@ -1,4 +1,4 @@
-    package it.uniroma2.gestioneprogetti.controller;
+package it.uniroma2.gestioneprogetti.controller;
 
 import it.uniroma2.gestioneprogetti.bean.ProjectEmployeesBean;
 import it.uniroma2.gestioneprogetti.bean.ProjectEmployeesHoursBean;
@@ -385,7 +385,6 @@ public class ProjectController {
      * @return ResponseEntity response contenente i dati del body e/o lo status HTTP
      * @author Davide Vitiello
      */
-    
     @RequestMapping(value = "/projects/{idProject}", method = RequestMethod.GET)
     public ResponseEntity<ProjectEmployeesHoursBean> displayProject(@RequestParam String sessionId, @PathVariable("idProject") int idProject){
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method displayProject");
@@ -412,4 +411,5 @@ public class ProjectController {
         
         return new ResponseEntity<>(pehb, HttpStatus.OK);   
     }
+    
 }

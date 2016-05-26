@@ -1,8 +1,9 @@
-import { Component }           from 'angular2/core';
+import { Component, OnInit, Input }           from 'angular2/core';
 import { HTTP_PROVIDERS }      from 'angular2/http';
 import { Router, RouteParams, ROUTER_DIRECTIVES } from 'angular2/router';
 
 import { User } from '../model/user';
+import { AdminService } from './admin.service';
 
 /*
  * Qui di seguito dichiariamo il @Component AdminComponent,
@@ -12,38 +13,76 @@ import { User } from '../model/user';
  */
 @Component({
     templateUrl: 'app/admin/admin.html',
-    directives: [ ROUTER_DIRECTIVES ]
+    directives: [ ROUTER_DIRECTIVES ],
+    providers: [AdminService]
 })
 
-export class AdminComponent {
+export class AdminComponent implements OnInit {
 
     errorMessage: string;
 
-    users = [
-         new User(1, 'Nome', 'Cognome', 'IndomitoGallo', 'ciccio@example.it', 'pellicciaus', 'segaiolo', false),
-         new User(2, 'Nome', 'Cognome', 'LorenzoB', 'ciccio@example.it', 'pellicciaus', 'segaiolo', false),
-         new User(3, 'Nome', 'Cognome', 'Gaudo', 'ciccio@example.it', 'pellicciaus', 'segaiolo', true),
-         new User(4, 'Nome', 'Cognome', 'Aizevs', 'ciccio@example.it', 'pellicciaus', 'segaiolo', true),
-         new User(3, 'Nome', 'Cognome', 'LukCame', 'ciccio@example.it', 'pellicciaus', 'segaiolo', false),
-         new User(4, 'Nome', 'Cognome', 'Dav33', 'ciccio@example.it', 'pellicciaus', 'segaiolo', false)
-    ];
+    sessionId: string;
+
+    users: User[];
 
     //Costruttore inizializzato con AdminService e Router (Dependency Injection)
-    constructor(private _router: Router) { }
+    constructor(private _adminService: AdminService, private _router: Router, private routeParams: RouteParams) { }
 
-    displayUser(userId) {
+    //displayUser
+    displayUser(id: number) {
+        console.log("L'utente da visualizzare ha id: " + id);
         //L'Amministratore viene reindirizzato alla pagina di visualizzazione di un utente
-        this._router.navigate( ['ViewUser'] );
+        this._router.navigate( ['ViewUser', { sessionId: this.sessionId, userId: id }] );
     }
 
-    updateUser(userId) {
+    //updateUser
+    updateUser(id) {
+        console.log("L'utente da aggiornare ha id: " + id);
         //L'Amministratore viene reindirizzato alla pagina di aggiornamento di un utente
-        this._router.navigate( ['UpdateUser'] );
+        this._router.navigate( ['UpdateUser', { sessionId: this.sessionId, userId: id }] );
     }
 
+    //deleteUser
+    deleteUser(id) {
+        console.log("L'utente da eliminare ha id: " + id);
+        //chiamata alla procedura deleteUser di AdminService
+        this._adminService.deleteUser(this.sessionId, id)
+                         .subscribe(
+                               esito => {
+                                 this._router.navigate( ['Admin', { sessionId: this.sessionId }] );
+                               },
+                               error =>  this.errorMessage = "Impossibile eliminare l'utente selezionato"
+                          );
+
+    }
+
+    //metodo che cambia la pagina in un form per la creazione di un nuovo utente
     redirectCreation() {
         //L'Amministratore viene reindirizzato alla pagina di creazione di un utente
-        this._router.navigate( ['AddUser'] );
+        this._router.navigate( ['AddUser', { sessionId: this.sessionId }] );
+    }
+
+    //logout
+    logout() {
+        this._adminService.logout(this.sessionId)
+                          .subscribe(
+                                esito => {
+                                  this._router.navigate( ['Login'] );
+                                },
+                                error => this.errorMessage = "Impossibile effettuare il Logout"
+                          );
+    }
+
+    //Metodo eseguito automaticamente quando si attiva tale componente
+    ngOnInit() {
+        //Recupero l'id della sessione
+        this.sessionId = this.routeParams.get('sessionId');
+        //carico dal server tutti gli utenti da visualizzare
+        this._adminService.getUsers(this.sessionId)
+                         .subscribe(
+                               users  => this.users = users,
+                               error =>  this.errorMessage = "Impossibile caricare la lista degli utenti"
+                          );
     }
 
 }

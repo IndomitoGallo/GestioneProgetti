@@ -2,7 +2,6 @@
 		<h2>Creazione Progetto</h2>
 
     <form id="addProject_form" name="addProject" #addProjectForm="ngForm">
-				<div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
 				<div class="form-group">
 						<label for="name">Name</label>
 		        <input #name="ngForm" type="text" class="form-control" id="name" name="name" placeholder="Name" required ngControl="name" maxlength="60"/>
@@ -47,6 +46,11 @@
         <button class="btn btn-default" (click)="addProject($event, name.value, description.value, budget.value);" [disabled]="!addProjectForm.form.valid">
 						Crea
 				</button>
+				<button class="btn btn-default" (click)="goBack()">
+						Torna Indietro
+				</button>
+				<br><br>
+				<div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
     </form>
 
 </div>

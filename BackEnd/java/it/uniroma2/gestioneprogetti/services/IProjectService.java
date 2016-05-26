@@ -18,5 +18,6 @@ public interface IProjectService {
     FindProjectsRES displayProjects(EmptyRQS request);
     ProjectFormRES displayProjectForm(ProjectRQS request);
     FindProjectsRES displayPMProjects(ProjectRQS request);
+    ProjectEmployeesHoursRES displayPMProject(ProjectRQS request);
     
 }

@@ -1,9 +1,12 @@
-import { Component }           from 'angular2/core';
+import { Component, OnInit }           from 'angular2/core';
 import { HTTP_PROVIDERS }      from 'angular2/http';
 import { Router, RouteParams, ROUTER_DIRECTIVES } from 'angular2/router';
 
 import { User }       from '../model/user';
 import { Profile }    from '../model/profile';
+import { UserProfiles } from '../model/userProfiles';
+
+import { AdminService } from './admin.service';
 
 /*
  * Qui di seguito dichiariamo il @Component AdminUpdateUserComponent,
@@ -11,22 +14,26 @@ import { Profile }    from '../model/profile';
  */
 @Component({
     templateUrl: 'app/admin/admin-updateUser.html',
-    directives: [ ROUTER_DIRECTIVES ]
+    directives: [ ROUTER_DIRECTIVES ],
+    providers: [AdminService]
 })
 
-export class AdminUpdateUserComponent {
+export class AdminUpdateUserComponent implements OnInit {
 
     errorMessage: string;
 
-    //utente di prova
-    user = new User(1, 'Luca', 'Talocci', 'IndomitoGallo', 'lucatalocci@gmail.com', 'ciccio', 'Nullafacente', false);
+    sessionId: string;
+    userId: string;
 
+    //utente di prova
+    user: User;
+    profiles: number[];
     //profili da scegliere per l'utente creato
     dipendente = false;
     pm = false;
 
     //Costruttore inizializzato con AdminService e Router (Dependency Injection)
-    constructor(private _router: Router) { }
+    constructor(private _adminService: AdminService, private _router: Router, private routeParams: RouteParams) { }
 
     /*
      * La funzione updateUser prende in input tutti i campi del form di creazione
@@ -52,7 +59,7 @@ export class AdminUpdateUserComponent {
             //Lancio il service associando l'utente a entrambi i profili
         }
         //Torno alla pagina principale dell'Amministratore
-        this._router.navigate( ['Admin'] );
+        this._router.navigate( ['Admin', {sessionId: this.sessionId}] );
 
     }
 
@@ -77,6 +84,38 @@ export class AdminUpdateUserComponent {
             else this.pm = true;
         }
 
+    }
+
+    /*
+     * Questa funzione viene attivata dal tasto "Torna Indietro" e riporta l'utente
+     * alla pagina precedentemente visualizzata.
+     */
+    goBack() {
+        window.history.back();
+    }
+
+    ngOnInit() {
+        //Recupero l'id della sessione
+        this.sessionId = this.routeParams.get('sessionId');
+        console.log("UpdateUser SESSION: " + this.sessionId);
+        //Recupero l'id dell'utente da visualizzare
+        this.userId = this.routeParams.get('userId');
+        console.log("UpdateUser USER: " + this.userId);
+        //carico dal server le info dell'utente da visualizzare
+        this._adminService.getUser(this.sessionId, this.userId)
+                         .subscribe(
+                               function(userProfiles) {
+                                  console.log("UserProfiles: " + JSON.stringify(userProfiles));
+                                  this.user = userProfiles.user;
+                                  this.profiles = userProfiles.profiles;
+                                  console.log("User: " + JSON.stringify(this.user));
+                                  console.log("Profiles: " + JSON.stringify(this.profiles));
+                                  console.log("Username: " + this.user.username);
+                               }
+                               //userProfiles  => this.userProfiles = userProfiles
+                               ,
+                               error =>  this.errorMessage = <any>error
+                          );
     }
 
 }

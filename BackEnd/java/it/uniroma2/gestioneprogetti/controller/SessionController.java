@@ -3,6 +3,7 @@ package it.uniroma2.gestioneprogetti.controller;
 import java.util.HashMap;
 import org.apache.commons.lang3.RandomStringUtils;
 import java.util.Calendar;
+import java.util.Random;
         
 /**
  * Classe che gestisce le sessioni degli utenti connessi all'applicazione
@@ -33,7 +34,10 @@ public class SessionController {
      */
     public static String add(int userId) {
         expire();
-        String sessionId = RandomStringUtils.randomAlphanumeric(20);
+        //String sessionId = RandomStringUtils.randomAlphanumeric(16);
+        Random random = new Random();
+        int prefix = random.nextInt(9) + 1;
+        String sessionId = prefix + RandomStringUtils.randomNumeric(9) + userId;
         sessionTime.put(sessionId, Calendar.getInstance());
         sessionUser.put(sessionId, userId);
         return sessionId;

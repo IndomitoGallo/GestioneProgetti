@@ -1,9 +1,12 @@
-import { Component }           from 'angular2/core';
+import { Component, OnInit }           from 'angular2/core';
 import { HTTP_PROVIDERS }      from 'angular2/http';
 import { Router, RouteParams, ROUTER_DIRECTIVES } from 'angular2/router';
 
 import { User }       from '../model/user';
 import { Profile }    from '../model/profile';
+import { UserProfiles } from '../model/userProfiles';
+
+import { AdminService } from './admin.service';
 
 /*
  * Qui di seguito dichiariamo il @Component AdminAddUserComponent,
@@ -11,19 +14,25 @@ import { Profile }    from '../model/profile';
  */
 @Component({
     templateUrl: 'app/admin/admin-addUser.html',
-    directives: [ ROUTER_DIRECTIVES ]
+    directives: [ ROUTER_DIRECTIVES ],
+    providers: [AdminService]
 })
 
-export class AdminAddUserComponent {
+export class AdminAddUserComponent implements OnInit {
 
     errorMessage: string;
+
+    sessionId: string;
+
+    userProfiles: UserProfiles;
+    user: User;
 
     //profili da scegliere per l'utente creato
     dipendente = false;
     pm = false;
 
     //Costruttore inizializzato con AdminService e Router (Dependency Injection)
-    constructor(private _router: Router) { }
+    constructor(private _adminService: AdminService, private _router: Router, private routeParams: RouteParams) { }
 
     /*
      * La funzione addUser prende in input tutti i campi del form di creazione
@@ -36,20 +45,45 @@ export class AdminAddUserComponent {
         //La seguente riga di codice serve soltanto ad impedire il ricaricamento della pagina
         event.preventDefault();
 
+        this.user = new User(0, username, pwd, email, name, surname, skill, false, 0);
+
         if(!this.dipendente && !this.pm) {
             this.errorMessage="Devi scegliere almeno un profilo tra quelli proposti";
         }
         else if(!this.dipendente && this.pm) {
             //Lancio il service associando l'utente al profilo PM
+            this.userProfiles = new UserProfiles(this.user, [4], this.sessionId);
+            this._adminService.addUser(this.userProfiles)
+                              .subscribe(
+                                  esito => {
+                                    this._router.navigate( ['Admin', { sessionId: this.sessionId }] );
+                                  },
+                                  error =>  this.errorMessage = "Errore durante la creazione dell'utente"
+                              );
+
         }
         else if(this.dipendente && !this.pm) {
             //Lancio il service associando l'utente al profilo Dipendente
+            this.userProfiles = new UserProfiles(this.user, [3], this.sessionId);
+            this._adminService.addUser(this.userProfiles)
+                              .subscribe(
+                                  esito => {
+                                    this._router.navigate( ['Admin', { sessionId: this.sessionId }] );
+                                  },
+                                  error =>  this.errorMessage = "Errore durante la creazione dell'utente"
+                              );
         }
         else if(this.dipendente && this.pm) {
             //Lancio il service associando l'utente a entrambi i profili
+            this.userProfiles = new UserProfiles(this.user, [3, 4], this.sessionId);
+            this._adminService.addUser(this.userProfiles)
+                              .subscribe(
+                                  esito => {
+                                    this._router.navigate( ['Admin', { sessionId: this.sessionId }] );
+                                  },
+                                  error =>  this.errorMessage = "Errore durante la creazione dell'utente"
+                              );
         }
-        //Torno alla pagina principale dell'Amministratore
-        this._router.navigate( ['Admin'] );
 
     }
 
@@ -74,6 +108,20 @@ export class AdminAddUserComponent {
             else this.pm = true;
         }
 
+    }
+
+    ngOnInit() {
+        //Recupero l'id della sessione
+        this.sessionId = this.routeParams.get('sessionId');
+        console.log("ViewUser SESSION: " + this.sessionId);
+    }
+
+    /*
+     * Questa funzione viene attivata dal tasto "Torna Indietro" e riporta l'utente
+     * alla pagina precedentemente visualizzata.
+     */
+    goBack() {
+        window.history.back();
     }
 
 }
