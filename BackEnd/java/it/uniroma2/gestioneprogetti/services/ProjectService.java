@@ -165,7 +165,7 @@ public class ProjectService implements IProjectService {
             return response;
         }
         
-        List<List<Integer>> employeesHours = daoFactory.getProjectDao().retrieveEmployeesAndHours(project.getId());
+        List<List<Object>> employeesHours = daoFactory.getProjectDao().retrieveEmployeesAndHours(project.getId());
         
         if (employeesHours == null) {
             response.setMessage("FAIL");
@@ -188,8 +188,21 @@ public class ProjectService implements IProjectService {
                                                     project.getProjectManager());
         
         response.setProject(projectResponse);
-        response.setEmployees(employeesHours.get(0));
-        response.setHours(employeesHours.get(1));
+        List<UserRES> employees = new ArrayList<>();
+        for (Object o : employeesHours.get(0)) {
+            User u = (User) o;
+            UserRES userRes = new UserRES(u.getId(), u.getUsername(), u.getPassword(),
+                                          u.getEmail(), u.getName(), u.getSurname(),
+                                          u.getSkill(), u.getIsDeactivated());
+            employees.add(userRes);
+        }
+        response.setEmployees(employees);
+        List<Integer> hours = new ArrayList<>();
+        for(Object o : employeesHours.get(1)) {
+            Integer i = (Integer) o;
+            hours.add(i);
+        }
+        response.setHours(hours);
         response.setPmName(pmName);
         
         response.setMessage(result);
@@ -420,7 +433,7 @@ public class ProjectService implements IProjectService {
             return response;
         }
         
-        List<List<Integer>> employeesHours = daoFactory.getProjectDao().retrieveEmployeesAndHours(project.getId());
+        List<List<Object>> employeesHours = daoFactory.getProjectDao().retrieveEmployeesAndHours(project.getId());
         
         if (employeesHours == null) {
             response.setMessage("FAIL");
@@ -434,8 +447,23 @@ public class ProjectService implements IProjectService {
                                                     project.getProjectManager());
 
         response.setProject(projectResponse);
-        response.setEmployees(employeesHours.get(0));
-        response.setHours(employeesHours.get(1));
+        
+        List<UserRES> employees = new ArrayList<>();
+        for (Object o : employeesHours.get(0)) {
+            User u = (User) o;
+            UserRES userRes = new UserRES(u.getId(), u.getUsername(), u.getPassword(),
+                                          u.getEmail(), u.getName(), u.getSurname(),
+                                          u.getSkill(), u.getIsDeactivated());
+            employees.add(userRes);
+        }
+        response.setEmployees(employees);
+        List<Integer> hours = new ArrayList<>();
+        for(Object o : employeesHours.get(1)) {
+            Integer i = (Integer) o;
+            hours.add(i);
+        }
+        response.setEmployees(employees);
+        response.setHours(hours);
         
         response.setMessage(result);
         response.setErrorCode("0");

@@ -49,7 +49,7 @@ public class UserDAO implements IUserDAO {
         try {
             conn = utilDB.createConnection();	//connessione al DB
             stmt = conn.createStatement();	//creazione dello Statement
-            String sql = "SELECT * FROM user";
+            String sql = "SELECT * FROM user where id > 2";
             //memorizzazione del risultato della query in un ResultSet
             ResultSet rs = utilDB.query(stmt, sql);
             //setto i campi dell'oggetto del dominio con i dati letti dal database
@@ -455,7 +455,7 @@ public class UserDAO implements IUserDAO {
         try {
             conn = utilDB.createConnection();
             stm = conn.createStatement();
-            String update = "UPDATE user set isDeactiveted=1 where id=" + idUser;
+            String update = "UPDATE user set isDeactivated=1 where id=" + idUser;
             int res = utilDB.manipulate(stm, update);
             if (res != 1) {
                 return FAIL;
@@ -655,15 +655,17 @@ public class UserDAO implements IUserDAO {
             conn = utilDB.createConnection();	//connection to DB
             stmt = conn.createStatement();	//creazione dello Statement
             String sql = "SELECT profile.name FROM profileUser, profile "
-                    + "WHERE profileUser.profile = profile.id"
-                    + "ORDER BY profile.name";
+                    + "WHERE profileUser.profile = profile.id AND profileUser.user=" + idUser
+                    + " ORDER BY profile.name";
             ResultSet rs = utilDB.query(stmt, sql);	//esecuzione del comando SQL
             while (rs.next()) {
                 if (rs.getString(1).equals("Dipendente")) {
                     result = result + "DIP";
+                    LOGGER.log(Level.INFO, LAYERLBL + " Hai scelto un dipendente --> " + result);
                 }
                 if (rs.getString(1).equals("Project Manager")) {
                     result = result + "PM";
+                    LOGGER.log(Level.INFO, LAYERLBL + " Hai scelto un pm --> " + result);
                 }
             }
         } catch (SQLException e) {	//il metodo intercetta un'eccezione proveniente dal DB	    	 
@@ -706,7 +708,7 @@ public class UserDAO implements IUserDAO {
         try {
             conn = utilDB.createConnection();	//connessione al DB
             stmt = conn.createStatement();	//creazione dello Statement
-            String sql = "SELECT status FROM project WHERE project_manager = " + idPM + ";";
+            String sql = "SELECT status FROM project WHERE project_manager = " + idPM;
             ResultSet rs = utilDB.query(stmt, sql);	//esecuzione del comando SQL
 
             while (rs.next()) {
@@ -754,12 +756,9 @@ public class UserDAO implements IUserDAO {
             conn = utilDB.createConnection();	//connessione al DB
             stmt = conn.createStatement();	//creazione dello Statement
             //SQL delete
-            String sql = "DELETE FROM timesheet WHERE user=" + idUser;
+            String sql = "DELETE FROM timesheetCell WHERE user=" + idUser;
             //esecuzione del comando SQL
-            if (utilDB.manipulate(stmt, sql) == 0) {
-                //se la query non ha interessato alcun record del DB, viene restituita una stringa di errore
-                return FAIL;
-            }
+            utilDB.manipulate(stmt, sql);
         } catch (SQLException e) { //il metodo intercetta un'eccezione proveniente dal DB	    	 
             System.err.println("Database Error!");
             e.printStackTrace();

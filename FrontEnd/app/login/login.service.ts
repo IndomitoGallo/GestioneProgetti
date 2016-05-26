@@ -9,9 +9,10 @@ export class LoginService {
     constructor (private http: Http) {}
 
     login (username: string, password: string, profile: number): Observable<string>  {
-        /*
+
         var loginData = [username, password, profile];
-        let body = JSON.stringify({ loginData });
+        let body = JSON.stringify(loginData);
+        //let body = [username, password, profile];
         console.log("RequestBody = " + body);
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
@@ -19,11 +20,12 @@ export class LoginService {
         return this.http.post(BackEndURL + '/login', body, options)
                         .map(this.extractData)
                         .catch(this.handleError);
-        */
+
+        /*
         return this.http.get(BackEndURL + '/login?user=' + username + '&pwd=' + password + '&prof=' + profile)
                         .map(this.extractData)
                         .catch(this.handleError);
-
+        */
     }
 
     /*

@@ -12,9 +12,9 @@ public interface IProjectDAO {
     String retrieveProject(Project project);
     List<Project> displayPMProjects(int idPM);
     List<List<User>> displayPMsEmployees();
-    String updateEmployeesAssociation(int idProject, int[] association);
+    String updateEmployeesAssociation(int idProject, int[] employees);
     String insertEmployeesAssociation(int idProject, int[] employees);
     int[] retrieveEmployeesAssociation(int idProject);
-    List<List<Integer>> retrieveEmployeesAndHours(int idProject);
+    List<List<Object>> retrieveEmployeesAndHours(int idProject);
     String retrievePMName(int idPM);
 }

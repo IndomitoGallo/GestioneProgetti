@@ -574,30 +574,34 @@ public class ProjectDAO implements IProjectDAO {
      * dipendenti e la seconda contiene le ore dedicate al progetto.
      *
      * @param idProject int id del progetto in questione
-     * @return List<List<Intenger> dipendenti e loro ore dedicate al progetto
+     * @return List<List<Object> dipendenti e loro ore dedicate al progetto
      * @author Davide Vitiello
      */
     @Override
-    public List<List<Integer>> retrieveEmployeesAndHours(int idProject) {
+    public List<List<Object>> retrieveEmployeesAndHours(int idProject) {
         LOGGER.log(Level.INFO, LAYERLBL + "displayPMsEmployees");
         Connection conn = null;
         Statement stm = null;
-        List<List<Integer>> employeesAndHours = null;
+        List<List<Object>> employeesAndHours = null;
         try {
             conn = utilDB.createConnection();
             stm = utilDB.createStatement(conn);
-            String query = "select p.user,p.total_hours from projectUser p order by id asc";
-
-            ResultSet rs = utilDB.query(stm, query);
-            List<Integer> employees = new ArrayList<>();
-            List<Integer> hours = new ArrayList<>();
-            while (rs.next()) {
-                Integer userId = rs.getInt(1);
-                Integer totalHours = new Integer(rs.getString(2));
-                employees.add(userId);
+            String sql1 = "select p.total_hours from projectUser p order by p.id asc";
+            ResultSet rs1 = utilDB.query(stm, sql1);
+            List<Object> hours = new ArrayList<>();
+            while (rs1.next()) {
+                Object totalHours = rs1.getInt(1);
                 hours.add(totalHours);
             }
-
+            List<Object> employees = new ArrayList<>();
+            String sql2 = "select * from user order by id asc";
+            ResultSet rs2 = utilDB.query(stm, sql2);
+            while(rs2.next()) {
+                Object u = new User(rs2.getInt(1), rs2.getString(2), rs2.getString(3), 
+                                  rs2.getString(4), rs2.getString(5), rs2.getString(6), 
+                                  rs2.getString(7), rs2.getBoolean(8));
+                employees.add(u);
+            }
             employeesAndHours = new ArrayList<>();
             employeesAndHours.add(employees);
             employeesAndHours.add(hours);

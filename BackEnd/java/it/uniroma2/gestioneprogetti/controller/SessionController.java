@@ -4,6 +4,8 @@ import java.util.HashMap;
 import org.apache.commons.lang3.RandomStringUtils;
 import java.util.Calendar;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
         
 /**
  * Classe che gestisce le sessioni degli utenti connessi all'applicazione
@@ -18,6 +20,9 @@ import java.util.Random;
  * @version 1.0
  */
 public class SessionController {
+    
+    private final static String LAYERLBL = "****SESSION CONTROLLER**** ";
+    private final static Logger LOGGER = Logger.getLogger(SessionController.class.getName());
     
     private static HashMap<String,Calendar> sessionTime = new HashMap<>();
     private static HashMap<String,Integer> sessionUser = new HashMap<>();
@@ -78,6 +83,7 @@ public class SessionController {
             long timeSession = pair.getValue().getTimeInMillis();
             long soglia = 7200000;
             if((timeNow - timeSession) > soglia) {
+                LOGGER.log(Level.INFO, " Ho appena eliminato l'id: " + pair.getKey());
                 sessionTime.remove(pair.getKey());
                 sessionUser.remove(pair.getKey());
             }

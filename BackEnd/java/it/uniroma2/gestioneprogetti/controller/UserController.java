@@ -271,22 +271,22 @@ public class UserController {
      * @return ResponseEntity response
      * @author L.Camerlengo
      */
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ResponseEntity<String> login(/*@RequestBody String[] loginData*/
-                                            @RequestParam String user,
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public ResponseEntity<String> login(@RequestBody String[] loginData
+                                            /*@RequestParam String user,
                                             @RequestParam String pwd,
-                                            @RequestParam String prof
+                                            @RequestParam String prof*/
                                         ) {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest user controller method login");
-        /*
+        
         String username = loginData[0];
         String password = loginData[1];
         int profile = Integer.parseInt(loginData[2]);
-        */
+        /*
         String username = user;
         String password = pwd;
         int profile = Integer.parseInt(prof);
-
+        */
         UserRQS request = new UserRQS();
         request.setUsername(username);
         request.setPassword(password);

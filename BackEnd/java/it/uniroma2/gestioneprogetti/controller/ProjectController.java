@@ -363,7 +363,14 @@ public class ProjectController {
         Project project = new Project(projectRes.getId(), projectRes.getName(), projectRes.getDescription(),
                                       projectRes.getStatus(), projectRes.getBudget(), projectRes.getCost(),
                                       projectRes.getProjectManager());
-        ProjectEmployeesHoursBean pehb = new ProjectEmployeesHoursBean(project, response.getEmployees(), response.getHours(), ""); //il nome del PM non viene specificato
+        List<User> employees = new ArrayList<>();
+        for(UserRES u : response.getEmployees()) {
+            User user = new User(u.getId(), u.getUsername(), u.getPassword(),
+                                 u.getEmail(), u.getName(), u.getSurname(),
+                                 u.getSkill(), u.getIsDeactivated());
+            employees.add(user);
+        }
+        ProjectEmployeesHoursBean pehb = new ProjectEmployeesHoursBean(project, employees, response.getHours(), ""); //il nome del PM non viene specificato
         
         return new ResponseEntity<>(pehb, HttpStatus.OK);                
     }
@@ -403,7 +410,16 @@ public class ProjectController {
         Project project = new Project(projectRes.getId(), projectRes.getName(), projectRes.getDescription(),
                                       projectRes.getStatus(), projectRes.getBudget(), projectRes.getCost(),
                                       projectRes.getProjectManager());
-        ProjectEmployeesHoursBean pehb = new ProjectEmployeesHoursBean(project, response.getEmployees(), response.getHours(), response.getPmName());
+        
+        List<User> employees = new ArrayList<>();
+        for(UserRES u : response.getEmployees()) {
+            User user = new User(u.getId(), u.getUsername(), u.getPassword(),
+                                 u.getEmail(), u.getName(), u.getSurname(),
+                                 u.getSkill(), u.getIsDeactivated());
+            employees.add(user);
+        }
+        
+        ProjectEmployeesHoursBean pehb = new ProjectEmployeesHoursBean(project, employees, response.getHours(), response.getPmName());
         
         return new ResponseEntity<>(pehb, HttpStatus.OK);   
     }

@@ -49,7 +49,13 @@ export class AdminComponent implements OnInit {
         this._adminService.deleteUser(this.sessionId, id)
                          .subscribe(
                                esito => {
-                                 this._router.navigate( ['Admin', { sessionId: this.sessionId }] );
+                                 //this._router.navigate( ['Admin', { sessionId: this.sessionId }] );
+                                 //carico dal server tutti gli utenti da visualizzare
+                                 this._adminService.getUsers(this.sessionId)
+                                                  .subscribe(
+                                                        users  => this.users = users,
+                                                        error =>  this.errorMessage = "Impossibile caricare la lista degli utenti"
+                                                   );
                                },
                                error =>  this.errorMessage = "Impossibile eliminare l'utente selezionato"
                           );

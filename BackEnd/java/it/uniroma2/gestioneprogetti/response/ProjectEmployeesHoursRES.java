@@ -4,7 +4,7 @@ import java.util.List;
 
 public class ProjectEmployeesHoursRES extends AbstractRES {
     private ProjectRES project;
-    private List<Integer> employees;
+    private List<UserRES> employees;
     private List<Integer> hours;
     private String pmName;
 
@@ -16,11 +16,11 @@ public class ProjectEmployeesHoursRES extends AbstractRES {
         this.project = project;
     }
 
-    public List<Integer> getEmployees() {
+    public List<UserRES> getEmployees() {
         return employees;
     }
 
-    public void setEmployees(List<Integer> employees) {
+    public void setEmployees(List<UserRES> employees) {
         this.employees = employees;
     }
 

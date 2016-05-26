@@ -1,18 +1,19 @@
 package it.uniroma2.gestioneprogetti.bean;
 
 import it.uniroma2.gestioneprogetti.domain.Project;
+import it.uniroma2.gestioneprogetti.domain.User;
 import java.util.List;
 
 public class ProjectEmployeesHoursBean {
     private Project project;
-    private List<Integer> employees;
+    private List<User> employees;
     private List<Integer> hours;
     private String pmName;
     
     public ProjectEmployeesHoursBean() {
     }
 
-    public ProjectEmployeesHoursBean(Project project, List<Integer> employees, List<Integer> hours, String pmName) {
+    public ProjectEmployeesHoursBean(Project project, List<User> employees, List<Integer> hours, String pmName) {
         this.project = project;
         this.employees = employees;
         this.hours = hours;
@@ -27,11 +28,11 @@ public class ProjectEmployeesHoursBean {
         this.project = project;
     }
 
-    public List<Integer> getEmployees() {
+    public List<User> getEmployees() {
         return employees;
     }
 
-    public void setEmployees(List<Integer> employees) {
+    public void setEmployees(List<User> employees) {
         this.employees = employees;
     }
 
