@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -486,7 +485,7 @@ public class ProjectDAO implements IProjectDAO {
             stm = utilDB.createStatement(conn);
 
             for (int id : employees) {
-                String insert = "INSERT INTO projectUser VALUES(" + id + "," + idProject + ",0);";
+                String insert = "INSERT INTO projectUser VALUES(" + id + "," + idProject + ",0)";
 		utilDB.manipulate(stm, insert);
             }
         } catch (SQLException e) {
@@ -566,7 +565,7 @@ public class ProjectDAO implements IProjectDAO {
     }
     
     /**
-     * Il metodo retrieveEmployeesAndHoursdisplayPMsEmployees(int idProject)
+     * Il metodo retrieveEmployeesAndHours(int idProject)
      * seleziona gli utenti e le rispettive ore dedicate ad un progetti, in modo
      * tale che l'utente Controller possa visualizzarli. Restituisce una
      * List<List<Integer>> inizializzata a null nel caso in cui l'operazione non
@@ -574,10 +573,11 @@ public class ProjectDAO implements IProjectDAO {
      * contente al suo interno due List<Integer>, dove la prima lista contiene i
      * dipendenti e la seconda contiene le ore dedicate al progetto.
      *
-     * @param int idProject id del progetto in questione
+     * @param idProject int id del progetto in questione
      * @return List<List<Intenger> dipendenti e loro ore dedicate al progetto
      * @author Davide Vitiello
      */
+    @Override
     public List<List<Integer>> retrieveEmployeesAndHours(int idProject) {
         LOGGER.log(Level.INFO, LAYERLBL + "displayPMsEmployees");
         Connection conn = null;
@@ -592,7 +592,7 @@ public class ProjectDAO implements IProjectDAO {
             List<Integer> employees = new ArrayList<>();
             List<Integer> hours = new ArrayList<>();
             while (rs.next()) {
-                Integer userId = new Integer(rs.getInt(1));
+                Integer userId = rs.getInt(1);
                 Integer totalHours = new Integer(rs.getString(2));
                 employees.add(userId);
                 hours.add(totalHours);
@@ -623,10 +623,9 @@ public class ProjectDAO implements IProjectDAO {
     }
     
     /**
-     * Effettua l'operazione di retrieve, ovvero il recupero dei dati nel
-     * database del PM passato come argomento settando il nome.
-     * Restituisce SUCCESS se il recupero e il settaggio e'
-     * andato a buon fine, FAIL altrimenti.
+     * Effettua l'operazione di retrieve, ovvero il recupero del nome
+     * e del cognome nel database del PM passato come argomento.
+     * Restituisce i dati se il recupero e' andato a buon fine, FAIL altrimenti.
      *
      * @param idPM id Project Manager
      * @return String esito del recupero dei dati
@@ -638,13 +637,13 @@ public class ProjectDAO implements IProjectDAO {
 
         Connection conn = null;
         Statement stm = null;
-        String PM;
+        String pmName = "";
 
         try {
             conn = utilDB.createConnection();
             stm = conn.createStatement();
 
-            String query = "SELECT name FROM user WHERE id="+ idPM +";";
+            String query = "SELECT name, surname FROM user WHERE id="+ idPM;
 
             ResultSet rs = utilDB.query(stm, query);
 
@@ -652,8 +651,7 @@ public class ProjectDAO implements IProjectDAO {
                 return FAIL;
             }
             
-            PM = rs.getString(5);
-            //PM.setName(rs.getString(5));
+            pmName = rs.getString(1) + " " + rs.getString(2);
 
         } catch (SQLException e) {
             System.err.println("Database Error!");
@@ -673,8 +671,8 @@ public class ProjectDAO implements IProjectDAO {
                 return FAIL;
             }
         }
-        //return SUCCESS;
-        return PM;
+        
+        return pmName;
     }
     
 }

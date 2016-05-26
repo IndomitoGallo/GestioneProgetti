@@ -165,7 +165,7 @@ public class ProjectService implements IProjectService {
             return response;
         }
         
-        List<List<Integer>> employeesHours = null; //daoFactory.getProjectDao().retrieveEmployeesAndHours(project.getId());
+        List<List<Integer>> employeesHours = daoFactory.getProjectDao().retrieveEmployeesAndHours(project.getId());
         
         if (employeesHours == null) {
             response.setMessage("FAIL");
@@ -174,7 +174,7 @@ public class ProjectService implements IProjectService {
             return response;
         }
         
-        String pmName = null; //daoFactory.getProjectDao().retrievePMName(project.getProjectManager());
+        String pmName = daoFactory.getProjectDao().retrievePMName(project.getProjectManager());
         
         if (pmName.equals("FAIL")) {
             response.setMessage("FAIL");
@@ -186,6 +186,7 @@ public class ProjectService implements IProjectService {
         ProjectRES projectResponse = new ProjectRES(project.getId(),project.getName(),project.getDescription(),
                                                     project.getStatus(),project.getBudget(),project.getCost(),
                                                     project.getProjectManager());
+        
         response.setProject(projectResponse);
         response.setEmployees(employeesHours.get(0));
         response.setHours(employeesHours.get(1));
@@ -389,7 +390,7 @@ public class ProjectService implements IProjectService {
     
     /** 
      * Il metodo displayPMProject prende un oggetto ProjectRQS proveniente dallo strato "Application", 
-     * ovvero quello del Controller, contenente l'id del progetto da visualizzare e l' id del relativo PM.
+     * ovvero quello del Controller, contenente l'id del progetto da visualizzare e l'id del relativo PM.
      * Questo metodo sfrutta i metodi forniti dallo strato "Domain" per effettuare la retrieve 
      * del progetto, la retrieve dell'associazione con i dipendenti, il totale delle ore lavorate
      * e, infine, la retrieve del nome e del cognome del PM.
@@ -427,16 +428,7 @@ public class ProjectService implements IProjectService {
             response.setEsito(false);
             return response;
         }
-        
-        String pmName = daoFactory.getProjectDao().retrievePMName(project.getProjectManager());
-        
-        if (pmName.equals("FAIL")) {
-            response.setMessage("FAIL");
-            response.setErrorCode("1");
-            response.setEsito(false);
-            return response;
-        }
-        
+                
         ProjectRES projectResponse = new ProjectRES(project.getId(),project.getName(),project.getDescription(),
                                                     project.getStatus(),project.getBudget(),project.getCost(),
                                                     project.getProjectManager());
@@ -444,7 +436,6 @@ public class ProjectService implements IProjectService {
         response.setProject(projectResponse);
         response.setEmployees(employeesHours.get(0));
         response.setHours(employeesHours.get(1));
-        response.setPmName(pmName);
         
         response.setMessage(result);
         response.setErrorCode("0");

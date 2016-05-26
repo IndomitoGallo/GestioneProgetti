@@ -100,7 +100,7 @@ public class UserDAO implements IUserDAO {
                     + user.getSkill() + "', "
                     + '0' + ", " //l'utente che viene creato all'inizio è attivo (non è 'deattivato')
                     + "NULL" // La seniority non è assegnata dall'amministratore
-                    + ");";
+                    + ")";
             utilDB.manipulate(stmt, sql);	//esecuzione del comando SQL
             sql = "SELECT id FROM user WHERE username='" + user.getUsername() + "'";
             ResultSet rs = utilDB.query(stmt, sql);

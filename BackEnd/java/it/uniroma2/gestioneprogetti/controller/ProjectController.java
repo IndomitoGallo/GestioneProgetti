@@ -354,7 +354,7 @@ public class ProjectController {
         request.setId(idProject);        
         request.setProjectManager(idPM);
         
-        ProjectEmployeesHoursRES response = null;//serviceFactory.getProjectService().displayPMProject(request);
+        ProjectEmployeesHoursRES response = serviceFactory.getProjectService().displayPMProject(request);
         
         if(!response.isEsito())
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE); 
@@ -371,9 +371,9 @@ public class ProjectController {
     /**
      * Il metodo displayProject viene chiamato dal ServletDispatcher per fare una retrieve del
      * progetto con id passato nell'url della richiesta. Oltre alle informazioni sul progetto 
-     * vengono anche recuperate le associazioni con i Dipendenti e
-     * il totale delle ore lavorate. La richiesta HTTP contiene l'id della sessione, che viene passato in 
-     * ingresso al metodo.
+     * vengono anche recuperate le associazioni con i Dipendenti e il totale delle ore lavorate
+     * oltre al nome e cognome del PM. La richiesta HTTP contiene l'id della sessione, che viene
+     * passato in ingresso al metodo.
      * Come prima cosa viene verificato se il Controller(utente) abbia una sessione attiva. 
      * In caso di esito negativo viene restituito l'HTTP status UNAUTHORIZED.
      * Altrimenti, viene creato l'oggetto ProjectRQS che rappresenta la richiesta con 
@@ -390,15 +390,11 @@ public class ProjectController {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method displayProject");
         
         if(!SessionController.verify(sessionId))
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        
-        
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);        
         
         ProjectRQS request = new ProjectRQS();  
         request.setId(idProject);
-        ProjectEmployeesHoursRES response = null;
-        response = serviceFactory.getProjectService().displayProject(request);
-       
+        ProjectEmployeesHoursRES response = serviceFactory.getProjectService().displayProject(request);       
         
         if(!response.isEsito())
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
@@ -407,7 +403,7 @@ public class ProjectController {
         Project project = new Project(projectRes.getId(), projectRes.getName(), projectRes.getDescription(),
                                       projectRes.getStatus(), projectRes.getBudget(), projectRes.getCost(),
                                       projectRes.getProjectManager());
-        ProjectEmployeesHoursBean pehb = new ProjectEmployeesHoursBean(project, response.getEmployees(), response.getHours(), response.getPmName()); //il nome del PM non viene specificato
+        ProjectEmployeesHoursBean pehb = new ProjectEmployeesHoursBean(project, response.getEmployees(), response.getHours(), response.getPmName());
         
         return new ResponseEntity<>(pehb, HttpStatus.OK);   
     }
