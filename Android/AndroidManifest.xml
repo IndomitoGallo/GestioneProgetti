@@ -2,21 +2,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.uniroma2.gestioneprogettiandroid">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
+        android:name=".MainContext"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="it.uniroma2.gestioneprogettiandroid.MainActivity"></activity>
-        <activity android:name="it.uniroma2.gestioneprogettiandroid.LoginActivity" android:noHistory="true">
+        <activity android:name=".activity.MainActivity"></activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="it.uniroma2.gestioneprogettiandroid.ShowProjectActivity"></activity>
+        <activity android:name=".activity.ShowProjectActivity"></activity>
     </application>
 
 </manifest>

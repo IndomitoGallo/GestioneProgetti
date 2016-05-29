@@ -20,6 +20,48 @@
     <string-array name="login_profiles">
         <item>Admin</item>
         <item>Controller</item>
+        <item>Dipendente</item>
         <item>Project Manager</item>
     </string-array>
+
+    <string name="restserver_host">192.168.178.27</string>
+    <integer name="restserver_port">8080</integer>
+    <string name="restserver_appDirectory">GestioneProgetti</string>
+    <string name="restserver_sessionIdParameter">sessionId</string>
+    <string name="restserver_loginUrl">login</string>
+    <string name="restserver_logoutUrl">logout</string>
+    <string name="restserver_projectsUrl">projects/pm</string>
+
+    <!-- LOGIN MESSAGES -->
+    <string name="loginMessage_oneMoment">Un attimo di pazienza..</string>
+    <string name="loginMessage_connecting">Connessione in corso..</string>
+    <string name="loginMessage_internalServerError">Errore interno del server. Riprovare più tardi.</string>
+    <string name="loginMessage_wrongCredentials">Errore: Credenziali errate.</string>
+    <string name="loginMessage_connectionError">Errore: Impossibile recuperare informazioni dal server.</string>
+    <string name="loginMessage_sessionError">Errore: Sessione non valida.</string>
+
+    <string name="restserver_project_id">id</string>
+    <string name="restserver_project_name">name</string>
+    <string name="restserver_project_description">description</string>
+    <string name="restserver_project_status">status</string>
+    <string name="restserver_project_budget">budget</string>
+    <string name="restserver_project_cost">cost</string>
+    <string name="restserver_project_projectManagerId">projectManager</string>
+
+    <string name="restserver_project_object">project</string>
+
+    <string name="restserver_projectdetails_hours">hours</string>
+    <string name="restserver_projectdetails_pmName">pmName</string>
+
+    <string name="restserver_employeesArray">employees</string>
+    <string name="restserver_employee_id">id</string>
+    <string name="restserver_employee_username">username</string>
+    <string name="restserver_employee_password">password</string>
+    <string name="restserver_employee_email">email</string>
+    <string name="restserver_employee_name">name</string>
+    <string name="restserver_employee_surname">surname</string>
+    <string name="restserver_employee_skill">skill</string>
+    <string name="restserver_employee_isdeactivated">isDeactivated</string>
+    <string name="restserver_employee_seniority">seniority</string>
+
 </resources>

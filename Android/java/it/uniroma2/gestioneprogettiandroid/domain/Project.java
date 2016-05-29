@@ -11,14 +11,6 @@ public class Project {
     private int projectManager;
 
     public Project(
-            int id, String name) {
-
-        this.id = id;
-        this.name = name;
-
-    }
-
-    public Project(
             int id, String name, String description, String status,
             double budget, double cost, int projectManager) {
 
