@@ -103,7 +103,7 @@ public class ProjectController {
      */
     @RequestMapping(value = "/projects", method = RequestMethod.POST)
     public ResponseEntity insertProject(@RequestBody ProjectEmployeesBean peb) {
-        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method insertProject");        
+        LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest controller method insertProject");  
         
         Project project = peb.getProject();
         int[] employees = peb.getEmployees();
@@ -200,8 +200,10 @@ public class ProjectController {
         request.setId(idProject);
         ProjectFormRES response = serviceFactory.getProjectService().displayProjectForm(request);
         
-        if(!response.isEsito())
-            return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);            
+        if(!response.isEsito()) {
+            LOGGER.log(Level.INFO, LAYERLBL + "SERVICE UNAVAILABLE!");
+            return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);  
+        }
         
         ProjectRES projectRes = response.getProject();
         Project project = new Project(projectRes.getId(), projectRes.getName(), projectRes.getDescription(),

@@ -152,8 +152,8 @@ public class UserDAO implements IUserDAO {
                     + "email='" + user.getEmail() + "', "
                     + "password='" + user.getPassword() + "', "
                     + "skill='" + user.getSkill() + "', "
-                    + "isDeactivated=" + user.getIsDeactivated() + ", "
-                    + "WHERE id=" + userId + ";";
+                    + "isDeactivated=" + user.getIsDeactivated() + " "
+                    + "WHERE id=" + userId;
             utilDB.manipulate(stmt, sql);
         } catch (SQLException e) {  //il metodo intercetta un'eccezione proveniente dal DB         
             System.err.println("Database Error!");

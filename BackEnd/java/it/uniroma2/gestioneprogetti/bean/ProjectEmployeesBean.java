@@ -16,9 +16,10 @@ public class ProjectEmployeesBean {
     public ProjectEmployeesBean() {    
     }
     
-    public ProjectEmployeesBean(Project project, int[] employees) {
+    public ProjectEmployeesBean(Project project, int[] employees, String sessionId) {
         this.project = project;
         this.employees = employees;
+        this.sessionId = sessionId;
     }
 
     public Project getProject() {

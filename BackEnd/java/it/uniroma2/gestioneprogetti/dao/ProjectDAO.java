@@ -99,7 +99,7 @@ public class ProjectDAO implements IProjectDAO {
                     + //l'id è definito tramite "auto increment"
                     project.getName() + "', '"
                     + project.getDescription() + "', "
-                    + "In Corso', "
+                    + "'in corso', "
                     + //status settato in automatico a "In Corso"
                     project.getBudget() + ", "
                     + "0.0, "
@@ -155,11 +155,11 @@ public class ProjectDAO implements IProjectDAO {
             stmt = conn.createStatement();	//creazione dello Statement
             //SQL update
             String sql = "UPDATE project SET name='" + project.getName()
-                    + ", description='" + project.getDescription() + "'"
+                    + "', description='" + project.getDescription() + "'"
                     + ", status='" + project.getStatus() + "'"
-                    + ", budget='" + project.getBudget() + "'"
-                    + ", project_manager" + project.getProjectManager()
-                    + "' WHERE id=" + project.getId();
+                    + ", budget=" + project.getBudget() 
+                    + ", project_manager=" + project.getProjectManager()
+                    + " WHERE id=" + project.getId();
             utilDB.manipulate(stmt, sql);	//esecuzione del comando SQL
         } catch (SQLException e) {	//il metodo intercetta un'eccezione proveniente dal DB	    	 
             System.err.println("Database Error!");
@@ -347,7 +347,6 @@ public class ProjectDAO implements IProjectDAO {
             String query2 = "select u.username,u.id,u.name,u.surname from profileUser p, user u where p.profile=4 and p.user=u.id"
                     + " and u.isDeactivated=false";
             ResultSet rs1 = utilDB.query(stm, query1);
-            ResultSet rs2 = utilDB.query(stm, query2);
             List<User> employees = new ArrayList<>();
             while (rs1.next()) {
                 String username = rs1.getString(1);
@@ -361,6 +360,7 @@ public class ProjectDAO implements IProjectDAO {
                 user.setSurname(surname);
                 employees.add(user);
             }
+            ResultSet rs2 = utilDB.query(stm, query2);
             List<User> pms = new ArrayList<>();
             while (rs2.next()) {
                 String username = rs2.getString(1);
@@ -528,19 +528,19 @@ public class ProjectDAO implements IProjectDAO {
         try {
             conn = utilDB.createConnection();	//connessione al DB
             stmt = conn.createStatement();	//creazione dello Statement
-            //Query SQL per reperire tutti gli utenti associati al progetti
-            String sql1 = "SELECT user FROM projectuser WHERE project=" + idProject;
-            ResultSet rs1 = utilDB.query(stmt, sql1);
-
             //Query SQL per sapere quanti impiegati sono associati al progetto
-            String sql2 = "SELECT COUNT(*) FROM projectuser WHERE project=" + idProject;
-            ResultSet rs2 = utilDB.query(stmt, sql2);
+            String sql1 = "SELECT COUNT(*) FROM projectUser WHERE project=" + idProject;
+            ResultSet rs1 = utilDB.query(stmt, sql1);
             //Riempio l'array passato in ingresso con gli id degli impiegati
-            rs2.next();
-            int[] employees = new int[rs2.getInt(1)];
+            rs1.next();
+            int[] employees = new int[rs1.getInt(1)];
+            //Query SQL per reperire tutti gli utenti associati al progetti
+            String sql2 = "SELECT user FROM projectUser WHERE project=" + idProject;
+            ResultSet rs2 = utilDB.query(stmt, sql2);
+
             int i = 0;
-            while (rs1.next()) {
-                employees[i] = rs1.getInt(1);
+            while (rs2.next()) {
+                employees[i] = rs2.getInt(1);
                 i++;
             }
             return employees;

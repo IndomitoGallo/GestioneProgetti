@@ -27,7 +27,6 @@ public class Project {
     }
 
     public Project() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     
@@ -87,7 +86,5 @@ public class Project {
     public void setProjectManager(int projectManager) {
         this.projectManager = projectManager;
     }
-    
-    
     
 }

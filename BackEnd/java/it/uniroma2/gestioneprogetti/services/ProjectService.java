@@ -322,6 +322,7 @@ public class ProjectService implements IProjectService {
         project.setId(request.getId());
         String result = daoFactory.getProjectDao().retrieveProject(project);
         if (result.equals("FAIL")) {
+            LOGGER.log(Level.INFO, LAYERLBL + "result == FAIL");
             response.setMessage(result);
             response.setErrorCode("1");
             response.setEsito(false);
@@ -329,6 +330,7 @@ public class ProjectService implements IProjectService {
         }
         List<List<User>> users = daoFactory.getProjectDao().displayPMsEmployees();
         if (users == null) {
+            LOGGER.log(Level.INFO, LAYERLBL + "displayPMsEmployees failed");
             response.setMessage(result);
             response.setErrorCode("1");
             response.setEsito(false);
@@ -336,11 +338,13 @@ public class ProjectService implements IProjectService {
         }
         int[] employeesAssociation = daoFactory.getProjectDao().retrieveEmployeesAssociation(project.getId());
         if (employeesAssociation == null) {
+            LOGGER.log(Level.INFO, LAYERLBL + "non ho trovato associazioni con dipendenti");
             response.setMessage(result);
             response.setErrorCode("1");
             response.setEsito(false);
             return response;
         }
+        response.setEsito(true);
         ProjectRES projectRes = new ProjectRES(project.getId(), project.getName(), project.getDescription(), project.getStatus(), project.getBudget(), project.getCost(), project.getProjectManager());
         List<User> employees = users.get(0);
         List<User> pms = users.get(1);

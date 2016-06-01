@@ -123,6 +123,7 @@ public class UserService implements IUserService {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a servizio updateUser");
         UserRQS userRequest = request.getUser();
         int[] profiles = request.getProfiles();
+
         EmptyRES response = new EmptyRES();
         
         String outcome = daoFactory.getUserDao().verifyUpdateData(userRequest.getId(),

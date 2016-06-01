@@ -113,6 +113,7 @@ public class UserController {
 
         User user = upb.getUser();
         int[] profiles = upb.getProfiles();
+
         String sessionId = upb.getSessionId();
 
         UserRQS userRequest = new UserRQS(idUser, user.getUsername(), user.getPassword(),
