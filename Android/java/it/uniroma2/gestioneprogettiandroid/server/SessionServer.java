@@ -1,31 +1,26 @@
-package it.uniroma2.gestioneprogettiandroid.dao;
+package it.uniroma2.gestioneprogettiandroid.server;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.io.IOException;
-
 import it.uniroma2.gestioneprogettiandroid.exception.NullTokenException;
 
-/**
- * Created by gaudo on 22/05/16.
- */
-public class SessionDAO implements ISessionDAO {
+public class SessionServer implements ISessionServer {
 
-    private static ISessionDAO instance;
+    private static ISessionServer instance;
 
     private final SharedPreferences sharedPreferences;
 
-    private SessionDAO(SharedPreferences sharedPreferences) {
+    private SessionServer(SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
     }
 
-    public static ISessionDAO getInstance(Context context) {
+    public static ISessionServer getInstance(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("SESSION_PREF", Context.MODE_PRIVATE);
         if (instance != null)
             return instance;
 
-        instance = new SessionDAO(sharedPreferences);
+        instance = new SessionServer(sharedPreferences);
         return instance;
     }
 

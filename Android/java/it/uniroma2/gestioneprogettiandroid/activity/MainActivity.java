@@ -8,9 +8,9 @@ import android.widget.ListView;
 
 import it.uniroma2.gestioneprogettiandroid.MainContext;
 import it.uniroma2.gestioneprogettiandroid.R;
-import it.uniroma2.gestioneprogettiandroid.dao.IProjectDAO;
-import it.uniroma2.gestioneprogettiandroid.dao.ISessionDAO;
-import it.uniroma2.gestioneprogettiandroid.dao.IUserDAO;
+import it.uniroma2.gestioneprogettiandroid.server.IProjectServer;
+import it.uniroma2.gestioneprogettiandroid.server.ISessionServer;
+import it.uniroma2.gestioneprogettiandroid.server.IUserServer;
 import it.uniroma2.gestioneprogettiandroid.tasks.GetProjectsTask;
 import it.uniroma2.gestioneprogettiandroid.tasks.LogoutTask;
 
@@ -23,9 +23,9 @@ public class MainActivity extends AppCompatActivity {
 
         MainContext mainContext = ((MainContext) getApplication());
 
-        final IProjectDAO projectDAO = mainContext.getProjectDAO();
-        final IUserDAO userDAO = mainContext.getUserDAO();
-        final ISessionDAO sessionDAO = mainContext.getSessionDAO();
+        final IProjectServer projectServer = mainContext.getProjectServer();
+        final IUserServer userServer = mainContext.getUserServer();
+        final ISessionServer sessionServer = mainContext.getSessionServer();
 
         final ListView listView = (ListView) findViewById(R.id.main_listView); // prendo la listView definita in activity_main
         Button logoutButton = (Button) findViewById(R.id.main_logoutButton);

@@ -1,7 +1,6 @@
-package it.uniroma2.gestioneprogettiandroid.dao;
+package it.uniroma2.gestioneprogettiandroid.server;
 
 import android.content.res.Resources;
-import android.util.Log;
 
 import org.json.JSONArray;
 
@@ -16,32 +15,29 @@ import it.uniroma2.gestioneprogettiandroid.R;
 import it.uniroma2.gestioneprogettiandroid.exception.ServiceUnavailableException;
 import it.uniroma2.gestioneprogettiandroid.exception.WrongCredentialsException;
 
-/**
- * Created by gaudo on 22/05/16.
- */
-public final class UserDAO implements IUserDAO {
+public final class UserServer implements IUserServer {
 
-    private static UserDAO instance;
+    private static UserServer instance;
 
     private final String host;
     private final int port;
     private final String loginUrl;
     private final String logoutUrl;
 
-    private UserDAO(String host, int port, String loginUrl, String logoutUrl) {
+    private UserServer(String host, int port, String loginUrl, String logoutUrl) {
         this.host = host;
         this.loginUrl = loginUrl;
         this.port = port;
         this.logoutUrl = logoutUrl;
     }
 
-    public static IUserDAO getInstance(Resources resources) {
+    public static IUserServer getInstance(Resources resources) {
         if (instance != null) {
             return instance;
         }
         String appDirectory = resources.getString(R.string.restserver_appDirectory);
 
-        instance = new UserDAO(
+        instance = new UserServer(
                 resources.getString(R.string.restserver_host),
                 resources.getInteger(R.integer.restserver_port),
                 appDirectory + "/" + resources.getString(R.string.restserver_loginUrl),

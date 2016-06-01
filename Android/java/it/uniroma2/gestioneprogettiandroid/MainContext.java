@@ -3,23 +3,20 @@ package it.uniroma2.gestioneprogettiandroid;
 import android.app.Application;
 import android.widget.Toast;
 
-import it.uniroma2.gestioneprogettiandroid.dao.IProjectDAO;
-import it.uniroma2.gestioneprogettiandroid.dao.ISessionDAO;
-import it.uniroma2.gestioneprogettiandroid.dao.IUserDAO;
-import it.uniroma2.gestioneprogettiandroid.dao.ProjectDAO;
-import it.uniroma2.gestioneprogettiandroid.dao.SessionDAO;
-import it.uniroma2.gestioneprogettiandroid.dao.UserDAO;
+import it.uniroma2.gestioneprogettiandroid.server.IProjectServer;
+import it.uniroma2.gestioneprogettiandroid.server.ISessionServer;
+import it.uniroma2.gestioneprogettiandroid.server.IUserServer;
+import it.uniroma2.gestioneprogettiandroid.server.ProjectServer;
+import it.uniroma2.gestioneprogettiandroid.server.SessionServer;
+import it.uniroma2.gestioneprogettiandroid.server.UserServer;
 
-/**
- * Created by gaudo on 21/05/16.
- */
 public final class MainContext extends Application {
 
-    private IProjectDAO projectDAO;
+    private IProjectServer projectServer;
 
-    private IUserDAO userDAO;
+    private IUserServer userServer;
 
-    private ISessionDAO sessionDAO;
+    private ISessionServer sessionServer;
 
     private Toast toast;
 
@@ -30,29 +27,29 @@ public final class MainContext extends Application {
         if(toast == null)
             toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
-        if (projectDAO == null) {
-            projectDAO = ProjectDAO.getInstance(getApplicationContext());
+        if (projectServer == null) {
+            projectServer = ProjectServer.getInstance(getApplicationContext());
         }
 
-        if (userDAO == null) {
-            userDAO = UserDAO.getInstance(this.getResources());
+        if (userServer == null) {
+            userServer = UserServer.getInstance(this.getResources());
         }
 
-        if (sessionDAO == null) {
-            sessionDAO = SessionDAO.getInstance(this);
+        if (sessionServer == null) {
+            sessionServer = SessionServer.getInstance(this);
         }
     }
 
-    public IProjectDAO getProjectDAO() {
-        return projectDAO;
+    public IProjectServer getProjectServer() {
+        return projectServer;
     }
 
-    public IUserDAO getUserDAO() {
-        return userDAO;
+    public IUserServer getUserServer() {
+        return userServer;
     }
 
-    public ISessionDAO getSessionDAO() {
-        return sessionDAO;
+    public ISessionServer getSessionServer() {
+        return sessionServer;
     }
 
     public Toast getToast() {

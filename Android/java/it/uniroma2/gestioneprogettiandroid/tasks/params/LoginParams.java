@@ -1,8 +1,5 @@
 package it.uniroma2.gestioneprogettiandroid.tasks.params;
 
-/**
- * Created by gaudo on 22/05/16.
- */
 public class LoginParams {
     public final String username;
     public final String password;

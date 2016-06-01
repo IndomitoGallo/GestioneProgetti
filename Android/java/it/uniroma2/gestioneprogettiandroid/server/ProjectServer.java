@@ -1,4 +1,4 @@
-package it.uniroma2.gestioneprogettiandroid.dao;
+package it.uniroma2.gestioneprogettiandroid.server;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -26,12 +26,9 @@ import it.uniroma2.gestioneprogettiandroid.domain.ProjectDetails;
 import it.uniroma2.gestioneprogettiandroid.exception.InvalidTokenException;
 import it.uniroma2.gestioneprogettiandroid.exception.ServiceUnavailableException;
 
-/**
- * Created by gaudo on 14/05/16.
- */
-public final class ProjectDAO implements IProjectDAO {
+public final class ProjectServer implements IProjectServer {
 
-    private static ProjectDAO instance;
+    private static ProjectServer instance;
 
     private final String HOST;
     private final int PORT;
@@ -64,7 +61,7 @@ public final class ProjectDAO implements IProjectDAO {
 
     private final String SESSION_ID_PARAM;
 
-    private ProjectDAO(Context context) {
+    private ProjectServer(Context context) {
 
         Resources resources = context.getResources();
 
@@ -101,11 +98,11 @@ public final class ProjectDAO implements IProjectDAO {
         PROJECT_OBJECT = resources.getString(R.string.restserver_project_object);
     }
 
-    public static IProjectDAO getInstance(Context context) {
+    public static IProjectServer getInstance(Context context) {
         if (instance != null)
             return instance;
 
-        instance = new ProjectDAO(context);
+        instance = new ProjectServer(context);
 
         return instance;
     }

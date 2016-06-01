@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 import it.uniroma2.gestioneprogettiandroid.MainContext;
 import it.uniroma2.gestioneprogettiandroid.R;
-import it.uniroma2.gestioneprogettiandroid.dao.ISessionDAO;
-import it.uniroma2.gestioneprogettiandroid.dao.IUserDAO;
+import it.uniroma2.gestioneprogettiandroid.server.ISessionServer;
+import it.uniroma2.gestioneprogettiandroid.server.IUserServer;
 import it.uniroma2.gestioneprogettiandroid.tasks.LoginTask;
 import it.uniroma2.gestioneprogettiandroid.tasks.params.LoginParams;
 
@@ -24,8 +24,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         MainContext mainContext = ((MainContext) getApplication());
 
-        final IUserDAO userDAO = mainContext.getUserDAO();
-        final ISessionDAO sessionDAO = mainContext.getSessionDAO();
+        final IUserServer userServer = mainContext.getUserServer();
+        final ISessionServer sessionServer = mainContext.getSessionServer();
 
         // Prendo il pulsante presente nell'activity_login
         Button loginButton = (Button) findViewById(R.id.login_loginButton);

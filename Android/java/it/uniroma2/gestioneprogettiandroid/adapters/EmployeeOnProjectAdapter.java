@@ -12,9 +12,6 @@ import java.util.List;
 import it.uniroma2.gestioneprogettiandroid.R;
 import it.uniroma2.gestioneprogettiandroid.domain.EmployeeOnProject;
 
-/**
- * Created by gaudo on 27/05/16.
- */
 public class EmployeeOnProjectAdapter extends ArrayAdapter<EmployeeOnProject> {
     // Questo oggetto inietta un layout XML dentro una view
     private LayoutInflater layoutInflater;
@@ -35,7 +32,7 @@ public class EmployeeOnProjectAdapter extends ArrayAdapter<EmployeeOnProject> {
         TextView name = (TextView) view.findViewById(R.id.dipendente_name);
         TextView hours = (TextView) view.findViewById(R.id.dipendente_hours);
 
-        name.setText(employeeOnProject.getEmployee().getName());
+        name.setText(employeeOnProject.getEmployee().getName() + " " + employeeOnProject.getEmployee().getSurname());
         hours.setText(Integer.toString(employeeOnProject.getHours()) + " ore");
 
         return view;

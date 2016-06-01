@@ -1,7 +1,6 @@
 package it.uniroma2.gestioneprogettiandroid.tasks;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.ListView;
@@ -14,25 +13,21 @@ import java.util.List;
 import it.uniroma2.gestioneprogettiandroid.MainContext;
 import it.uniroma2.gestioneprogettiandroid.R;
 import it.uniroma2.gestioneprogettiandroid.activity.LoginActivity;
-import it.uniroma2.gestioneprogettiandroid.activity.MainActivity;
 import it.uniroma2.gestioneprogettiandroid.adapters.ProjectAdapter;
-import it.uniroma2.gestioneprogettiandroid.dao.IProjectDAO;
-import it.uniroma2.gestioneprogettiandroid.dao.ISessionDAO;
+import it.uniroma2.gestioneprogettiandroid.server.IProjectServer;
+import it.uniroma2.gestioneprogettiandroid.server.ISessionServer;
 import it.uniroma2.gestioneprogettiandroid.domain.Project;
 import it.uniroma2.gestioneprogettiandroid.exception.InvalidTokenException;
 import it.uniroma2.gestioneprogettiandroid.exception.NullTokenException;
 import it.uniroma2.gestioneprogettiandroid.exception.ServiceUnavailableException;
 import it.uniroma2.gestioneprogettiandroid.tasks.results.ProjectsResult;
 
-/**
- * Created by gaudo on 22/05/16.
- */
 public class GetProjectsTask extends AsyncTask<Void, Void, ProjectsResult> {
 
     private static boolean isRunning = false;
 
-    private final IProjectDAO projectDAO;
-    private final ISessionDAO sessionDAO;
+    private final IProjectServer projectServer;
+    private final ISessionServer sessionServer;
 
     private final Toast toast;
     private final WeakReference<Activity> activityWeakReference;
@@ -53,8 +48,8 @@ public class GetProjectsTask extends AsyncTask<Void, Void, ProjectsResult> {
         this.SESSION_ERROR = activity.getString(R.string.loginMessage_sessionError);
 
         toast = mainContext.getToast();
-        sessionDAO = mainContext.getSessionDAO();
-        projectDAO = mainContext.getProjectDAO();
+        sessionServer = mainContext.getSessionServer();
+        projectServer = mainContext.getProjectServer();
 
         this.activityWeakReference = new WeakReference<>(activity);
     }
@@ -77,8 +72,8 @@ public class GetProjectsTask extends AsyncTask<Void, Void, ProjectsResult> {
     @Override
     protected ProjectsResult doInBackground(Void... params) {
         try {
-            String token = sessionDAO.getToken();
-            List<Project> projects = projectDAO.getPMProjects(token);
+            String token = sessionServer.getToken();
+            List<Project> projects = projectServer.getPMProjects(token);
 
             return new ProjectsResult(projects);
         } catch (NullTokenException | ServiceUnavailableException | InvalidTokenException | IOException e) {

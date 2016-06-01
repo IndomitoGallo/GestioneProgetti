@@ -24,8 +24,8 @@
         <item>Project Manager</item>
     </string-array>
 
-    <string name="restserver_host">192.168.178.27</string>
-    <integer name="restserver_port">8080</integer>
+    <string name="restserver_host">10.0.2.2</string>
+    <integer name="restserver_port">9090</integer>
     <string name="restserver_appDirectory">GestioneProgetti</string>
     <string name="restserver_sessionIdParameter">sessionId</string>
     <string name="restserver_loginUrl">login</string>

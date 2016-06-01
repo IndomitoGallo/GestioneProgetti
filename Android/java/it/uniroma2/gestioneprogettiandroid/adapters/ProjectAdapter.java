@@ -14,15 +14,14 @@ import java.util.List;
 
 import it.uniroma2.gestioneprogettiandroid.MainContext;
 import it.uniroma2.gestioneprogettiandroid.R;
-import it.uniroma2.gestioneprogettiandroid.activity.MainActivity;
 import it.uniroma2.gestioneprogettiandroid.activity.ShowProjectActivity;
-import it.uniroma2.gestioneprogettiandroid.dao.IProjectDAO;
-import it.uniroma2.gestioneprogettiandroid.dao.ISessionDAO;
+import it.uniroma2.gestioneprogettiandroid.server.IProjectServer;
+import it.uniroma2.gestioneprogettiandroid.server.ISessionServer;
 import it.uniroma2.gestioneprogettiandroid.domain.Project;
 
 public class ProjectAdapter extends ArrayAdapter<Project> {
-    private final ISessionDAO sessionDAO;
-    private final IProjectDAO projectDAO;
+    private final ISessionServer sessionServer;
+    private final IProjectServer projectServer;
     // Questo oggetto inietta un layout XML dentro una view
     private LayoutInflater layoutInflater;
 
@@ -32,8 +31,8 @@ public class ProjectAdapter extends ArrayAdapter<Project> {
         MainContext mainContext = ((MainContext) activity.getApplication());
 
         layoutInflater = LayoutInflater.from(activity);
-        this.sessionDAO = mainContext.getSessionDAO();
-        this.projectDAO = mainContext.getProjectDAO();
+        this.sessionServer = mainContext.getSessionServer();
+        this.projectServer = mainContext.getProjectServer();
     }
 
     /* Questo metodo restituisce l'elemento della lista nella posizione specificata */

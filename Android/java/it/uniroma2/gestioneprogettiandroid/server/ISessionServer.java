@@ -1,13 +1,8 @@
-package it.uniroma2.gestioneprogettiandroid.dao;
-
-import java.io.IOException;
+package it.uniroma2.gestioneprogettiandroid.server;
 
 import it.uniroma2.gestioneprogettiandroid.exception.NullTokenException;
 
-/**
- * Created by gaudo on 22/05/16.
- */
-public interface ISessionDAO {
+public interface ISessionServer {
     String getToken() throws NullTokenException;
 
     void setToken(String token);

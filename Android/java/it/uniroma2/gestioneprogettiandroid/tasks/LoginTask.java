@@ -1,7 +1,6 @@
 package it.uniroma2.gestioneprogettiandroid.tasks;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
@@ -12,20 +11,17 @@ import java.lang.ref.WeakReference;
 import it.uniroma2.gestioneprogettiandroid.MainContext;
 import it.uniroma2.gestioneprogettiandroid.R;
 import it.uniroma2.gestioneprogettiandroid.activity.MainActivity;
-import it.uniroma2.gestioneprogettiandroid.dao.ISessionDAO;
-import it.uniroma2.gestioneprogettiandroid.dao.IUserDAO;
+import it.uniroma2.gestioneprogettiandroid.server.ISessionServer;
+import it.uniroma2.gestioneprogettiandroid.server.IUserServer;
 import it.uniroma2.gestioneprogettiandroid.exception.ServiceUnavailableException;
 import it.uniroma2.gestioneprogettiandroid.exception.WrongCredentialsException;
 import it.uniroma2.gestioneprogettiandroid.tasks.params.LoginParams;
 import it.uniroma2.gestioneprogettiandroid.tasks.results.LoginResult;
 
-/**
- * Created by gaudo on 22/05/16.
- */
 public class LoginTask extends AsyncTask<LoginParams, String, LoginResult> {
 
-    private final IUserDAO userDAO;
-    private final ISessionDAO sessionDAO;
+    private final IUserServer userServer;
+    private final ISessionServer sessionServer;
     private final WeakReference<Activity> context;
     private final Toast toast;
 
@@ -43,8 +39,8 @@ public class LoginTask extends AsyncTask<LoginParams, String, LoginResult> {
         MainContext mainContext = (MainContext) context.getApplicationContext();
 
         toast = mainContext.getToast();
-        userDAO = mainContext.getUserDAO();
-        sessionDAO = mainContext.getSessionDAO();
+        userServer = mainContext.getUserServer();
+        sessionServer = mainContext.getSessionServer();
 
         this.CONNECTING = context.getString(R.string.loginMessage_connecting);
         this.INTERNAL_SERVER_ERROR = context.getString(R.string.loginMessage_internalServerError);
@@ -59,8 +55,8 @@ public class LoginTask extends AsyncTask<LoginParams, String, LoginResult> {
     protected LoginResult doInBackground(LoginParams... params) {
         publishProgress(CONNECTING);
         try {
-            String sessionId = userDAO.createSession(params[0].username, params[0].password, params[0].profile);
-            sessionDAO.setToken(sessionId);
+            String sessionId = userServer.createSession(params[0].username, params[0].password, params[0].profile);
+            sessionServer.setToken(sessionId);
 
             return new LoginResult(true);
 

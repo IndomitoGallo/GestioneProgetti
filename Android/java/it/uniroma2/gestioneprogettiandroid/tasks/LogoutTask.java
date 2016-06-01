@@ -1,7 +1,6 @@
 package it.uniroma2.gestioneprogettiandroid.tasks;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
@@ -10,20 +9,15 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import it.uniroma2.gestioneprogettiandroid.MainContext;
-import it.uniroma2.gestioneprogettiandroid.R;
 import it.uniroma2.gestioneprogettiandroid.activity.LoginActivity;
-import it.uniroma2.gestioneprogettiandroid.activity.MainActivity;
-import it.uniroma2.gestioneprogettiandroid.dao.ISessionDAO;
-import it.uniroma2.gestioneprogettiandroid.dao.IUserDAO;
+import it.uniroma2.gestioneprogettiandroid.server.ISessionServer;
+import it.uniroma2.gestioneprogettiandroid.server.IUserServer;
 import it.uniroma2.gestioneprogettiandroid.exception.NullTokenException;
 
-/**
- * Created by gaudo on 26/05/16.
- */
 public class LogoutTask extends AsyncTask<Void, Void, Exception> {
 
-    private final IUserDAO userDAO;
-    private final ISessionDAO sessionDAO;
+    private final IUserServer userServer;
+    private final ISessionServer sessionServer;
     private final WeakReference<Activity> context;
     private final Toast toast;
 
@@ -35,8 +29,8 @@ public class LogoutTask extends AsyncTask<Void, Void, Exception> {
         MainContext mainContext = (MainContext) context.getApplication();
 
         toast = mainContext.getToast();
-        userDAO = mainContext.getUserDAO();
-        sessionDAO = mainContext.getSessionDAO();
+        userServer = mainContext.getUserServer();
+        sessionServer = mainContext.getSessionServer();
 
         this.context = new WeakReference<>(context);
     }
@@ -46,15 +40,15 @@ public class LogoutTask extends AsyncTask<Void, Void, Exception> {
         String token = null;
 
         try {
-            token = sessionDAO.getToken();
+            token = sessionServer.getToken();
         } catch (NullTokenException e) {
             return null;
         }
 
-        sessionDAO.deleteToken();
+        sessionServer.deleteToken();
 
         try {
-            userDAO.deleteSession(token);
+            userServer.deleteSession(token);
         } catch (IOException e) {}
 
         return null;
