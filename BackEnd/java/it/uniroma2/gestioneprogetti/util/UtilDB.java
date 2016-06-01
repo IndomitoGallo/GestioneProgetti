@@ -12,10 +12,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
- * La classe UtilDB e' un'utility di accesso al DataBase implementata come una
- * factory con il pattern singleton. Questa utility viene istanziata ed
- * utilizzata dal model. Nell'architettura dell'applicazione si pone tra il
- * model e il JDBC.
+ * La classe UtilDB e' un'utility di accesso al database implementata come 
+ * una factory con il pattern singleton. Nell'architettura dell'applicazione 
+ * si pone nello strato “Domain” tra il DAO e lo strato di “Persistence”.
  *
  * @author Luca Talocci, Lorenzo Bernabei, Luca Camerlengo, Davide Vitiello
  * @version 4.0 10/02/2016
@@ -28,14 +27,8 @@ public class UtilDB {
     DataSource dataSource;
     
     /**
-     * Il metodo crea una connessione ad un DB: caricando innanzitutto il
-     * Driver, caricando poi la classe Config per eseguire (solo la prima volta)
-     * il suo blocco statico e leggere da file i dati di configurazione,
-     * mettendoli in un oggetto Properties, ed infine chiamando il metodo
-     * privato
-     * {@link #createConnection(java.lang.String, java.lang.String, java.lang.String)},
-     * al quale verranno passati tutti i dati di configurazione prelevati
-     * dall'insieme di proprieta'.
+     * Il metodo crea una connessione ad un DB, richiamando semplicemente 
+     * il metodo getConnection dell’attributo dataSource.
      *
      * @return conn Connection to DB
      * @throws SQLException
@@ -47,9 +40,8 @@ public class UtilDB {
     }
 
     /**
-     * Il metodo permette di creare uno Statement associato alla connessione
-     * passata in ingresso. Lo Statement e' un oggetto necessario per poter
-     * eseguire query mysql.
+     * Il metodo permette di creare uno Statement associato alla connessione passata in ingresso. 
+     * Lo Statement e' un oggetto necessario per poter eseguire query mysql.
      *
      * @param conn Connection to DB
      * @return Statement associato alla connessione in ingresso
@@ -61,9 +53,9 @@ public class UtilDB {
     }
 
     /**
-     * Il metodo ha il compito di eseguire una query sul DB, il cui risultato e'
-     * un oggetto di tipo ResultSet che contiene i record restituiti dalla
-     * query.
+     * Il metodo ha il compito di eseguire una query sul DB, 
+     * il cui risultato e' un oggetto di tipo ResultSet 
+     * che contiene i record restituiti dalla query.
      *
      * @param stmt Statement associato ad una connessione al database
      * @param qry String query in linguaggio MySQL
@@ -101,9 +93,9 @@ public class UtilDB {
     }
 
     /**
-     * Il metodo ha il compito di chiudere la connessione al DB. Chiudere la
-     * connessione puo' essere necessario poiche' un DBMS puo' gestire soltanto
-     * un pool predefinito di connessioni in parallelo.
+     * Il metodo ha il compito di chiudere la connessione al DB. 
+     * Chiudere la connessione può essere necessario poiché un DBMS può 
+     * gestire soltanto un pool predefinito di connessioni in parallelo.
      *
      * @param conn Connection to DB
      * @throws SQLException

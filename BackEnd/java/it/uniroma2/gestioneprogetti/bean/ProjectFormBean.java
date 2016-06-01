@@ -4,6 +4,13 @@ import it.uniroma2.gestioneprogetti.domain.Project;
 import it.uniroma2.gestioneprogetti.domain.User;
 import java.util.List;
 
+/**
+ * La classe ProjectFormBean è utilizzata per incapsulare nelle request e response HTTP,
+ * tutti i dati da visualizzare nel form di aggiornamento del progetto:
+ * il progetto con i Dipendenti che vi lavorano, tutti i PM presenti e tutti i Dipendenti presenti.
+ * @author Gruppo Talocci
+ */
+
 public class ProjectFormBean {
     
     private Project project;

@@ -1,6 +1,6 @@
 package it.uniroma2.gestioneprogetti.response;
 /**
- * La classe UserProgilesRES modella un oggetto response che incapsula al suo interno 
+ * La classe UserProfilesRES modella un oggetto response che incapsula al suo interno 
  * le proprietà UserRES "utente" e int[] "profili" in modo tale
  * da trasportare i dati dallo strato Application allo strato Services.
  * @author Gruppo Talocci

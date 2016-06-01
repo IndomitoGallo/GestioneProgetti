@@ -4,6 +4,13 @@ import it.uniroma2.gestioneprogetti.domain.Project;
 import it.uniroma2.gestioneprogetti.domain.User;
 import java.util.List;
 
+/**
+  *La classe ProjectEmployeesHoursBean è utilizzata per incapsulare nelle request e response HTTP:
+  *un progetto, i dipendenti che vi lavorano, le ore totali lavorate 
+  *da ciascuno ed il nome del PM responsabile.
+  * @author Gruppo Talocci
+  */
+
 public class ProjectEmployeesHoursBean {
     private Project project;
     private List<User> employees;
