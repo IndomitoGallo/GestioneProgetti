@@ -3,8 +3,9 @@ package it.uniroma2.gestioneprogettiandroid.domain;
 import java.util.List;
 
 /**
- * Created by gaudo on 14/05/16.
- */
+ * Questa classe fa parte del dominio dell’applicazione e rappresenta
+ * i dettagli di un singolo progetto.
+ */ 
 public class ProjectDetails {
     private final Project project;
     private final List<EmployeeOnProject> employeesOnProject;

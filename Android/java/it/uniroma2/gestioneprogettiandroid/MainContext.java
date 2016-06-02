@@ -4,19 +4,26 @@ import android.app.Application;
 import android.widget.Toast;
 
 import it.uniroma2.gestioneprogettiandroid.server.IProjectServer;
-import it.uniroma2.gestioneprogettiandroid.server.ISessionServer;
+import it.uniroma2.gestioneprogettiandroid.token.ISessionTokenDB;
 import it.uniroma2.gestioneprogettiandroid.server.IUserServer;
 import it.uniroma2.gestioneprogettiandroid.server.ProjectServer;
-import it.uniroma2.gestioneprogettiandroid.server.SessionServer;
+import it.uniroma2.gestioneprogettiandroid.token.SessionTokenDB;
 import it.uniroma2.gestioneprogettiandroid.server.UserServer;
 
+/**
+ * Questa classe mantiene gli oggetti che devono poter
+ * essere accessibili da tutta l’applicazione. Nel nostro caso, i singleton
+ * per il recupero dei dati dal server. Il Toast globale viene utilizzato per
+ * fare in modo che i messaggi a comparsa vengano sovrascritti
+ * e non inseriti in coda (Messaggi più reattivi).
+ */ 
 public final class MainContext extends Application {
 
     private IProjectServer projectServer;
 
     private IUserServer userServer;
 
-    private ISessionServer sessionServer;
+    private ISessionTokenDB sessionTokenDB;
 
     private Toast toast;
 
@@ -35,8 +42,8 @@ public final class MainContext extends Application {
             userServer = UserServer.getInstance(this.getResources());
         }
 
-        if (sessionServer == null) {
-            sessionServer = SessionServer.getInstance(this);
+        if (sessionTokenDB == null) {
+            sessionTokenDB = SessionTokenDB.getInstance(this);
         }
     }
 
@@ -48,8 +55,8 @@ public final class MainContext extends Application {
         return userServer;
     }
 
-    public ISessionServer getSessionServer() {
-        return sessionServer;
+    public ISessionTokenDB getSessionTokenDB() {
+        return sessionTokenDB;
     }
 
     public Toast getToast() {

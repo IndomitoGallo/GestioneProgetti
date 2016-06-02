@@ -2,7 +2,6 @@ package it.uniroma2.gestioneprogettiandroid.server;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,6 +25,17 @@ import it.uniroma2.gestioneprogettiandroid.domain.ProjectDetails;
 import it.uniroma2.gestioneprogettiandroid.exception.InvalidTokenException;
 import it.uniroma2.gestioneprogettiandroid.exception.ServiceUnavailableException;
 
+/**
+ * Questa classe si occupa di effettuare operazioni di recupero dei dati
+ * dei progetti dal server tramite richieste HTTP.
+ * È stato scelto di implementarlo tramite il pattern singleton per avere
+ * un’unica istanza globale per tutta l’applicazione.
+ * Al metodo getInstance, che si occupa di ritirare o creare l’unica istanza, 
+ * viene passato il Context di android in modo tale da rendere disponibile
+ * alla classe le stringhe presenti nel file resource.
+ * Tali stringhe rappresentano delle costanti
+ * utilizzate successivamente durante le richieste HTTP.
+ */ 
 public final class ProjectServer implements IProjectServer {
 
     private static ProjectServer instance;
@@ -107,6 +117,18 @@ public final class ProjectServer implements IProjectServer {
         return instance;
     }
 
+    /**
+     * Questo metodo si occupa di recuperare la lista dei progetti dal server
+     * tramite una richiesta GET http.
+     *
+     * @param sessionId il token di sessione
+     *
+     * @throws IOException se è avvenuto un problema di connessione.
+     * @throws InvalidTokenException se il server rifiuta il token passato come parametro nella richiesta http
+     * @throws ServiceUnavailableException se il server ha riscontrato un errore interno.
+     *
+     * @return la lista dei progetti
+     */
     @Override
     public List<Project> getPMProjects(String sessionId) throws IOException, InvalidTokenException, ServiceUnavailableException {
         HttpURLConnection connection = null;
@@ -135,7 +157,6 @@ public final class ProjectServer implements IProjectServer {
             while ((line = reader.readLine()) != null) {
                 result.append(line);
             }
-            Log.d("sad", result.toString());
 
             try {
                 JSONTokener tokener = new JSONTokener(result.toString());
@@ -172,6 +193,19 @@ public final class ProjectServer implements IProjectServer {
         }
     }
 
+    /**
+     * Questo metodo si occupa di recuperare i dettagli di un progetto specifico dal server
+     * tramite una richiesta GET http.
+     *
+     * @param id l’id del progetto da recuperare
+     * @param sessionId il token di sessione
+     *
+     * @throws IOException se è avvenuto un problema di connessione.
+     * @throws InvalidTokenException se il server rifiuta il token passato come parametro nella richiesta http
+     * @throws ServiceUnavailableException se il server ha riscontrato un errore interno.
+     *
+     * @return i dettagli di un progetto specifico
+     */
     @Override
     public ProjectDetails getPMProjectById(int id, String sessionId) throws IOException, ServiceUnavailableException, InvalidTokenException
     {
@@ -205,6 +239,7 @@ public final class ProjectServer implements IProjectServer {
             }
 
             try {
+                // Viene parsato il JSON ricevuto dal server e viene convertito in un JSONObject
                 JSONTokener tokener = new JSONTokener(result.toString());
                 JSONObject jsonObject = new JSONObject(tokener);
                 List<EmployeeOnProject> employeesOnProject = new ArrayList<>();
@@ -252,7 +287,7 @@ public final class ProjectServer implements IProjectServer {
 
                 return projectDetails;
             } catch (JSONException e) {
-                throw new RuntimeException();
+                throw new IOException();
             }
         } catch(IOException e) {
             throw e;

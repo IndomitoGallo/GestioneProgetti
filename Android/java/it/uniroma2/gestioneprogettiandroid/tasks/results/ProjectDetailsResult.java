@@ -6,7 +6,7 @@ import it.uniroma2.gestioneprogettiandroid.domain.Project;
 import it.uniroma2.gestioneprogettiandroid.domain.ProjectDetails;
 
 /**
- * Created by gaudo on 26/05/16.
+ * Questa classe rappresenta il risultato del recupero dei dettagli di un progetto
  */
 public class ProjectDetailsResult {
     private ProjectDetails projectDetails;

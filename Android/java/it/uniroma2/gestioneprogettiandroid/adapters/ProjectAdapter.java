@@ -12,33 +12,35 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import it.uniroma2.gestioneprogettiandroid.MainContext;
 import it.uniroma2.gestioneprogettiandroid.R;
 import it.uniroma2.gestioneprogettiandroid.activity.ShowProjectActivity;
-import it.uniroma2.gestioneprogettiandroid.server.IProjectServer;
-import it.uniroma2.gestioneprogettiandroid.server.ISessionServer;
 import it.uniroma2.gestioneprogettiandroid.domain.Project;
 
+/**
+ * Questa classe si occupa di popolare la ListView dei progetti del pm loggato.
+ * Viene quindi aggiunto per ogni elemento il nome del progetto e il pulsante
+ * di visualizzazione del singolo progetto.
+ */
 public class ProjectAdapter extends ArrayAdapter<Project> {
-    private final ISessionServer sessionServer;
-    private final IProjectServer projectServer;
-    // Questo oggetto inietta un layout XML dentro una view
     private LayoutInflater layoutInflater;
 
     public ProjectAdapter(Activity activity, int resource, List<Project> objects) {
         super(activity, resource, objects);
-
-        MainContext mainContext = ((MainContext) activity.getApplication());
-
         layoutInflater = LayoutInflater.from(activity);
-        this.sessionServer = mainContext.getSessionServer();
-        this.projectServer = mainContext.getProjectServer();
     }
 
-    /* Questo metodo restituisce l'elemento della lista nella posizione specificata */
+    /**
+     * Per ogni progetto che viene passato a questo adapter viene generata
+     * una view che rappresenta la riga con il nome del progetto e
+     * un pulsante "visualizza".
+     * Inoltre, per ogni pulsante viene registrato un listener.
+     * Una volta cliccato uno dei pulsanti, il rispettivo listener lancerà 
+     * l’activity ShowProjectActivity passandogli come parametro extra l’id
+     * del progetto.
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = layoutInflater.inflate(R.layout.project, null); // inietto un elemento della lista nella view
+        View view = layoutInflater.inflate(R.layout.project, null);
         final Project project = getItem(position);
 
         TextView projectView = (TextView) view.findViewById(R.id.project_projectName);

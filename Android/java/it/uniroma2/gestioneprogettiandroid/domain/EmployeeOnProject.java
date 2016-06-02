@@ -1,8 +1,9 @@
 package it.uniroma2.gestioneprogettiandroid.domain;
 
 /**
- * Created by gaudo on 14/05/16.
- */
+ * Questa classe fa parte del dominio dell’applicazione e rappresenta
+ * l’associazione dipendente <-> ore lavorate su un progetto.
+ */ 
 public class EmployeeOnProject {
 
     private Employee employee;

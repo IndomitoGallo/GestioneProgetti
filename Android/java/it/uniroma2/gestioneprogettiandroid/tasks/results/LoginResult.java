@@ -1,7 +1,7 @@
 package it.uniroma2.gestioneprogettiandroid.tasks.results;
 
 /**
- * Created by gaudo on 22/05/16.
+ * Questa classe rappresenta il risultato del login
  */
 public class LoginResult {
     private boolean result = false;

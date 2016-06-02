@@ -11,31 +11,38 @@ import android.widget.Toast;
 
 import it.uniroma2.gestioneprogettiandroid.MainContext;
 import it.uniroma2.gestioneprogettiandroid.R;
-import it.uniroma2.gestioneprogettiandroid.server.ISessionServer;
-import it.uniroma2.gestioneprogettiandroid.server.IUserServer;
 import it.uniroma2.gestioneprogettiandroid.tasks.LoginTask;
 import it.uniroma2.gestioneprogettiandroid.tasks.params.LoginParams;
 
+/**
+ * Activity principale dell’applicazione che rappresenta
+ * la finestra di login.
+ * In essa sono presenti i campi per inserire nome utente, password,
+ * un menu a tendina per selezionare il profilo e il pulsante di login.
+ */
 public class LoginActivity extends AppCompatActivity {
 
+
+    /**
+     * Tramite questo metodo verranno caricati all’avvio dell’activity il
+     * layout dell’interfaccia di login, verrà popolato il menu a tendina
+     * con l’array di stringhe presente nelle risorse e verrà creato
+     * un listener sul pulsante di login.
+     * 
+     * Dopo aver cliccato il pulsante di login, il listener eseguirà un
+     * controllo di correttezza sui campi e, eventualmente, farà partire
+     * il LoginTask; ovvero l’esecuzione del login.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        MainContext mainContext = ((MainContext) getApplication());
-
-        final IUserServer userServer = mainContext.getUserServer();
-        final ISessionServer sessionServer = mainContext.getSessionServer();
-
-        // Prendo il pulsante presente nell'activity_login
+ 
         Button loginButton = (Button) findViewById(R.id.login_loginButton);
         final Spinner profileSpinner = (Spinner) findViewById(R.id.login_profileSpinner);
         final EditText usernameEditText = (EditText) findViewById(R.id.login_username);
         final EditText passwordEditText = (EditText) findViewById(R.id.login_password);
-        /*
-         @TODO
-         Da capire come utilizzare questo menu a tendina
-         */
+
         /* Popolo il menu a tendina con i profili definiti in strings.xml (login_profiles) .*/
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.login_profiles, android.R.layout.simple_spinner_item);

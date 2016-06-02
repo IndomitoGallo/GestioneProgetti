@@ -12,21 +12,28 @@ import java.util.List;
 import it.uniroma2.gestioneprogettiandroid.R;
 import it.uniroma2.gestioneprogettiandroid.domain.EmployeeOnProject;
 
+/**
+ * Questa classe si occupa di popolare la ListView dei dipendenti
+ * presenti in un progetto.
+ * Viene quindi aggiunto per ogni elemento il nome e cognome del dipendente e
+ * le ore lavorate sul progetto.
+*/
 public class EmployeeOnProjectAdapter extends ArrayAdapter<EmployeeOnProject> {
-    // Questo oggetto inietta un layout XML dentro una view
+
     private LayoutInflater layoutInflater;
 
     public EmployeeOnProjectAdapter(Context context, int resource, List<EmployeeOnProject> objects) {
         super(context, resource, objects);
-
-        // inizializzo sto coso
         layoutInflater = LayoutInflater.from(context);
     }
 
-    /* Questo metodo restituisce l'elemento della lista nella posizione specificata */
+   /**
+    * Per ogni dipendente passato a questo adapter viene generata una view
+    * che rappresenta la riga con il nome, cognome e numero di ore.
+    */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = layoutInflater.inflate(R.layout.dipendente, null); // inietto un elemento della lista nella view
+        View view = layoutInflater.inflate(R.layout.dipendente, null); 
         EmployeeOnProject employeeOnProject = getItem(position);
 
         TextView name = (TextView) view.findViewById(R.id.dipendente_name);

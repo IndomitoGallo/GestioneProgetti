@@ -1,5 +1,8 @@
 package it.uniroma2.gestioneprogettiandroid.tasks.params;
 
+/**
+ * Questa classe rappresenta i parametri di login utilizzati dal task login.
+ */
 public class LoginParams {
     public final String username;
     public final String password;

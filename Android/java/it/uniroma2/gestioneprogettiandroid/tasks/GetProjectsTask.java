@@ -15,19 +15,22 @@ import it.uniroma2.gestioneprogettiandroid.R;
 import it.uniroma2.gestioneprogettiandroid.activity.LoginActivity;
 import it.uniroma2.gestioneprogettiandroid.adapters.ProjectAdapter;
 import it.uniroma2.gestioneprogettiandroid.server.IProjectServer;
-import it.uniroma2.gestioneprogettiandroid.server.ISessionServer;
+import it.uniroma2.gestioneprogettiandroid.token.ISessionTokenDB;
 import it.uniroma2.gestioneprogettiandroid.domain.Project;
 import it.uniroma2.gestioneprogettiandroid.exception.InvalidTokenException;
 import it.uniroma2.gestioneprogettiandroid.exception.NullTokenException;
 import it.uniroma2.gestioneprogettiandroid.exception.ServiceUnavailableException;
 import it.uniroma2.gestioneprogettiandroid.tasks.results.ProjectsResult;
 
+/**
+ * Questa classe rappresenta il task di recupero dei progetti.
+ */
 public class GetProjectsTask extends AsyncTask<Void, Void, ProjectsResult> {
 
     private static boolean isRunning = false;
 
     private final IProjectServer projectServer;
-    private final ISessionServer sessionServer;
+    private final ISessionTokenDB sessionTokenDB;
 
     private final Toast toast;
     private final WeakReference<Activity> activityWeakReference;
@@ -48,12 +51,16 @@ public class GetProjectsTask extends AsyncTask<Void, Void, ProjectsResult> {
         this.SESSION_ERROR = activity.getString(R.string.loginMessage_sessionError);
 
         toast = mainContext.getToast();
-        sessionServer = mainContext.getSessionServer();
+        sessionTokenDB = mainContext.getSessionTokenDB();
         projectServer = mainContext.getProjectServer();
 
         this.activityWeakReference = new WeakReference<>(activity);
     }
 
+    /**
+     * Questo metodo viene lanciato prima dell’avvio del task e verifica che non ci sia già in esecuzione l’operazione in background.
+     * Se lo è, ritorna un messaggio senza avviare il nuovo task.
+     */
     @Override
     protected synchronized void onPreExecute() {
         super.onPreExecute();
@@ -69,10 +76,16 @@ public class GetProjectsTask extends AsyncTask<Void, Void, ProjectsResult> {
         cancel(true);
     }
 
+    /**
+     * Questo metodo effettua su un thread separato le operazioni di recupero dei progetti dal server.
+     * In caso di eccezione, viene ritornato un oggetto ProjectsResult con un’eccezione come parametro.
+     * 
+     * @return il risultato del recupero dei dati
+     */
     @Override
     protected ProjectsResult doInBackground(Void... params) {
         try {
-            String token = sessionServer.getToken();
+            String token = sessionTokenDB.getToken();
             List<Project> projects = projectServer.getPMProjects(token);
 
             return new ProjectsResult(projects);
@@ -81,6 +94,14 @@ public class GetProjectsTask extends AsyncTask<Void, Void, ProjectsResult> {
         }
     }
 
+    /**
+     * Questo metodo viene lanciato dopo l’esecuzione del task in background e prende come parametro il valore di ritorno di doInBackground().
+     * Se il metodo doInBackground() è andato a buon fine, viene settato l’adapter della lista presente nell’activity con i dati recuperati. Altrimenti viene generato un messaggio di errore.
+     * Nel caso in cui ci sia stato un InvalidTokenException o NullTokenException, l’utente viene reindirizzato alla pagina di login.
+     * Il parametro in ingresso può essere un oggetto non valido se il processo in background ha avuto un errore.
+     * 
+     * @param projects il risultato del recupero dei progetti.
+     */
     @Override
     protected void onPostExecute(ProjectsResult projects) {
         Activity a = activityWeakReference.get();

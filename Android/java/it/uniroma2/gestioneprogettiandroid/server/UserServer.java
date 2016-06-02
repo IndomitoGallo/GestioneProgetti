@@ -15,6 +15,18 @@ import it.uniroma2.gestioneprogettiandroid.R;
 import it.uniroma2.gestioneprogettiandroid.exception.ServiceUnavailableException;
 import it.uniroma2.gestioneprogettiandroid.exception.WrongCredentialsException;
 
+
+/**
+ * Questa classe si occupa di effettuare le operazioni di login
+ * e logout inviando le richieste http al server.
+ * È stato scelto di implementarlo tramite il pattern singleton per avere
+ * un’unica istanza globale per tutta l’applicazione.
+ * Al metodo getInstance, che si occupa di ritirare o creare l’unica istanza, 
+ * viene passato il Resources di android in modo tale da rendere disponibile
+ * alla classe le stringhe presenti nel file resource.
+ * Tali stringhe rappresentano delle costanti
+ * utilizzate successivamente durante le richieste HTTP.
+ */
 public final class UserServer implements IUserServer {
 
     private static UserServer instance;
@@ -47,6 +59,19 @@ public final class UserServer implements IUserServer {
         return instance;
     }
 
+    /**
+     * Questo metodo si occupa di effettuare il login tramite una richiesta POST http.
+     *
+     * @param username l’username
+     * @param password la password
+     * @param profileId l’id del profilo
+     *
+     * @throws IOException se è avvenuto un problema di connessione.
+     * @throws WrongCredentialsException se il server non accetta le credenziali inserite
+     * @throws ServiceUnavailableException se il server ha riscontrato un errore interno.
+     *
+     * @return il token della sessione
+     */
     @Override
     public String createSession(final String username, final String password, int profileId) throws IOException, WrongCredentialsException, ServiceUnavailableException {
         HttpURLConnection connection = null;
@@ -98,6 +123,12 @@ public final class UserServer implements IUserServer {
         }
     }
 
+    /**
+     * Questo metodo si occupa di effettuare il logout tramite una richiesta POST http.
+     * @param token il token della sessione
+     *
+     * @throws IOException se è avvenuto un problema di connessione.
+     */
     @Override
     public void deleteSession(String token) throws IOException {
         URL url = new URL("http", host, port, logoutUrl);

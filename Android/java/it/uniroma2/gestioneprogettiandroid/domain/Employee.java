@@ -1,9 +1,9 @@
 package it.uniroma2.gestioneprogettiandroid.domain;
 
-import android.util.Log;
-
-import it.uniroma2.gestioneprogettiandroid.R;
-
+/**
+ * Questa classe fa parte del dominio dell’applicazione e rappresenta
+ * il dipendente.
+ */
 public class Employee {
     private final int id;
     private final String username;

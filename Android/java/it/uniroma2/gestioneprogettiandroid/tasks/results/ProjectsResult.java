@@ -5,7 +5,7 @@ import java.util.List;
 import it.uniroma2.gestioneprogettiandroid.domain.Project;
 
 /**
- * Created by gaudo on 26/05/16.
+ * Questa classe rappresenta il risultato del recupero dei progetti
  */
 public class ProjectsResult {
     private List<Project> projects;

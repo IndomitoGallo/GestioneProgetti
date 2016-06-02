@@ -10,14 +10,17 @@ import java.lang.ref.WeakReference;
 
 import it.uniroma2.gestioneprogettiandroid.MainContext;
 import it.uniroma2.gestioneprogettiandroid.activity.LoginActivity;
-import it.uniroma2.gestioneprogettiandroid.server.ISessionServer;
+import it.uniroma2.gestioneprogettiandroid.token.ISessionTokenDB;
 import it.uniroma2.gestioneprogettiandroid.server.IUserServer;
 import it.uniroma2.gestioneprogettiandroid.exception.NullTokenException;
 
-public class LogoutTask extends AsyncTask<Void, Void, Exception> {
+/**
+ * Questa classe rappresenta il task dell’operazione di logout.
+ */
+public class LogoutTask extends AsyncTask<Void, Void, Void> {
 
     private final IUserServer userServer;
-    private final ISessionServer sessionServer;
+    private final ISessionTokenDB sessionTokenDB;
     private final WeakReference<Activity> context;
     private final Toast toast;
 
@@ -30,22 +33,25 @@ public class LogoutTask extends AsyncTask<Void, Void, Exception> {
 
         toast = mainContext.getToast();
         userServer = mainContext.getUserServer();
-        sessionServer = mainContext.getSessionServer();
+        sessionTokenDB = mainContext.getSessionTokenDB();
 
         this.context = new WeakReference<>(context);
     }
 
+    /**
+     * Questo metodo effettua su un thread separato l’operazione di logout.
+     */
     @Override
-    protected Exception doInBackground(Void... params) {
+    protected Void doInBackground(Void... params) {
         String token = null;
 
         try {
-            token = sessionServer.getToken();
+            token = sessionTokenDB.getToken();
         } catch (NullTokenException e) {
             return null;
         }
 
-        sessionServer.deleteToken();
+        sessionTokenDB.deleteToken();
 
         try {
             userServer.deleteSession(token);
@@ -54,19 +60,15 @@ public class LogoutTask extends AsyncTask<Void, Void, Exception> {
         return null;
     }
 
+    /**
+     * Questo metodo viene lanciato dopo l’esecuzione del task in background ed avvia la LoginActivity.
+     */
     @Override
-    protected void onPostExecute(Exception e) {
+    protected void onPostExecute(Void v) {
         Activity c = context.get();
 
         if(c == null)
             return;
-
-        if (e != null) {
-            toast.setText(e.getMessage());
-            toast.show();
-
-            return;
-        }
 
         Intent intent = new Intent(c, LoginActivity.class);
         c.startActivity(intent);
@@ -79,6 +81,10 @@ public class LogoutTask extends AsyncTask<Void, Void, Exception> {
         isRunning = false;
     }
 
+    /**
+     * Questo metodo viene lanciato prima dell’avvio del task e verifica che non ci sia già in esecuzione l’operazione in background.
+     * Se lo è, ritorna un messaggio senza avviare il nuovo task.
+     */
     @Override
     protected synchronized void onPreExecute() {
         super.onPreExecute();
