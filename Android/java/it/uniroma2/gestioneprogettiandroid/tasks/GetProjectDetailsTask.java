@@ -61,7 +61,7 @@ public class GetProjectDetailsTask extends AsyncTask<Integer, Void, ProjectDetai
     }
 
     /**
-     * Questo metodo viene lanciato prima dell’avvio del task e verifica che non ci sia già in esecuzione l’operazione in background.
+     * Questo metodo viene lanciato prima dell'avvio del task e verifica che non ci sia già in esecuzione l'operazione in background.
      * Se lo è, ritorna un messaggio senza avviare il nuovo task.
      */
     @Override
@@ -81,9 +81,9 @@ public class GetProjectDetailsTask extends AsyncTask<Integer, Void, ProjectDetai
 
     /**
      * Questo metodo effettua su un thread separato le operazioni di recupero dei dati di un progetto dal server.
-     * In caso di eccezione, viene ritornato un oggetto ProjectDetailsResult con un’eccezione come parametro.
+     * In caso di eccezione, viene ritornato un oggetto ProjectDetailsResult con un'eccezione come parametro.
      * 
-     * @param params l’id del progetto da recuperare.
+     * @param params l'id del progetto da recuperare.
      * 
      * @return il risultato del recupero dei dati
      */
@@ -100,10 +100,10 @@ public class GetProjectDetailsTask extends AsyncTask<Integer, Void, ProjectDetai
     }
 
     /**
-     * Questo metodo viene lanciato dopo l’esecuzione del task in background e prende come parametro il valore di ritorno di doInBackground().
-     * Se il metodo doInBackground() è andato a buon fine, viene inserito nei textField dell’activity i dettagli del progetto e
-     * viene settato l’adapter della ListView con la lista dei dipendenti <-> ore. Altrimenti viene generato un messaggio di errore.
-     * Nel caso in cui ci sia stato un InvalidTokenException o NullTokenException, l’utente viene reindirizzato alla pagina di login.
+     * Questo metodo viene lanciato dopo l'esecuzione del task in background e prende come parametro il valore di ritorno di doInBackground().
+     * Se il metodo doInBackground() è andato a buon fine, viene inserito nei textField dell'activity i dettagli del progetto e
+     * viene settato l'adapter della ListView con la lista dei dipendenti <-> ore. Altrimenti viene generato un messaggio di errore.
+     * Nel caso in cui ci sia stato un InvalidTokenException o NullTokenException, l'utente viene reindirizzato alla pagina di login.
      * Il parametro in ingresso può essere un oggetto non valido se il processo in background ha avuto un errore.
      * 
      * @param projectDetailsResult il risultato del recupero dei dettagli di un progetto.

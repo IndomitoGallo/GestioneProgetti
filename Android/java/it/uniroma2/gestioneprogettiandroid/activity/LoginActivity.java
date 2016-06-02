@@ -15,7 +15,7 @@ import it.uniroma2.gestioneprogettiandroid.tasks.LoginTask;
 import it.uniroma2.gestioneprogettiandroid.tasks.params.LoginParams;
 
 /**
- * Activity principale dell’applicazione che rappresenta
+ * Activity principale dell'applicazione che rappresenta
  * la finestra di login.
  * In essa sono presenti i campi per inserire nome utente, password,
  * un menu a tendina per selezionare il profilo e il pulsante di login.
@@ -24,14 +24,14 @@ public class LoginActivity extends AppCompatActivity {
 
 
     /**
-     * Tramite questo metodo verranno caricati all’avvio dell’activity il
-     * layout dell’interfaccia di login, verrà popolato il menu a tendina
-     * con l’array di stringhe presente nelle risorse e verrà creato
+     * Tramite questo metodo verranno caricati, all'avvio dell'activity, il
+     * layout dell'interfaccia di login, verrà popolato il menu a tendina
+     * con l'array di stringhe presente nelle risorse e verrà creato
      * un listener sul pulsante di login.
      * 
      * Dopo aver cliccato il pulsante di login, il listener eseguirà un
      * controllo di correttezza sui campi e, eventualmente, farà partire
-     * il LoginTask; ovvero l’esecuzione del login.
+     * il LoginTask; ovvero l'esecuzione del login.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {

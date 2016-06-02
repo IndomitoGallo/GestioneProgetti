@@ -35,7 +35,7 @@ public class ProjectAdapter extends ArrayAdapter<Project> {
      * un pulsante "visualizza".
      * Inoltre, per ogni pulsante viene registrato un listener.
      * Una volta cliccato uno dei pulsanti, il rispettivo listener lancerà 
-     * l’activity ShowProjectActivity passandogli come parametro extra l’id
+     * l'activity ShowProjectActivity passandogli come parametro extra l'id
      * del progetto.
      */
     @Override

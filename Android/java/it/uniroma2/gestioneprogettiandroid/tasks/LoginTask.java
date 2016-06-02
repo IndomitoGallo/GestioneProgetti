@@ -19,7 +19,7 @@ import it.uniroma2.gestioneprogettiandroid.tasks.params.LoginParams;
 import it.uniroma2.gestioneprogettiandroid.tasks.results.LoginResult;
 
 /**
- * Questa classe rappresenta il task dell’operazione di login.
+ * Questa classe rappresenta il task dell'operazione di login.
  */
 public class LoginTask extends AsyncTask<LoginParams, String, LoginResult> {
 
@@ -55,8 +55,8 @@ public class LoginTask extends AsyncTask<LoginParams, String, LoginResult> {
     }
 
     /**
-     * Questo metodo effettua su un thread separato l’operazione di login.
-     * In caso di eccezione, viene ritornato un oggetto LoginResult con un’eccezione come parametro.
+     * Questo metodo effettua su un thread separato l'operazione di login.
+     * In caso di eccezione, viene ritornato un oggetto LoginResult con un'eccezione come parametro.
      * 
      * @param params i parametri di login
      *
@@ -77,7 +77,7 @@ public class LoginTask extends AsyncTask<LoginParams, String, LoginResult> {
     }
 
     /**
-     * Questo metodo viene lanciato prima dell’avvio del task e verifica che non ci sia già in esecuzione l’operazione in background.
+     * Questo metodo viene lanciato prima dell'avvio del task e verifica che non ci sia già in esecuzione l'operazione in background.
      * Se lo è, ritorna un messaggio senza avviare il nuovo task.
      */
     @Override
@@ -96,7 +96,7 @@ public class LoginTask extends AsyncTask<LoginParams, String, LoginResult> {
     }
 
     /**
-     * Questo metodo viene lanciato dopo l’esecuzione del task in background e prende come parametro il valore di ritorno di doInBackground().
+     * Questo metodo viene lanciato dopo l'esecuzione del task in background e prende come parametro il valore di ritorno di doInBackground().
      * Se il metodo doInBackground() è andato a buon fine, viene avviata la MainActivity. Altrimenti viene generato un messaggio di errore.
      * Il parametro in ingresso può essere un oggetto non valido se il processo in background ha avuto un errore.
      * 

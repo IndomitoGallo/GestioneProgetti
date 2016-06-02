@@ -1,8 +1,8 @@
 package it.uniroma2.gestioneprogettiandroid.domain;
 
 /**
- * Questa classe fa parte del dominio dell’applicazione e rappresenta
- * l’associazione dipendente <-> ore lavorate su un progetto.
+ * Questa classe fa parte del dominio dell'applicazione e rappresenta
+ * l'associazione dipendente <-> ore lavorate su un progetto.
  */ 
 public class EmployeeOnProject {
 

@@ -1,7 +1,7 @@
 package it.uniroma2.gestioneprogettiandroid.domain;
 
 /**
- * Questa classe fa parte del dominio dell’applicazione e rappresenta
+ * Questa classe fa parte del dominio dell'applicazione e rappresenta
  * un singolo progetto.
  */ 
 public class Project {

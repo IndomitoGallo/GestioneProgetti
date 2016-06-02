@@ -3,7 +3,7 @@ package it.uniroma2.gestioneprogettiandroid.domain;
 import java.util.List;
 
 /**
- * Questa classe fa parte del dominio dell’applicazione e rappresenta
+ * Questa classe fa parte del dominio dell'applicazione e rappresenta
  * i dettagli di un singolo progetto.
  */ 
 public class ProjectDetails {

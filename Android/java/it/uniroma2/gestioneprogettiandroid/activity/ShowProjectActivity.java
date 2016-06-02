@@ -7,7 +7,7 @@ import it.uniroma2.gestioneprogettiandroid.R;
 import it.uniroma2.gestioneprogettiandroid.tasks.GetProjectDetailsTask;
 
 /**
- * Activity dell’applicazione che rappresenta la finestra di
+ * Activity dell'applicazione che rappresenta la finestra di
  * visualizzazione di un progetto specifico.
  * In essa sono presenti tutti i dettagli del progetto e la lista dei 
  * dipendenti che hanno lavorato al progetto e le ore lavorate
@@ -17,8 +17,8 @@ import it.uniroma2.gestioneprogettiandroid.tasks.GetProjectDetailsTask;
 public class ShowProjectActivity extends AppCompatActivity {
 
     /**
-     * Tramite questo metodo verrà caricato, all’avvio dell’activity, il
-     * layout dell’interfaccia grafica.
+     * Tramite questo metodo verrà caricato, all'avvio dell'activity, il
+     * layout dell'interfaccia grafica.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +28,10 @@ public class ShowProjectActivity extends AppCompatActivity {
 
     /**
      * Questo metodo si occupa di avviare il task di recupero dei
-     * dati dal server una volta ripresa l’esecuzione dell’applicazione.
+     * dati dal server una volta ripresa l'esecuzione dell'applicazione.
      *
      * NB: Questo metodo viene richiamato anche alla prima
-     * creazione dell’activity!
+     * creazione dell'activity!
      */
     @Override
     protected void onResume()

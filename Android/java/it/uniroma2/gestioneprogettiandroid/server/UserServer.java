@@ -20,8 +20,8 @@ import it.uniroma2.gestioneprogettiandroid.exception.WrongCredentialsException;
  * Questa classe si occupa di effettuare le operazioni di login
  * e logout inviando le richieste http al server.
  * È stato scelto di implementarlo tramite il pattern singleton per avere
- * un’unica istanza globale per tutta l’applicazione.
- * Al metodo getInstance, che si occupa di ritirare o creare l’unica istanza, 
+ * un'unica istanza globale per tutta l'applicazione.
+ * Al metodo getInstance, che si occupa di ritirare o creare l'unica istanza,
  * viene passato il Resources di android in modo tale da rendere disponibile
  * alla classe le stringhe presenti nel file resource.
  * Tali stringhe rappresentano delle costanti
@@ -62,9 +62,9 @@ public final class UserServer implements IUserServer {
     /**
      * Questo metodo si occupa di effettuare il login tramite una richiesta POST http.
      *
-     * @param username l’username
+     * @param username l'username
      * @param password la password
-     * @param profileId l’id del profilo
+     * @param profileId l'id del profilo
      *
      * @throws IOException se è avvenuto un problema di connessione.
      * @throws WrongCredentialsException se il server non accetta le credenziali inserite

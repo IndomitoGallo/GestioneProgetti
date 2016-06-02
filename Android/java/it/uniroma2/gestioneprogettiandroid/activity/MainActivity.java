@@ -11,7 +11,7 @@ import it.uniroma2.gestioneprogettiandroid.tasks.GetProjectsTask;
 import it.uniroma2.gestioneprogettiandroid.tasks.LogoutTask;
 
 /**
- * Activity dell’applicazione che rappresenta la finestra principale 
+ * Activity dell'applicazione che rappresenta la finestra principale
  * una volta effettuato il login.
  * In essa sono presenti un campo indicante il nome del progetto, il pulsante
  * di logout, il pulsante di refresh e la lista dei progetti. Ciascun elemento
@@ -21,8 +21,8 @@ import it.uniroma2.gestioneprogettiandroid.tasks.LogoutTask;
 public class MainActivity extends AppCompatActivity {
 
     /**
-     * Tramite questo metodo verrà caricato, all’avvio dell’activity, il
-     * layout dell’interfaccia principale e verranno creati dei listener
+     * Tramite questo metodo verrà caricato, all'avvio dell'activity, il
+     * layout dell'interfaccia principale e verranno creati dei listener
      * sui pulsanti di refresh e logout.
      * I due listener attiveranno il proprio task una volta
      * cliccato il rispettivo pulsante.
@@ -53,10 +53,10 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Questo metodo si occupa di avviare il task di recupero dei
-     * dati dal server una volta ripresa l’esecuzione dell’applicazione.
+     * dati dal server una volta ripresa l'esecuzione dell'applicazione.
      *
      * NB: Questo metodo viene richiamato anche alla prima
-     * creazione dell’activity!
+     * creazione dell'activity!
      */
     @Override
     protected void onResume()

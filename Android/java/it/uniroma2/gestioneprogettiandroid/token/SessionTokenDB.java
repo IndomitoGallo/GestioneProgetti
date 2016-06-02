@@ -9,8 +9,8 @@ import it.uniroma2.gestioneprogettiandroid.exception.NullTokenException;
  * Questa classe si occupa di salvare/cancellare e recuperare da un database interno di android
  * il token utilizzato successivamente nelle richieste http.
  * È stato scelto di implementarlo tramite il pattern singleton per avere
- * un’unica istanza globale per tutta l’applicazione.
- * Al metodo getInstance, che si occupa di ritirare o creare l’unica istanza, 
+ * un'unica istanza globale per tutta l'applicazione.
+ * Al metodo getInstance, che si occupa di ritirare o creare l'unica istanza,
  * viene passato il Context di android in modo tale da rendere disponibile
  * lo SharedPreferences.
  */

@@ -29,8 +29,8 @@ import it.uniroma2.gestioneprogettiandroid.exception.ServiceUnavailableException
  * Questa classe si occupa di effettuare operazioni di recupero dei dati
  * dei progetti dal server tramite richieste HTTP.
  * È stato scelto di implementarlo tramite il pattern singleton per avere
- * un’unica istanza globale per tutta l’applicazione.
- * Al metodo getInstance, che si occupa di ritirare o creare l’unica istanza, 
+ * un'unica istanza globale per tutta l'applicazione.
+ * Al metodo getInstance, che si occupa di ritirare o creare l'unica istanza,
  * viene passato il Context di android in modo tale da rendere disponibile
  * alla classe le stringhe presenti nel file resource.
  * Tali stringhe rappresentano delle costanti
@@ -197,7 +197,7 @@ public final class ProjectServer implements IProjectServer {
      * Questo metodo si occupa di recuperare i dettagli di un progetto specifico dal server
      * tramite una richiesta GET http.
      *
-     * @param id l’id del progetto da recuperare
+     * @param id l'id del progetto da recuperare
      * @param sessionId il token di sessione
      *
      * @throws IOException se è avvenuto un problema di connessione.

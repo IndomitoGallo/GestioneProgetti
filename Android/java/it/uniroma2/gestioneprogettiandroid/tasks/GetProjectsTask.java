@@ -58,7 +58,7 @@ public class GetProjectsTask extends AsyncTask<Void, Void, ProjectsResult> {
     }
 
     /**
-     * Questo metodo viene lanciato prima dell’avvio del task e verifica che non ci sia già in esecuzione l’operazione in background.
+     * Questo metodo viene lanciato prima dell'avvio del task e verifica che non ci sia già in esecuzione l'operazione in background.
      * Se lo è, ritorna un messaggio senza avviare il nuovo task.
      */
     @Override
@@ -78,7 +78,7 @@ public class GetProjectsTask extends AsyncTask<Void, Void, ProjectsResult> {
 
     /**
      * Questo metodo effettua su un thread separato le operazioni di recupero dei progetti dal server.
-     * In caso di eccezione, viene ritornato un oggetto ProjectsResult con un’eccezione come parametro.
+     * In caso di eccezione, viene ritornato un oggetto ProjectsResult con un'eccezione come parametro.
      * 
      * @return il risultato del recupero dei dati
      */
@@ -95,9 +95,9 @@ public class GetProjectsTask extends AsyncTask<Void, Void, ProjectsResult> {
     }
 
     /**
-     * Questo metodo viene lanciato dopo l’esecuzione del task in background e prende come parametro il valore di ritorno di doInBackground().
-     * Se il metodo doInBackground() è andato a buon fine, viene settato l’adapter della lista presente nell’activity con i dati recuperati. Altrimenti viene generato un messaggio di errore.
-     * Nel caso in cui ci sia stato un InvalidTokenException o NullTokenException, l’utente viene reindirizzato alla pagina di login.
+     * Questo metodo viene lanciato dopo l'esecuzione del task in background e prende come parametro il valore di ritorno di doInBackground().
+     * Se il metodo doInBackground() è andato a buon fine, viene settato l'adapter della lista presente nell'activity con i dati recuperati. Altrimenti viene generato un messaggio di errore.
+     * Nel caso in cui ci sia stato un InvalidTokenException o NullTokenException, l'utente viene reindirizzato alla pagina di login.
      * Il parametro in ingresso può essere un oggetto non valido se il processo in background ha avuto un errore.
      * 
      * @param projects il risultato del recupero dei progetti.

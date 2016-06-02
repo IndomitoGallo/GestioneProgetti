@@ -12,7 +12,7 @@ import it.uniroma2.gestioneprogettiandroid.server.UserServer;
 
 /**
  * Questa classe mantiene gli oggetti che devono poter
- * essere accessibili da tutta l’applicazione. Nel nostro caso, i singleton
+ * essere accessibili da tutta l'applicazione. Nel nostro caso, i singleton
  * per il recupero dei dati dal server. Il Toast globale viene utilizzato per
  * fare in modo che i messaggi a comparsa vengano sovrascritti
  * e non inseriti in coda (Messaggi più reattivi).

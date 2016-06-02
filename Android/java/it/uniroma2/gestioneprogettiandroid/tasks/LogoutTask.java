@@ -15,7 +15,7 @@ import it.uniroma2.gestioneprogettiandroid.server.IUserServer;
 import it.uniroma2.gestioneprogettiandroid.exception.NullTokenException;
 
 /**
- * Questa classe rappresenta il task dell’operazione di logout.
+ * Questa classe rappresenta il task dell'operazione di logout.
  */
 public class LogoutTask extends AsyncTask<Void, Void, Void> {
 
@@ -39,7 +39,7 @@ public class LogoutTask extends AsyncTask<Void, Void, Void> {
     }
 
     /**
-     * Questo metodo effettua su un thread separato l’operazione di logout.
+     * Questo metodo effettua su un thread separato l'operazione di logout.
      */
     @Override
     protected Void doInBackground(Void... params) {
@@ -61,7 +61,7 @@ public class LogoutTask extends AsyncTask<Void, Void, Void> {
     }
 
     /**
-     * Questo metodo viene lanciato dopo l’esecuzione del task in background ed avvia la LoginActivity.
+     * Questo metodo viene lanciato dopo l'esecuzione del task in background ed avvia la LoginActivity.
      */
     @Override
     protected void onPostExecute(Void v) {
@@ -82,7 +82,7 @@ public class LogoutTask extends AsyncTask<Void, Void, Void> {
     }
 
     /**
-     * Questo metodo viene lanciato prima dell’avvio del task e verifica che non ci sia già in esecuzione l’operazione in background.
+     * Questo metodo viene lanciato prima dell'avvio del task e verifica che non ci sia già in esecuzione l'operazione in background.
      * Se lo è, ritorna un messaggio senza avviare il nuovo task.
      */
     @Override
