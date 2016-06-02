@@ -84,7 +84,7 @@ export class AdminViewUserComponent implements OnInit {
 
                                   this.active = true;
                                },
-                               error =>  this.errorMessage = "Impossibile visualizzare le info dell'utente selezionato"
+                               error =>  this.errorMessage = <any>error
                           );
 
     }

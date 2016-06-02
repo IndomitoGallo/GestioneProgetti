@@ -1,69 +1,135 @@
 <div class="container">
 		<h2>Aggiornamento Utente</h2>
 
-    <form id="addUser_form" name="addUser" #addUserForm="ngForm">
+		<!-- UTENTE ATTIVO -->
+    <form *ngIf="activated" id="updateUser_form" name="updateUser" #updateUserForm="ngForm">
 				<div class="form-group">
 						<label for="name">Name</label>
-		        <input #name="ngForm" [(ngModel)]="user.name" type="text" class="form-control" id="name" name="name" placeholder="Name" required ngControl="name"/>
+		        <input #name="ngForm" [(ngModel)]="user.name" type="text" class="form-control" id="name" name="name" required ngControl="name"/>
 		        <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
 		            Name is required
 		        </div>
 				</div>
         <div class="form-group">
 						<label for="surname">Surname</label>
-		        <input #surname="ngForm" [(ngModel)]="user.surname" type="text" class="form-control" id="surname" name="surname" placeholder="Surname" required ngControl="surname"/>
+		        <input #surname="ngForm" [(ngModel)]="user.surname" type="text" class="form-control" id="surname" name="surname" required ngControl="surname"/>
 		        <div [hidden]="surname.valid || surname.pristine" class="alert alert-danger">
 		           Surname is required
 		        </div>
 				</div>
         <div class="form-group">
 						<label for="username">Username</label>
-		        <input #username="ngForm" [(ngModel)]="user.username" type="text" class="form-control" id="username" name="username" placeholder="Username" required ngControl="username"/>
+		        <input #username="ngForm" [(ngModel)]="user.username" type="text" class="form-control" id="username" name="username" required ngControl="username"/>
 		        <div [hidden]="username.valid || username.pristine" class="alert alert-danger">
 		            Username is required
 		        </div>
 				</div>
         <div class="form-group">
 						<label for="email">Email</label>
-		        <input #email="ngForm" [(ngModel)]="user.email" type="email" class="form-control" id="email" name="email" placeholder="email@example.com" required ngControl="email"/>
+		        <input #email="ngForm" [(ngModel)]="user.email" type="email" pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*" class="form-control" id="email" name="email" required ngControl="email"/>
 		        <div [hidden]="email.valid || email.pristine" class="alert alert-danger">
 		            Email is required
 		        </div>
 				</div>
 				<div class="form-group">
 		        <label for="pwd">Password</label>
-		        <input #pwd="ngForm" [(ngModel)]="user.passowrd" type="password" class="form-control" id="pwd" name="pwd" maxlength="10" placeholder="*****" required ngControl="pwd"/>
+		        <input #pwd="ngForm" [(ngModel)]="user.passowrd" type="password" class="form-control" id="pwd" name="pwd" maxlength="10" required ngControl="pwd"/>
 		        <div [hidden]="pwd.valid || pwd.pristine" class="alert alert-danger">
 		            Password is required
 		        </div>
 				</div>
         <div class="form-group">
             <label for="email">Skill</label>
-            <textarea #skill="ngForm" [(ngModel)]="user.skill" class="form-control" id="skill" name="skill" maxlength="255" placeholder="Scrivi qui le competenze dell'utente" rows="8" required ngControl="skill"></textarea>
+            <textarea #skill="ngForm" [(ngModel)]="user.skill" class="form-control" id="skill" name="skill" maxlength="255" rows="8" required ngControl="skill"></textarea>
             <div [hidden]="skill.valid || skill.pristine" class="alert alert-danger">
                 Skill is required
             </div>
         </div>
         <strong>Scegli uno o più profili da associare all'utente:</strong>
 				<div class="checkbox">
-						<label>
+						<label *ngIf="dipendente">
+								<input #dipendente id="dipendente" name="dipendente" type="checkbox" [checked]=true value="true" (click)="isSelected('dip')"/>
+								Dipendente
+						</label>
+						<label *ngIf="!dipendente">
 								<input #dipendente id="dipendente" name="dipendente" type="checkbox" value="true" (click)="isSelected('dip')"/>
 								Dipendente
 						</label>
-						<label>
+						<label *ngIf="pm">
+								<input #pm id="pm" name="pm" type="checkbox" value="true" [checked]=true (click)="isSelected('pm')"/>
+								Project Manager
+						</label>
+						<label *ngIf="!pm">
 								<input #pm id="pm" name="pm" type="checkbox" value="true" (click)="isSelected('pm')"/>
 								Project Manager
 						</label>
         </div>
-        <button class="btn btn-default" (click)="updateUser($event, name.value, surname.value, username.value, email.value, pwd.value, skill.value);" [disabled]="!addUserForm.form.valid">
+        <button class="btn btn-default" (click)="updateUser($event, name.value, surname.value, username.value, email.value, pwd.value, skill.value);" [disabled]="!updateUserForm.form.valid">
 						Aggiorna
 				</button>
 				<button class="btn btn-default" (click)="goBack()">
 						Torna Indietro
 				</button>
 				<br><br>
-				<div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
+				
     </form>
+
+		<!-- UTENTE DISATTIVATO -->
+		<form *ngIf="deactivated" id="updateUser_form" name="updateUser" #updateUserForm="ngForm">
+				<h3>L'utente selezionato risulta essere disattivato</h3>
+				<div class="form-group">
+						<label for="name">Name</label>
+		        <input #name="ngForm" [(ngModel)]="user.name" type="text" class="form-control" id="name" name="name" readonly ngControl="name"/>
+				</div>
+        <div class="form-group">
+						<label for="surname">Surname</label>
+		        <input #surname="ngForm" [(ngModel)]="user.surname" type="text" class="form-control" id="surname" name="surname" readonly ngControl="surname"/>
+				</div>
+        <div class="form-group">
+						<label for="username">Username</label>
+		        <input #username="ngForm" [(ngModel)]="user.username" type="text" class="form-control" id="username" name="username" readonly ngControl="username"/>
+				</div>
+        <div class="form-group">
+						<label for="email">Email</label>
+		        <input #email="ngForm" [(ngModel)]="user.email" type="email" pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*" class="form-control" id="email" name="email" readonly ngControl="email"/>
+				</div>
+				<div class="form-group">
+		        <label for="pwd">Password</label>
+		        <input #pwd="ngForm" [(ngModel)]="user.passowrd" type="password" class="form-control" id="pwd" name="pwd" maxlength="10" readonly ngControl="pwd"/>
+				</div>
+        <div class="form-group">
+            <label for="email">Skill</label>
+            <textarea #skill="ngForm" [(ngModel)]="user.skill" class="form-control" id="skill" name="skill" maxlength="255" rows="8" readonly ngControl="skill"></textarea>
+        </div>
+        <strong>Scegli uno o più profili da associare all'utente:</strong>
+				<div class="checkbox">
+						<label *ngIf="dipendente">
+								<input #dipendente id="dipendente" name="dipendente" type="checkbox" disabled="true" readonly [checked]=true value="true" />
+								Dipendente
+						</label>
+						<label *ngIf="!dipendente">
+								<input #dipendente id="dipendente" name="dipendente" type="checkbox" disabled="true" readonly value="true" />
+								Dipendente
+						</label>
+						<label *ngIf="pm">
+								<input #pm id="pm" name="pm" type="checkbox" disabled="true" readonly value="true" [checked]=true />
+								Project Manager
+						</label>
+						<label *ngIf="!pm">
+								<input #pm id="pm" name="pm" type="checkbox" disabled="true" readonly value="true"/>
+								Project Manager
+						</label>
+        </div>
+				<button class="btn btn-default" (click)="activateUser($event)">
+						Riattiva
+				</button>
+				<button class="btn btn-default" (click)="goBack()">
+						Torna Indietro
+				</button>
+				<br><br>
+				
+    </form>
+    <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
 
 </div>
 

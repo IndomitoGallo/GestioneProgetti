@@ -57,7 +57,7 @@ export class AdminComponent implements OnInit {
                                                         error =>  this.errorMessage = "Impossibile caricare la lista degli utenti"
                                                    );
                                },
-                               error =>  this.errorMessage = "Impossibile eliminare l'utente selezionato"
+                               error =>  this.errorMessage = <any>error
                           );
 
     }
@@ -75,7 +75,7 @@ export class AdminComponent implements OnInit {
                                 esito => {
                                   this._router.navigate( ['Login'] );
                                 },
-                                error => this.errorMessage = "Impossibile effettuare il Logout"
+                                error =>  this.errorMessage = <any>error
                           );
     }
 
@@ -87,7 +87,7 @@ export class AdminComponent implements OnInit {
         this._adminService.getUsers(this.sessionId)
                          .subscribe(
                                users  => this.users = users,
-                               error =>  this.errorMessage = "Impossibile caricare la lista degli utenti"
+                               error =>  this.errorMessage = <any>error
                           );
     }
 

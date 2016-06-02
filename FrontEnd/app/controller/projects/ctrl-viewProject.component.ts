@@ -48,7 +48,7 @@ export class CtrlViewProjectComponent implements OnInit {
         //Recupero l'id dell'utente da visualizzare
         this.projectId = this.routeParams.get('projectId');
         console.log("ViewProject PROJECT: " + this.projectId);
-        //carico dal server le info dell'utente da visualizzare
+        //carico dal server le info del progetto da visualizzare
         this._ctrlService.getProject(this.sessionId, this.projectId)
                          .subscribe(
                                projectEmployeesHours => {
@@ -65,7 +65,7 @@ export class CtrlViewProjectComponent implements OnInit {
                                    console.log("Employees = " + JSON.stringify(this.employees));
                                    this.active = true;
                                },
-                               error =>  this.errorMessage = "Impossibile visualizzare le info del progetto selezionato"
+                               error =>  this.errorMessage = <any>error
                           );
 
     }
@@ -76,10 +76,11 @@ export class CtrlViewProjectComponent implements OnInit {
     parseEmployees() {
         var user: User;
         var hour: number;
-        for(var i=0; i < this.dipendenti.length; i++) {
+        var length = this.dipendenti.length;
+        for(var i=0; i < length; i++) {
             user = this.dipendenti.shift();
             hour = this.hours.shift();
-            var employee = new Employee(user.name + user.surname, hour);
+            var employee = new Employee(user.name + " " + user.surname, hour);
             this.employees.push(employee);
         }
     }

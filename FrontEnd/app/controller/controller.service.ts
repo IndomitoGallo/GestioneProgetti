@@ -6,6 +6,9 @@ import {Observable}     from 'rxjs/Observable';
 import { User } from '../model/user';
 import { Project } from '../model/project';
 import { ProjectEmployeesHours } from '../model/projectEmployeesHours';
+import { PmsEmployees }    from '../model/pmsEmployees';
+import { ProjectEmployees }    from '../model/projectEmployees';
+import { ProjectForm }    from '../model/projectForm';
 
 @Injectable()
 export class ControllerService {
@@ -22,7 +25,7 @@ export class ControllerService {
 
         return this.http.post(BackEndURL + '/logout', body, options)
                               .map(this.response)
-                              .catch(this.handleError);
+                              .catch(this.handleErrorLogout);
 
     }
 
@@ -30,14 +33,57 @@ export class ControllerService {
     getProjects(sessionId: string): Observable<Project[]> {
         return this.http.get(BackEndURL + '/projects?sessionId=' + sessionId)
                         .map(this.extractData)
-                        .catch(this.handleError);
+                        .catch(this.handleErrorProjects);
     }
 
     //getProject
     getProject(sessionId: string, projectId: string): Observable<ProjectEmployeesHours> {
         return this.http.get(BackEndURL + '/projects/' + projectId + '?sessionId=' + sessionId)
                         .map(this.extractData)
-                        .catch(this.handleError);
+                        .catch(this.handleErrorProject);
+    }
+
+    //getPmsEmployees
+    getPmsEmployees(sessionId: string): Observable<PmsEmployees> {
+        return this.http.get(BackEndURL + '/projects/pmsemployees?sessionId=' + sessionId)
+                        .map(this.extractData)
+                        .catch(this.handleErrorPmsEmployees);
+    }
+
+    //getProjectForm
+    getProjectForm(sessionId: string, projectId: string): Observable<ProjectForm> {
+        return this.http.get(BackEndURL + '/projects/form/' + projectId + '?sessionId=' + sessionId)
+                        .map(this.extractData)
+                        .catch(this.handleErrorProjectForm);
+    }
+
+    //insertProject
+    addProject(sessionId: string, project: Project, employees: number[]): Observable<string> {
+
+        var projectEmployees: ProjectEmployees = new ProjectEmployees(project, employees, sessionId);
+        let body = JSON.stringify(projectEmployees);
+        console.log("RequestBody: " + body);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        return this.http.post(BackEndURL + '/projects', body, options)
+                              .map(this.response)
+                              .catch(this.handleErrorAdd);
+
+    }
+
+    //updateProject
+    updateProject(sessionId: string, project: Project, employees: number[]): Observable<string> {
+
+        let body = JSON.stringify({ project, employees, sessionId });
+        console.log("RequestBody: " + body);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        return this.http.put(BackEndURL + '/projects/' + project.id, body, options)
+                              .map(this.response)
+                              .catch(this.handleErrorUpdate);
+
     }
 
     /*
@@ -55,10 +101,112 @@ export class ControllerService {
     /*
      * Il metodo handleError serve a catturare un eventuale errore proveniente dal server.
      */
-    private handleError (error: any) {
-        // In a real world app, we might send the error to remote logging infrastructure
-        let errMsg = error.message || 'Server error';
-        console.error(errMsg); // log to console instead
+    private handleErrorProject(error: any) {
+        console.log("Error: " + JSON.stringify(error));
+        let errMsg;
+        if(error.status == 401) {
+            errMsg = "La sessione è scaduta: effettuare nuovamente il Login"
+        }
+        else {
+            errMsg = "Non è possibile al momento visionare le informazioni del progetto selezionato";
+        }
+        console.error("ErrorMessage: " + errMsg);
+        return Observable.throw(errMsg);
+    }
+
+    /*
+     * Il metodo handleError serve a catturare un eventuale errore proveniente dal server.
+     */
+    private handleErrorProjects(error: any) {
+        console.log("Error: " + JSON.stringify(error));
+        let errMsg;
+        if(error.status == 401) {
+            errMsg = "La sessione è scaduta: effettuare nuovamente il Login"
+        }
+        else {
+            errMsg = "Non è possibile al momento visionare la lista dei progetti";
+        }
+        console.error("ErrorMessage: " + errMsg);
+        return Observable.throw(errMsg);
+    }
+
+    /*
+     * Il metodo handleError serve a catturare un eventuale errore proveniente dal server.
+     */
+    private handleErrorPmsEmployees(error: any) {
+        console.log("Error: " + JSON.stringify(error));
+        let errMsg;
+        if(error.status == 401) {
+            errMsg = "La sessione è scaduta: effettuare nuovamente il Login"
+        }
+        else {
+            errMsg = "Non è possibile al momento visionare la lista dei Project Manager e dei Dipendenti";
+        }
+        console.error("ErrorMessage: " + errMsg);
+        return Observable.throw(errMsg);
+    }
+
+    /*
+     * Il metodo handleError serve a catturare un eventuale errore proveniente dal server.
+     */
+    private handleErrorProjectForm(error: any) {
+        console.log("Error: " + JSON.stringify(error));
+        let errMsg;
+        if(error.status == 401) {
+            errMsg = "La sessione è scaduta: effettuare nuovamente il Login"
+        }
+        else {
+            errMsg = "Non è possibile al momento visionare le informazioni del progetto che si vuole aggiornare";
+        }
+        console.error("ErrorMessage: " + errMsg);
+        return Observable.throw(errMsg);
+    }
+
+    /*
+     * Il metodo handleError serve a catturare un eventuale errore proveniente dal server.
+     */
+    private handleErrorAdd(error: any) {
+        console.log("Error: " + JSON.stringify(error));
+        let errMsg;
+        if(error.status == 401) {
+            errMsg = "La sessione è scaduta: effettuare nuovamente il Login"
+        }
+        else if(error.status == 400) {
+            errMsg = "Verificare che tutti i campi siano stati inseriti correttamente: non possono esistere due progetti con lo stesso nome"
+        }
+        else {
+            errMsg = "Non è possibile al momento creare un nuovo progetto";
+        }
+        console.error("ErrorMessage: " + errMsg);
+        return Observable.throw(errMsg);
+    }
+
+    /*
+     * Il metodo handleError serve a catturare un eventuale errore proveniente dal server.
+     */
+    private handleErrorUpdate(error: any) {
+        console.log("Error: " + JSON.stringify(error));
+        let errMsg;
+        if(error.status == 401) {
+            errMsg = "La sessione è scaduta: effettuare nuovamente il Login"
+        }
+        else if(error.status == 400) {
+            errMsg = "Verificare che tutti i campi siano stati inseriti correttamente: non possono esistere due progetti con lo stesso nome"
+        }
+        else {
+            errMsg = "Non è possibile al momento aggiornare il progetto selezionato";
+        }
+        console.error("ErrorMessage: " + errMsg);
+        return Observable.throw(errMsg);
+    }
+
+    /*
+     * Il metodo handleError serve a catturare un eventuale errore proveniente dal server.
+     */
+    private handleErrorLogout(error: any) {
+        console.log("Error: " + JSON.stringify(error));
+        let errMsg = "Non è possibile al momento effettuare il logout";
+        console.error("ErrorMessage: " + errMsg);
         return Observable.throw(errMsg);
     }
 

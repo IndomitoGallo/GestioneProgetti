@@ -35,7 +35,7 @@ export class ControllerComponent implements OnInit {
                                 esito => {
                                   this._router.navigate( ['Login'] );
                                 },
-                                error => this.errorMessage = "Impossibile effettuare il Logout"
+                                error =>  this.errorMessage = <any>error
                           );
     }
 

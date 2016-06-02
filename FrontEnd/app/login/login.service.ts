@@ -21,11 +21,6 @@ export class LoginService {
                         .map(this.extractData)
                         .catch(this.handleError);
 
-        /*
-        return this.http.get(BackEndURL + '/login?user=' + username + '&pwd=' + password + '&prof=' + profile)
-                        .map(this.extractData)
-                        .catch(this.handleError);
-        */
     }
 
     /*
@@ -35,7 +30,7 @@ export class LoginService {
     private extractData(res: Response) {
         console.log("Response = " + res.json());
         if (res.status < 200 || res.status >= 300) {
-          throw new Error('Bad response status: ' + res.status);
+            throw new Error('Bad response status: ' + res.status);
         }
         let body = JSON.stringify(res.json());
         console.log("ResponseBody = " + body);
@@ -46,10 +41,15 @@ export class LoginService {
      * Il metodo handleError serve a catturare un eventuale errore proveniente dal server.
      */
     private handleError (error: any) {
-        console.log("Error: " + error);
-        // In a real world app, we might send the error to remote logging infrastructure
-        let errMsg = error.message || 'Server error';
-        console.error("ErrorMessage: " + errMsg); // log to console instead
+        console.log("Error: " + JSON.stringify(error));
+        let errMsg;
+        if(error.status == 400) {
+            errMsg = "Verificare che tutti i campi siano stati inseriti correttamente";
+        }
+        else {
+            errMsg = "Non è possibile al momento effettuare il login";
+        }
+        console.error("ErrorMessage: " + errMsg);
         return Observable.throw(errMsg);
     }
 

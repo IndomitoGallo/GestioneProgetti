@@ -54,7 +54,7 @@ export class CtrlProjectsComponent implements OnInit {
         this._ctrlService.getProjects(this.sessionId)
                          .subscribe(
                                projects  => this.projects = projects,
-                               error =>  this.errorMessage = "Errore durante il caricamento dei progetti"
+                               error =>  this.errorMessage = <any>error
                           );
     }
 
@@ -63,7 +63,7 @@ export class CtrlProjectsComponent implements OnInit {
      * alla pagina precedentemente visualizzata.
      */
     goBack() {
-        window.history.back();
+        this._router.navigate( ['Controller', { sessionId: this.sessionId }] );
     }
 
 }

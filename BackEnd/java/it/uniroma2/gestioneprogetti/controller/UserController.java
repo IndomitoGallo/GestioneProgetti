@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -273,21 +274,13 @@ public class UserController {
      * @author L.Camerlengo
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@RequestBody String[] loginData
-                                            /*@RequestParam String user,
-                                            @RequestParam String pwd,
-                                            @RequestParam String prof*/
-                                        ) {
+    public ResponseEntity<String> login(@RequestBody String[] loginData) {
         LOGGER.log(Level.INFO, LAYERLBL + "Chiamata a rest user controller method login");
         
         String username = loginData[0];
         String password = loginData[1];
         int profile = Integer.parseInt(loginData[2]);
-        /*
-        String username = user;
-        String password = pwd;
-        int profile = Integer.parseInt(prof);
-        */
+ 
         UserRQS request = new UserRQS();
         request.setUsername(username);
         request.setPassword(password);

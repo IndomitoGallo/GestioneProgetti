@@ -6,7 +6,8 @@ export class Project {
         public description:string,
         public status:string,
         public budget:number,
-        public cost:number
+        public cost:number,
+        public projectManager:number
       ) { }
 
 }

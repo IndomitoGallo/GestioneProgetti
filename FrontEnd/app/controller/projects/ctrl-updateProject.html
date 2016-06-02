@@ -1,73 +1,110 @@
-<div class="container">
-		<h2>Aggiornamento Utente</h2>
+<div *ngIf="active" class="container">
+		<h2>Aggiornamento Progetto</h2>
 
-    <form id="addUser_form" name="addUser" #addUserForm="ngForm">
+    <form *ngIf="!standby" id="updateProject_form" name="updateProject" #updateProjectForm="ngForm">
 				<div class="form-group">
 						<label for="name">Name</label>
-		        <input #name="ngForm" [(ngModel)]="user.name" type="text" class="form-control" id="name" name="name" placeholder="Name" required ngControl="name"/>
+		        <input #name="ngForm" type="text" [(ngModel)]="project.name" class="form-control" id="name" name="name" required ngControl="name" maxlength="60"/>
 		        <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
 		            Name is required
 		        </div>
 				</div>
         <div class="form-group">
-						<label for="surname">Surname</label>
-		        <input #surname="ngForm" [(ngModel)]="user.surname" type="text" class="form-control" id="surname" name="surname" placeholder="Surname" required ngControl="surname"/>
-		        <div [hidden]="surname.valid || surname.pristine" class="alert alert-danger">
-		           Surname is required
+						<label for="description">Description</label>
+            <textarea #description="ngForm" [(ngModel)]="project.description" class="form-control" id="description" name="description" maxlength="255" rows="8" required ngControl="description"></textarea>
+		        <div [hidden]="description.valid || description.pristine" class="alert alert-danger">
+		           Description is required
 		        </div>
 				</div>
         <div class="form-group">
-						<label for="username">Username</label>
-		        <input #username="ngForm" [(ngModel)]="user.username" type="text" class="form-control" id="username" name="username" placeholder="Username" required ngControl="username"/>
-		        <div [hidden]="username.valid || username.pristine" class="alert alert-danger">
-		            Username is required
-		        </div>
-				</div>
-        <div class="form-group">
-						<label for="email">Email</label>
-		        <input #email="ngForm" [(ngModel)]="user.email" type="email" class="form-control" id="email" name="email" placeholder="email@example.com" required ngControl="email"/>
-		        <div [hidden]="email.valid || email.pristine" class="alert alert-danger">
-		            Email is required
+						<label for="budget">Budget</label>
+		        <input #budget="ngForm" type="text" [(ngModel)]="project.budget" class="form-control" id="budget" name="budget" required ngControl="budget"/>
+		        <div [hidden]="budget.valid || budget.pristine" class="alert alert-danger">
+		            Budget is required
 		        </div>
 				</div>
 				<div class="form-group">
-		        <label for="pwd">Password</label>
-		        <input #pwd="ngForm" [(ngModel)]="user.passowrd" type="password" class="form-control" id="pwd" name="pwd" maxlength="10" placeholder="*****" required ngControl="pwd"/>
-		        <div [hidden]="pwd.valid || pwd.pristine" class="alert alert-danger">
-		            Password is required
+						<label for="status">Status</label>
+		        <input #status="ngForm" type="text" [(ngModel)]="project.status" class="form-control" id="status" name="status" required ngControl="status"/>
+		        <div [hidden]="status.valid || status.pristine" class="alert alert-danger">
+		            Status is required
 		        </div>
 				</div>
         <div class="form-group">
-            <label for="email">Skill</label>
-            <textarea #skill="ngForm" [(ngModel)]="user.skill" class="form-control" id="skill" name="skill" maxlength="255" placeholder="Scrivi qui le competenze dell'utente" rows="8" required ngControl="skill"></textarea>
-            <div [hidden]="skill.valid || skill.pristine" class="alert alert-danger">
-                Skill is required
-            </div>
-        </div>
-        <strong>Scegli uno o più profili da associare all'utente:</strong>
+		        <label for="pManager">Project Manager: il PM attualmente assegnato è {{pmName}}</label>
+		        <select class="form-control" id="pManager" name="pManager" required ngControl="pManager" #pManager="ngForm">
+								<option [value]="project.projectManager">{{pmName}}</option>
+		            <option *ngFor="#pm of managers" [value]="pm.id">{{pm.name}} {{pm.surname}}</option>
+		        </select>
+		        <div [hidden]="pManager.valid || pManager.pristine" class="alert alert-danger">
+		            Project Manager is required
+		        </div>
+				</div>
+        <strong>Scegli uno o più dipendenti da assegnare al progetto:</strong>
 				<div class="checkbox">
-						<label>
-								<input #dipendente id="dipendente" name="dipendente" type="checkbox" value="true" (click)="isSelected('dip')"/>
-								Dipendente
-						</label>
-						<label>
-								<input #pm id="pm" name="pm" type="checkbox" value="true" (click)="isSelected('pm')"/>
-								Project Manager
+						<label class="myCheckbox" *ngFor="#employee of employees">
+								<input *ngIf="dipendenti[employee.id]" #dipendente id="dipendente" name="dipendente" type="checkbox" [checked]=true value="true" (click)="isSelected([employee.id])"/>
+								<input *ngIf="!dipendenti[employee.id]" #dipendente id="dipendente" name="dipendente" type="checkbox" value="true" (click)="isSelected([employee.id])"/>
+								{{employee.name}} {{employee.surname}}
 						</label>
         </div>
-        <button class="btn btn-default" (click)="updateUser($event, name.value, surname.value, username.value, email.value, pwd.value, skill.value);" [disabled]="!addUserForm.form.valid">
+        <button class="btn btn-default" (click)="updateProject($event, name.value, description.value, budget.value, status.value, pManager.value);" [disabled]="!updateProjectForm.form.valid">
 						Aggiorna
 				</button>
 				<button class="btn btn-default" (click)="goBack()">
 						Torna Indietro
 				</button>
 				<br><br>
-				<div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
+
     </form>
 
-</div>
+		<!-- ********************************************************************** -->
 
-<!--
-Per quanto riguarda le checkbox, il valore assunto è True o False, in modo tale che il
-rispettivo Component possa controllare se e quali checkbox sono state selezionate.
--->
+		<form *ngIf="standby" id="updateProject_form" name="updateProject" #updateProjectForm="ngForm">
+				<h3>Il progetto selezionato è in stand-by: si prega di inserire una cifra nel campo budget per riattivarlo</h3>
+				<div class="form-group">
+						<label for="name">Name</label>
+		        <input #name="ngForm" type="text" [(ngModel)]="project.name" class="form-control" id="name" name="name" readonly ngControl="name" maxlength="60"/>
+				</div>
+        <div class="form-group">
+						<label for="description">Description</label>
+            <textarea #description="ngForm" [(ngModel)]="project.description" class="form-control" id="description" name="description" maxlength="255" rows="8" readonly ngControl="description"></textarea>
+				</div>
+        <div class="form-group">
+						<label for="budget">Budget</label>
+		        <input #budget="ngForm" type="text" [(ngModel)]="project.budget" class="form-control" id="budget" name="budget" readonly ngControl="budget"/>
+		        <div [hidden]="budget.valid || budget.pristine" class="alert alert-danger">
+		            Budget is required
+		        </div>
+				</div>
+				<div class="form-group">
+						<label for="status">Status</label>
+		        <input #status="ngForm" type="text" [(ngModel)]="project.status" class="form-control" id="status" name="status" required ngControl="status"/>
+				</div>
+        <div class="form-group">
+		        <label for="pManager">Project Manager: il PM attualmente assegnato è {{pmName}}</label>
+		        <select class="form-control" id="pManager" name="pManager" readonly ngControl="pManager" #pManager="ngForm">
+								<option [value]="project.projectManager">{{pmName}}</option>
+		            <option *ngFor="#pm of managers" [value]="pm.id">{{pm.name}} {{pm.surname}}</option>
+		        </select>
+				</div>
+        <strong>Nessuno dei dipendenti può essere assegnato al progetto:</strong>
+				<div class="checkbox">
+						<label class="myCheckbox" *ngFor="#employee of employees">
+								<input *ngIf="dipendenti[employee.id]" #dipendente id="dipendente" disabled="true" name="dipendente" type="checkbox" [checked]=true value="true" readonly/>
+								<input *ngIf="!dipendenti[employee.id]" #dipendente id="dipendente" disabled="true" name="dipendente" type="checkbox" value="true" readonly/>
+								{{employee.name}} {{employee.surname}}
+						</label>
+        </div>
+        <button class="btn btn-default" (click)="activateProject($event, status.value);" [disabled]="!updateProjectForm.form.valid">
+						Aggiorna
+				</button>
+				<button class="btn btn-default" (click)="goBack()">
+						Torna Indietro
+				</button>
+				<br><br>
+
+    </form>
+    <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
+
+</div>

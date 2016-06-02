@@ -45,7 +45,7 @@ export class AdminAddUserComponent implements OnInit {
         //La seguente riga di codice serve soltanto ad impedire il ricaricamento della pagina
         event.preventDefault();
 
-        this.user = new User(0, username, pwd, email, name, surname, skill, false, 0);
+        this.user = new User(0, username, pwd, email, name, surname, this.escapeString(skill), false, 0);
 
         if(!this.dipendente && !this.pm) {
             this.errorMessage="Devi scegliere almeno un profilo tra quelli proposti";
@@ -58,7 +58,7 @@ export class AdminAddUserComponent implements OnInit {
                                   esito => {
                                     this._router.navigate( ['Admin', { sessionId: this.sessionId }] );
                                   },
-                                  error =>  this.errorMessage = "Errore durante la creazione dell'utente"
+                                  error =>  this.errorMessage = <any>error
                               );
 
         }
@@ -70,7 +70,7 @@ export class AdminAddUserComponent implements OnInit {
                                   esito => {
                                     this._router.navigate( ['Admin', { sessionId: this.sessionId }] );
                                   },
-                                  error =>  this.errorMessage = "Errore durante la creazione dell'utente"
+                                  error =>  this.errorMessage = <any>error
                               );
         }
         else if(this.dipendente && this.pm) {
@@ -81,9 +81,42 @@ export class AdminAddUserComponent implements OnInit {
                                   esito => {
                                     this._router.navigate( ['Admin', { sessionId: this.sessionId }] );
                                   },
-                                  error =>  this.errorMessage = "Errore durante la creazione dell'utente"
+                                  error =>  this.errorMessage = <any>error
                               );
         }
+
+    }
+
+    /*
+     * Questa funzione effettua l'escape di una stringa in modo che l'SQL accetti
+     * anche caratteri speciali come l'apostrofo.
+     */
+    escapeString(myString: string): string {
+
+        myString = myString.replace(/[\0\n\r\b\t\\'"\x1a]/g, function (s) {
+          switch (s) {
+              case "\0":
+                return "\\0";
+              case "\n":
+                return "\\n";
+              case "\r":
+                return "\\r";
+              case "\b":
+                return "\\b";
+              case "\t":
+                return "\\t";
+              case "\x1a":
+                return "\\Z";
+              case "'":
+                return "''";
+              case '"':
+                return '""';
+              default:
+                return "\\" + s;
+            }
+        });
+
+        return myString;
 
     }
 

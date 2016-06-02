@@ -15,14 +15,14 @@ export class AdminService {
     getUsers (sessionId : string): Observable<User[]>  {
         return this.http.get(BackEndURL + '/users?sessionId=' + sessionId)
                         .map(this.extractData)
-                        .catch(this.handleError);
+                        .catch(this.handleErrorUsers);
     }
 
     //retrieve User
     getUser (sessionId : string, userId: string): Observable<UserProfiles>  {
         return this.http.get(BackEndURL + '/users/' + userId + '?sessionId=' + sessionId)
                         .map(this.extractData)
-                        .catch(this.handleError);
+                        .catch(this.handleErrorUser);
     }
 
     //add User
@@ -39,7 +39,25 @@ export class AdminService {
 
         return this.http.post(BackEndURL + '/addUser', body, options)
                               .map(this.response)
-                              .catch(this.handleError);
+                              .catch(this.handleErrorAdd);
+
+    }
+
+    //add User
+    updateUser(userProfiles: UserProfiles): Observable<string> {
+
+        var user = userProfiles.user;
+        var profiles = userProfiles.profiles;
+        var sessionId = userProfiles.sessionId;
+
+        let body = JSON.stringify({ user, profiles, sessionId });
+        console.log("RequestBody: " + body);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        return this.http.put(BackEndURL + '/users/' + user.id, body, options)
+                              .map(this.response)
+                              .catch(this.handleErrorUpdate);
 
     }
 
@@ -53,7 +71,7 @@ export class AdminService {
 
         return this.http.delete(BackEndURL + '/users/' + userId + '?sessionId=' + sessionId)
                               .map(this.response)
-                              .catch(this.handleError);
+                              .catch(this.handleErrorDelete);
 
     }
 
@@ -67,7 +85,7 @@ export class AdminService {
 
         return this.http.post(BackEndURL + '/logout', body, options)
                               .map(this.response)
-                              .catch(this.handleError);
+                              .catch(this.handleErrorLogout);
 
     }
 
@@ -87,10 +105,96 @@ export class AdminService {
     /*
      * Il metodo handleError serve a catturare un eventuale errore proveniente dal server.
      */
-    private handleError (error: any) {
-        // In a real world app, we might send the error to remote logging infrastructure
-        let errMsg = error.message || 'Server error';
-        console.error(errMsg); // log to console instead
+    private handleErrorUsers(error: any) {
+        console.log("Error: " + JSON.stringify(error));
+        let errMsg;
+        if(error.status == 401) {
+            errMsg = "La sessione è scaduta: effettuare nuovamente il Login"
+        }
+        else {
+            errMsg = "Non è possibile al momento visionare la lista degli utenti";
+        }
+        console.error("ErrorMessage: " + errMsg);
+        return Observable.throw(errMsg);
+    }
+
+    /*
+     * Il metodo handleError serve a catturare un eventuale errore proveniente dal server.
+     */
+    private handleErrorUser(error: any) {
+        console.log("Error: " + JSON.stringify(error));
+        let errMsg;
+        if(error.status == 401) {
+            errMsg = "La sessione è scaduta: effettuare nuovamente il Login"
+        }
+        else {
+            errMsg = "Non è possibile al momento visionare le informazioni dell'utente selezionato";
+        }
+        console.error("ErrorMessage: " + errMsg);
+        return Observable.throw(errMsg);
+    }
+
+    /*
+     * Il metodo handleError serve a catturare un eventuale errore proveniente dal server.
+     */
+    private handleErrorAdd(error: any) {
+        console.log("Error: " + JSON.stringify(error));
+        let errMsg;
+        if(error.status == 401) {
+            errMsg = "La sessione è scaduta: effettuare nuovamente il Login"
+        }
+        else if(error.status == 400) {
+            errMsg = "Username o e-mail già esistenti"
+        }
+        else {
+            errMsg = "Non è possibile al momento aggiungere un nuovo utente";
+        }
+        console.error("ErrorMessage: " + errMsg);
+        return Observable.throw(errMsg);
+    }
+
+    /*
+     * Il metodo handleError serve a catturare un eventuale errore proveniente dal server.
+     */
+    private handleErrorUpdate(error: any) {
+        console.log("Error: " + JSON.stringify(error));
+        let errMsg;
+        if(error.status == 401) {
+            errMsg = "La sessione è scaduta: effettuare nuovamente il Login"
+        }
+        else if(error.status == 400) {
+            errMsg = "Username o e-mail già esistenti"
+        }
+        else {
+            errMsg = "Non è possibile al momento aggiornare l'utente selezionato";
+        }
+        console.error("ErrorMessage: " + errMsg);
+        return Observable.throw(errMsg);
+    }
+
+    /*
+     * Il metodo handleError serve a catturare un eventuale errore proveniente dal server.
+     */
+    private handleErrorDelete(error: any) {
+        console.log("Error: " + JSON.stringify(error));
+        let errMsg;
+        if(error.status == 401) {
+            errMsg = "La sessione è scaduta: effettuare nuovamente il Login"
+        }
+        else {
+            errMsg = "Non è possibile al momento eliminare l'utente selezionato";
+        }
+        console.error("ErrorMessage: " + errMsg);
+        return Observable.throw(errMsg);
+    }
+
+    /*
+     * Il metodo handleError serve a catturare un eventuale errore proveniente dal server.
+     */
+    private handleErrorLogout(error: any) {
+        console.log("Error: " + JSON.stringify(error));
+        let errMsg = "Non è possibile al momento effettuare il logout";
+        console.error("ErrorMessage: " + errMsg);
         return Observable.throw(errMsg);
     }
 

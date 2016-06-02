@@ -61,7 +61,7 @@ export class ViewPMProjectComponent implements OnInit {
                                   console.log("Employees = " + JSON.stringify(this.employees));
                                   this.active = true;
                                },
-                               error =>  this.errorMessage = "Impossibile visualizzare le info del progetto selezionato"
+                               error =>  this.errorMessage = <any>error
                           );
 
     }
@@ -72,10 +72,11 @@ export class ViewPMProjectComponent implements OnInit {
     parseEmployees() {
         var user: User;
         var hour: number;
-        for(var i=0; i < this.dipendenti.length; i++) {
+        var length = this.dipendenti.length;
+        for(var i=0; i < length; i++) {
             user = this.dipendenti.shift();
             hour = this.hours.shift();
-            var employee = new Employee(user.name + user.surname, hour);
+            var employee = new Employee(user.name + " " + user.surname, hour);
             this.employees.push(employee);
         }
     }

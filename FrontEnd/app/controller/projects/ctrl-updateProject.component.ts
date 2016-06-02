@@ -5,6 +5,7 @@ import { Router, RouteParams, ROUTER_DIRECTIVES } from 'angular2/router';
 import { User }       from '../../model/user';
 import { Profile }    from '../../model/profile';
 import { Project }    from '../../model/project';
+import { ProjectForm }    from '../../model/projectForm';
 
 import { ControllerService } from '../controller.service';
 
@@ -25,6 +26,21 @@ export class CtrlUpdateProjectComponent implements OnInit {
     sessionId: string;
     projectId: string;
 
+    project: Project;
+    pm: number;
+    employees: User[];
+    managers: User[] = [];
+    employeesAssociation: number[];
+
+    dipendenti: boolean[] = [];
+    pmName: string;
+    pms: User[];
+
+    standby: boolean;
+    active: boolean = false;
+
+    selectedEmployees: number[] = [];
+
     //Costruttore inizializzato con ControllerService e Router (Dependency Injection)
     constructor(private _ctrlService: ControllerService, private _router: Router, private routeParams: RouteParams) { }
 
@@ -33,14 +49,105 @@ export class CtrlUpdateProjectComponent implements OnInit {
      * dell'utente, tranne l'informazioni relativa ai profili associati, che può ricavare
      * dalle variabili del Component "dipendente" e "pm".
      */
-    updateUser(event, name: string, surname: string, username: string,
-            email: string, pwd: string, skill: string) {
+    updateProject(event, name: string, description: string, budget: number, status: string, pm: number) {
 
         //La seguente riga di codice serve soltanto ad impedire il ricaricamento della pagina
         event.preventDefault();
 
-        //Torno alla pagina principale dell'Amministratore
-        this._router.navigate( ['Controller', {sessionId: this.sessionId}] );
+        if(budget < 0) {
+            this.errorMessage = "Inserire una cifra maggiore o uguale di zero nel campo Budget";
+        }
+        else {
+            var projectId = this.project.id;
+
+            this.project = new Project(projectId, name, description, status, budget, 0, pm);
+            console.log("Progetto che si vuole aggiornare = " + JSON.stringify(this.project));
+
+            //catturo i dipendenti selezionati
+            for(var i=1; i < this.dipendenti.length + 1; i++) {
+                if(this.dipendenti[i]) {
+                    this.selectedEmployees.push(i);
+                }
+            }
+            console.log("Dipendenti associati al progetto creato = " + this.selectedEmployees);
+            this.project.name = this.escapeString(this.project.name);
+            this.project.description = this.escapeString(this.project.description);
+            this._ctrlService.updateProject(this.sessionId, this.project, this.selectedEmployees)
+                              .subscribe(
+                                  esito => {
+                                    this._router.navigate( ['CtrlProjects', {sessionId : this.sessionId}] );
+                                  },
+                                  error =>  this.errorMessage = <any>error
+                              );
+        }
+
+    }
+
+    /*
+     * Questa funzione permette di riattivare il progetto.
+     */
+    activateProject(event, status: string) {
+        //La seguente riga di codice serve soltanto ad impedire il ricaricamento della pagina
+        event.preventDefault();
+
+        var projectId = this.project.id;
+        var projectName = this.project.name;
+        var projectDescription = this.project.description;
+        var projectBudget = this.project.budget;
+        var projectCost = this.project.cost;
+        var projectPM = this.project.projectManager;
+
+        this.project = new Project(projectId, projectName, projectDescription, status, projectBudget, projectCost, projectPM);
+        console.log("Progetto che si vuole riattivare = " + JSON.stringify(this.project));
+
+        //catturo i dipendenti selezionati
+        for(var i=1; i < this.dipendenti.length + 1; i++) {
+            if(this.dipendenti[i]) {
+                this.selectedEmployees.push(i);
+            }
+        }
+        console.log("Dipendenti associati al progetto da riattivare = " + this.selectedEmployees);
+        this.project.name = this.escapeString(this.project.name);
+        this.project.description = this.escapeString(this.project.description);
+        this._ctrlService.updateProject(this.sessionId, this.project, this.selectedEmployees)
+                          .subscribe(
+                              esito => {
+                                this._router.navigate( ['CtrlProjects', {sessionId : this.sessionId}] );
+                              },
+                              error =>  this.errorMessage = <any>error
+                          );
+    }
+
+    /*
+     * Questa funzione effettua l'escape di una stringa in modo che l'SQL accetti
+     * anche caratteri speciali come l'apostrofo.
+     */
+    escapeString(myString: string): string {
+
+        myString = myString.replace(/[\0\n\r\b\t\\'"\x1a]/g, function (s) {
+          switch (s) {
+              case "\0":
+                return "\\0";
+              case "\n":
+                return "\\n";
+              case "\r":
+                return "\\r";
+              case "\b":
+                return "\\b";
+              case "\t":
+                return "\\t";
+              case "\x1a":
+                return "\\Z";
+              case "'":
+                return "''";
+              case '"':
+                return '""';
+              default:
+                return "\\" + s;
+            }
+        });
+
+        return myString;
 
     }
 
@@ -59,7 +166,90 @@ export class CtrlUpdateProjectComponent implements OnInit {
         //Recupero l'id dell'utente da visualizzare
         this.projectId = this.routeParams.get('projectId');
         console.log("UpdateProject PROJECT: " + this.projectId);
+
         //carico dal server le info del progetto da visualizzare
+        this._ctrlService.getProjectForm(this.sessionId, this.projectId)
+                         .subscribe(
+                               projectForm => {
+                                   console.log("ResponseBody = " + JSON.stringify(projectForm));
+                                   this.project = projectForm.project;
+                                   this.pm = this.project.projectManager;
+                                   this.employees = projectForm.employees;
+                                   this.pms = projectForm.pms;
+                                   this.employeesAssociation = projectForm.employeesAssociation;
+                                   console.log("PROGETTO = " + JSON.stringify(this.project));
+                                   console.log("PM = " + JSON.stringify(this.pm));
+                                   console.log("Dipendenti = " + JSON.stringify(this.employees));
+                                   console.log("PMS = " + JSON.stringify(this.pms));
+                                   console.log("Associazioni = " + JSON.stringify(this.employeesAssociation));
+                                   this.setDipendenti();
+                                   this.parseManagers();
+                                   console.log("PMS = " + JSON.stringify(this.managers));
+                                   console.log("PmName = " + this.pmName);
+                                   if(this.project.status == "stand-by") {
+                                       this.standby = true;
+                                   }
+                                   else {
+                                       this.standby = false;
+                                   }
+                                   this.active = true;
+                               },
+                               error =>  this.errorMessage = <any>error
+                          );
+    }
+
+    /*
+     * Questa funzione serve a settare un array di booleani per prendere in ingresso gli id dei dipendenti scelti
+     */
+    setDipendenti() {
+        //scopro qual è l'id più grande tra i Dipendenti in ingresso
+        var maxIndex: number = 0;
+        for(var i=0; i < this.employees.length; i++) {
+            if(this.employees[i].id > maxIndex) {
+                maxIndex = this.employees[i].id;
+            }
+        }
+        console.log("Indice Massimo = " + maxIndex);
+        //inizializzo l'array di booleani con dentro tanti valori quant'è grande maxIndex
+        for(var j=0; j < (maxIndex+1); j++) {
+            this.dipendenti.push(false);
+        }
+        //setto a true i valori dei dipendenti appartenenti al progetto
+        for(var k=0; k < (this.employeesAssociation.length); k++) {
+            this.dipendenti[this.employeesAssociation[k]] = true;
+        }
+        console.log("ARRAY BOOLEANO = " + this.dipendenti);
+    }
+
+    /*
+     * Questa funzione serve a togliere il pm predefinito dalla lista di tutti i pms e settarlo in pm.
+     */
+    parseManagers() {
+        var pm: User;
+        var length = this.pms.length;
+        for(var i=0; i < length; i++) {
+            pm = this.pms.shift();
+            if(pm.id != this.pm) {
+                this.managers.push(pm);
+            }
+            else {
+                this.pmName = pm.name + " " + pm.surname;
+            }
+        }
+    }
+
+    /*
+     * La seguente funzione è gestita nell'html dalle checkbox: quando il Controller
+     * clicca su una delle checkbox cambia lo stato di una delle celle dell'array
+     * booleano dipendenti. In questo modo, quando vengono inviati i dati al server
+     * la funzione di creazione del progetto conosce quali e quanti dipendenti sono stati scelti.
+     */
+    isSelected(employee: number) {
+        console.log("Selected Employee = " + employee);
+        if(this.dipendenti[employee])
+            this.dipendenti[employee] = false;
+        else this.dipendenti[employee] = true;
+        console.log("ARRAY BOOLEANO = " + this.dipendenti);
     }
 
 }

@@ -65,7 +65,7 @@ export class LoginComponent {
                                   router.navigate( ['PM', { sessionId: this.sessionId }] );
                                 }
                              },
-                             error =>  this.errorMessage = "Verificare che i dati inseriti siano corretti"
+                             error =>  this.errorMessage = <any>error
                           );
 
     }

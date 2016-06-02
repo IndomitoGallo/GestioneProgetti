@@ -111,7 +111,6 @@ public class ProjectDAO implements IProjectDAO {
             rs.next();
             //set del campo id del progetto, verrà usato nella insert delle associazioni con i dipendenti
             project.setId(rs.getInt(1));
-            return SUCCESS;
         } catch (SQLException e) {	//catch di un'eccezione proveniente dal DB	    	 
             System.err.println("Database Error!");
             e.printStackTrace();
@@ -130,6 +129,7 @@ public class ProjectDAO implements IProjectDAO {
                 return FAIL;
             }
         }
+        return SUCCESS;
     }
 
     /**

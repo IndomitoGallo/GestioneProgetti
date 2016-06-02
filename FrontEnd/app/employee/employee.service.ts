@@ -18,17 +18,17 @@ export class EmployeeService {
 
         return this.http.post(BackEndURL + '/logout', body, options)
                         .map(this.response)
-                        .catch(this.handleError);
+                        .catch(this.handleErrorLogout);
 
     }
 
     /*
      * Il metodo handleError serve a catturare un eventuale errore proveniente dal server.
      */
-    private handleError (error: any) {
-        // In a real world app, we might send the error to remote logging infrastructure
-        let errMsg = error.message || 'Server error';
-        console.error(errMsg); // log to console instead
+    private handleErrorLogout(error: any) {
+        console.log("Error: " + JSON.stringify(error));
+        let errMsg = "Non è possibile al momento effettuare il logout";
+        console.error("ErrorMessage: " + errMsg);
         return Observable.throw(errMsg);
     }
 

@@ -52,7 +52,7 @@ export class PMComponent implements OnInit {
         this._pmService.getProjects(this.sessionId)
                          .subscribe(
                                projects  => this.projects = projects,
-                               error =>  this.errorMessage = "Errore durante il caricamento dei progetti"
+                               error =>  this.errorMessage = <any>error
                           );
     }
 

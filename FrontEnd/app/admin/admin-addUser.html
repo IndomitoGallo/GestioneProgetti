@@ -25,7 +25,7 @@
 				</div>
         <div class="form-group">
 						<label for="email">Email</label>
-		        <input #email="ngForm" type="email" class="form-control" id="email" name="email" placeholder="email@example.com" required ngControl="email"/>
+		        <input #email="ngForm" type="email" pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*" class="form-control" id="email" name="email" placeholder="email@example.com" required ngControl="email"/>
 		        <div [hidden]="email.valid || email.pristine" class="alert alert-danger">
 		            Email is required
 		        </div>
