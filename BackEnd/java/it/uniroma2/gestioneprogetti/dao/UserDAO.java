@@ -693,8 +693,8 @@ public class UserDAO implements IUserDAO {
     /**
      * Il metodo verifyProjectsStatus(int idPM) sfrutta i metodi forniti dalla
      * classe UtilDB per effettuare una verifica riguardante i progetti
-     * associati ad un projectManager. In particolare viene restituito: "true" se il PM
-     * ha progetti in corso associati (almeno uno), "false" in caso contrario.
+     * associati ad un projectManager. In particolare viene restituito: "false" se il PM
+     * ha progetti in corso associati (almeno uno), "true" in caso contrario.
      *
      * @param idPM int l'id del project manager su cui effettuare la verifica
      * @return String codice che rappresenta il risultato della verifica
