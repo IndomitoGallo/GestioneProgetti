@@ -713,11 +713,11 @@ public class UserDAO implements IUserDAO {
 
             while (rs.next()) {
                 if (rs.getString(1).equals("in corso")) {
-                    return "true";
+                    return "false";
                 }
             }
             
-            return "false";
+            return "true";
         } catch (SQLException e) {	//il metodo intercetta un'eccezione proveniente dal DB	    	 
             System.err.println("Database Error!");
             e.printStackTrace();
