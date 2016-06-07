@@ -34,6 +34,8 @@ export class CtrlAddProjectComponent implements OnInit {
     project: Project;
     selectedEmployees: number[] = [];
 
+    //un flag che mi dice se è stato selezionato almeno un dipendente
+    selectedFlag: boolean;
 
     //Costruttore inizializzato con ControllerService e Router (Dependency Injection)
     constructor(private _ctrlService: ControllerService, private _router: Router, private routeParams: RouteParams) { }
@@ -48,36 +50,44 @@ export class CtrlAddProjectComponent implements OnInit {
         event.preventDefault();
 
         if(budget <= 0) {
-            this.errorMessage = "Inserire un budget maggiore o uguale a zero";
+            this.errorMessage = "Inserire un budget maggiore di zero";
         }
         else {
           
             this.project = new Project(0, name, description, "in corso", budget, 0, pm);
             console.log("Progetto che si vuole creare = " + JSON.stringify(this.project));
 
+            this.selectedFlag = false;
             //catturo i dipendenti selezionati
             for(var i=1; i < this.dipendenti.length + 1; i++) {
                 if(this.dipendenti[i]) {
                     this.selectedEmployees.push(i);
+                    this.selectedFlag = true;
                 }
             }
-            console.log("Dipendenti associati al progetto creato = " + this.selectedEmployees);
-            this.project.name = this.escapeString(this.project.name);
-            this.project.description = this.escapeString(this.project.description);
-            this._ctrlService.addProject(this.sessionId, this.project, this.selectedEmployees)
-                              .subscribe(
-                                  esito => {
-                                    this._router.navigate( ['CtrlProjects', {sessionId : this.sessionId}] );
-                                  },
-                                  error =>  {
-                                    this.errorMessage = <any>error;
-                                    //elimino i dipendenti precedentemente selezionati
-                                    var length = this.selectedEmployees.length;
-                                    for(var i=0; i < length; i++) {
-                                            this.selectedEmployees.pop();
-                                    }
-                                  }
-                              );
+
+            if(!this.selectedFlag) {
+                this.errorMessage = "Devi selezionare almeno un Dipendente";
+            }
+            else {
+                console.log("Dipendenti associati al progetto creato = " + this.selectedEmployees);
+                this.project.name = this.escapeString(this.project.name);
+                this.project.description = this.escapeString(this.project.description);
+                this._ctrlService.addProject(this.sessionId, this.project, this.selectedEmployees)
+                                  .subscribe(
+                                      esito => {
+                                        this._router.navigate( ['CtrlProjects', {sessionId : this.sessionId}] );
+                                      },
+                                      error =>  {
+                                        this.errorMessage = <any>error;
+                                        //elimino i dipendenti precedentemente selezionati
+                                        var length = this.selectedEmployees.length;
+                                        for(var i=0; i < length; i++) {
+                                                this.selectedEmployees.pop();
+                                        }
+                                      }
+                                  );
+            }                  
 
         }
 

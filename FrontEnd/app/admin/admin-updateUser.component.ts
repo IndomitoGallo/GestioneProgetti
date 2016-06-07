@@ -28,8 +28,11 @@ export class AdminUpdateUserComponent implements OnInit {
     activated: boolean = false;
     deactivated: boolean = false;
 
-    //utente di prova
+    //dati utente nel form
     user: User;
+    //dati utente per l'update
+    userUpdate: User;
+
     profiles: number[];
     //profili da scegliere per l'utente creato
     dipendente = false;
@@ -51,32 +54,48 @@ export class AdminUpdateUserComponent implements OnInit {
         //La seguente riga di codice serve soltanto ad impedire il ricaricamento della pagina
         event.preventDefault();
 
-        this.user = new User(this.user.id, username, pwd, email, name, surname, skill, false, 0);
-
+        this.userUpdate = new User(this.user.id, username, pwd, email, name, surname, this.escapeString(skill), false, 0);
+        
         if(!this.dipendente && !this.pm) {
             this.errorMessage = "Devi scegliere almeno un profilo tra quelli proposti";
         }
         else if(!this.dipendente && this.pm) {
             //Lancio il service associando l'utente al profilo PM
             this.profiles = [4];
+            this.userProfiles = new UserProfiles(this.userUpdate, this.profiles, this.sessionId);
+            this._adminService.updateUser(this.userProfiles)
+                              .subscribe(
+                                  esito => {
+                                      this._router.navigate( ['Admin', {sessionId: this.sessionId}] );
+                                  },
+                                  error =>  this.errorMessage = <any>error
+                              );            
         }
         else if(this.dipendente && !this.pm) {
             //Lancio il service associando l'utente al profilo Dipendente
             this.profiles = [3];
+            this.userProfiles = new UserProfiles(this.userUpdate, this.profiles, this.sessionId);
+            this._adminService.updateUser(this.userProfiles)
+                              .subscribe(
+                                  esito => {
+                                      this._router.navigate( ['Admin', {sessionId: this.sessionId}] );
+                                  },
+                                  error =>  this.errorMessage = <any>error
+                              );            
         }
         else if(this.dipendente && this.pm) {
             //Lancio il service associando l'utente a entrambi i profili
             this.profiles = [3,4];
+            this.userProfiles = new UserProfiles(this.userUpdate, this.profiles, this.sessionId);
+            this._adminService.updateUser(this.userProfiles)
+                              .subscribe(
+                                  esito => {
+                                      this._router.navigate( ['Admin', {sessionId: this.sessionId}] );
+                                  },
+                                  error =>  this.errorMessage = <any>error
+                              );
         }
-        this.user.skill = this.escapeString(this.user.skill);
-        this.userProfiles = new UserProfiles(this.user, this.profiles, this.sessionId);
-        this._adminService.updateUser(this.userProfiles)
-                          .subscribe(
-                              esito => {
-                                  this._router.navigate( ['Admin', {sessionId: this.sessionId}] );
-                              },
-                              error =>  this.errorMessage = <any>error
-                          );
+
     }
 
     /*

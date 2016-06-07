@@ -26,7 +26,11 @@ export class CtrlUpdateProjectComponent implements OnInit {
     sessionId: string;
     projectId: string;
 
+    //dati progetto nel form
     project: Project;
+    //dati progetto per l'update
+    projectUpdate: Project;
+
     pm: number;
     employees: User[];
     managers: User[] = [];
@@ -41,6 +45,9 @@ export class CtrlUpdateProjectComponent implements OnInit {
 
     selectedEmployees: number[] = [];
 
+    //un flag che mi dice se è stato selezionato almeno un dipendente
+    selectedFlag: boolean;
+
     //Costruttore inizializzato con ControllerService e Router (Dependency Injection)
     constructor(private _ctrlService: ControllerService, private _router: Router, private routeParams: RouteParams) { }
 
@@ -54,31 +61,35 @@ export class CtrlUpdateProjectComponent implements OnInit {
         //La seguente riga di codice serve soltanto ad impedire il ricaricamento della pagina
         event.preventDefault();
 
-        if(budget < 0) {
-            this.errorMessage = "Inserire una cifra maggiore o uguale di zero nel campo Budget";
+        if(budget <= 0) {
+            this.errorMessage = "Inserire un budget maggiore di zero";
         }
         else {
-            var projectId = this.project.id;
+            this.projectUpdate = new Project(this.project.id, this.escapeString(name), this.escapeString(description), status, budget, 0, pm);
+            console.log("Progetto che si vuole aggiornare = " + JSON.stringify(this.projectUpdate));
 
-            this.project = new Project(projectId, name, description, status, budget, 0, pm);
-            console.log("Progetto che si vuole aggiornare = " + JSON.stringify(this.project));
-
+            this.selectedFlag = false;
             //catturo i dipendenti selezionati
             for(var i=1; i < this.dipendenti.length + 1; i++) {
                 if(this.dipendenti[i]) {
                     this.selectedEmployees.push(i);
+                    this.selectedFlag = true;
                 }
             }
-            console.log("Dipendenti associati al progetto creato = " + this.selectedEmployees);
-            this.project.name = this.escapeString(this.project.name);
-            this.project.description = this.escapeString(this.project.description);
-            this._ctrlService.updateProject(this.sessionId, this.project, this.selectedEmployees)
-                              .subscribe(
-                                  esito => {
-                                    this._router.navigate( ['CtrlProjects', {sessionId : this.sessionId}] );
-                                  },
-                                  error =>  this.errorMessage = <any>error
-                              );
+
+            if(!this.selectedFlag) {
+                this.errorMessage = "Devi selezionare almeno un Dipendente";
+            }
+            else {
+                console.log("Dipendenti associati al progetto creato = " + this.selectedEmployees);
+                this._ctrlService.updateProject(this.sessionId, this.projectUpdate, this.selectedEmployees)
+                                  .subscribe(
+                                      esito => {
+                                        this._router.navigate( ['CtrlProjects', {sessionId : this.sessionId}] );
+                                      },
+                                      error =>  this.errorMessage = <any>error
+                                  );
+            }                  
         }
 
     }

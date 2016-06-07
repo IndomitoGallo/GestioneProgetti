@@ -33,7 +33,7 @@
 				</div>
 				<div class="form-group">
 		        <label for="pwd">Password</label>
-		        <input #pwd="ngForm" [(ngModel)]="user.passowrd" type="password" class="form-control" id="pwd" name="pwd" maxlength="10" required ngControl="pwd"/>
+		        <input #pwd="ngForm" type="password" class="form-control" id="pwd" name="pwd" maxlength="10" placeholder="*****" required ngControl="pwd"/>
 		        <div [hidden]="pwd.valid || pwd.pristine" class="alert alert-danger">
 		            Password is required
 		        </div>
