@@ -41,6 +41,7 @@ export class CtrlUpdateProjectComponent implements OnInit {
     pms: User[];
 
     standby: boolean;
+    concluso: boolean;
     active: boolean = false;
 
     selectedEmployees: number[] = [];
@@ -56,7 +57,7 @@ export class CtrlUpdateProjectComponent implements OnInit {
      * dell'utente, tranne l'informazioni relativa ai profili associati, che può ricavare
      * dalle variabili del Component "dipendente" e "pm".
      */
-    updateProject(event, name: string, description: string, budget: number, status: string, pm: number) {
+    updateProject(event, name: string, description: string, budget: number, status: number, pm: number) {
 
         //La seguente riga di codice serve soltanto ad impedire il ricaricamento della pagina
         event.preventDefault();
@@ -65,7 +66,15 @@ export class CtrlUpdateProjectComponent implements OnInit {
             this.errorMessage = "Inserire un budget maggiore di zero";
         }
         else {
-            this.projectUpdate = new Project(this.project.id, this.escapeString(name), this.escapeString(description), status, budget, 0, pm);
+            console.log("Status: " + status);
+            if(status == 1) {
+                this.projectUpdate = new Project(this.project.id, this.escapeString(name), this.escapeString(description), "in corso", budget, 0, pm);
+            } else if(status == 2) {
+                this.projectUpdate = new Project(this.project.id, this.escapeString(name), this.escapeString(description), "stand-by", budget, 0, pm);
+            } else {
+                this.projectUpdate = new Project(this.project.id, this.escapeString(name), this.escapeString(description), "concluso", budget, 0, pm);
+            }
+
             console.log("Progetto che si vuole aggiornare = " + JSON.stringify(this.projectUpdate));
 
             this.selectedFlag = false;
@@ -89,7 +98,7 @@ export class CtrlUpdateProjectComponent implements OnInit {
                                       },
                                       error =>  this.errorMessage = <any>error
                                   );
-            }                  
+            }
         }
 
     }
@@ -97,7 +106,7 @@ export class CtrlUpdateProjectComponent implements OnInit {
     /*
      * Questa funzione permette di riattivare il progetto.
      */
-    activateProject(event, status: string) {
+    activateProject(event, status: number) {
         //La seguente riga di codice serve soltanto ad impedire il ricaricamento della pagina
         event.preventDefault();
 
@@ -108,7 +117,14 @@ export class CtrlUpdateProjectComponent implements OnInit {
         var projectCost = this.project.cost;
         var projectPM = this.project.projectManager;
 
-        this.project = new Project(projectId, projectName, projectDescription, status, projectBudget, projectCost, projectPM);
+        if(status == 1) {
+            this.project = new Project(projectId, projectName, projectDescription, "in corso", projectBudget, projectCost, projectPM);
+        } else if(status == 2) {
+            this.project = new Project(projectId, projectName, projectDescription, "stand-by", projectBudget, projectCost, projectPM);
+        } else {
+            this.project = new Project(projectId, projectName, projectDescription, "concluso", projectBudget, projectCost, projectPM);
+        }
+
         console.log("Progetto che si vuole riattivare = " + JSON.stringify(this.project));
 
         //catturo i dipendenti selezionati
@@ -197,7 +213,7 @@ export class CtrlUpdateProjectComponent implements OnInit {
                                    this.parseManagers();
                                    console.log("PMS = " + JSON.stringify(this.managers));
                                    console.log("PmName = " + this.pmName);
-                                   if(this.project.status == "stand-by") {
+                                   if(this.project.status == "stand-by" || this.project.status == "concluso") {
                                        this.standby = true;
                                    }
                                    else {

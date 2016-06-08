@@ -54,7 +54,7 @@ export class AdminComponent implements OnInit {
                                  this._adminService.getUsers(this.sessionId)
                                                   .subscribe(
                                                         users  => this.users = users,
-                                                        error =>  this.errorMessage = "Impossibile caricare la lista degli utenti"
+                                                        error =>  this.errorMessage = <any>error
                                                    );
                                },
                                error =>  this.errorMessage = <any>error

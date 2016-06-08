@@ -24,8 +24,12 @@
 		        </div>
 				</div>
 				<div class="form-group">
-						<label for="status">Status</label>
-		        <input #status="ngForm" type="text" [(ngModel)]="project.status" class="form-control" id="status" name="status" required ngControl="status"/>
+						<label for="status">Status: attualmente "{{project.status}}"</label>
+						<select class="form-control" id="status" name="status" required ngControl="status" #status="ngForm" required>
+								<option [value]="1">in corso</option>
+								<option [value]="2">stand-by</option>
+								<option [value]="3">concluso</option>
+		        </select>
 		        <div [hidden]="status.valid || status.pristine" class="alert alert-danger">
 		            Status is required
 		        </div>
@@ -58,10 +62,10 @@
 
     </form>
 
-		<!-- ********************************************************************** -->
+		<!-- ******************************** STAND-BY ************************************** -->
 
 		<form *ngIf="standby" id="updateProject_form" name="updateProject" #updateProjectForm="ngForm">
-				<h3>Il progetto selezionato è in stand-by: si prega di inserire una cifra nel campo budget per riattivarlo</h3>
+				<h3>Lo status del progetto selezionato è {{project.status}}: si prega di modificarlo per riattivarlo</h3>
 				<div class="form-group">
 						<label for="name">Name</label>
 		        <input #name="ngForm" type="text" [(ngModel)]="project.name" class="form-control" id="name" name="name" readonly ngControl="name" maxlength="60"/>
@@ -78,8 +82,15 @@
 		        </div>
 				</div>
 				<div class="form-group">
-						<label for="status">Status</label>
-		        <input #status="ngForm" type="text" [(ngModel)]="project.status" class="form-control" id="status" name="status" required ngControl="status"/>
+						<label for="status">Status: attualmente "{{project.status}}"</label>
+						<select class="form-control" id="status" name="status" required ngControl="status" #status="ngForm" required>
+								<option [value]="1">in corso</option>
+								<option [value]="2">stand-by</option>
+								<option [value]="3">concluso</option>
+						</select>
+						<div [hidden]="status.valid || status.pristine" class="alert alert-danger">
+								Status is required
+						</div>
 				</div>
         <div class="form-group">
 		        <label for="pManager">Project Manager: il PM attualmente assegnato è {{pmName}}</label>
@@ -91,8 +102,7 @@
         <strong>Nessuno dei dipendenti può essere assegnato al progetto:</strong>
 				<div class="checkbox">
 						<label class="myCheckbox" *ngFor="#employee of employees">
-								<input *ngIf="dipendenti[employee.id]" #dipendente id="dipendente" disabled="true" name="dipendente" type="checkbox" [checked]=true value="true" readonly/>
-								<input *ngIf="!dipendenti[employee.id]" #dipendente id="dipendente" disabled="true" name="dipendente" type="checkbox" value="true" readonly/>
+								<input #dipendente id="dipendente" disabled="true" name="dipendente" type="checkbox" [checked]=true value="true" readonly/>
 								{{employee.name}} {{employee.surname}}
 						</label>
         </div>
@@ -105,6 +115,7 @@
 				<br><br>
 
     </form>
+
     <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
 
 </div>

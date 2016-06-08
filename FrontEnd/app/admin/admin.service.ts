@@ -182,7 +182,7 @@ export class AdminService {
             errMsg = "La sessione è scaduta: effettuare nuovamente il Login"
         }
         else {
-            errMsg = "Non è possibile al momento eliminare l'utente selezionato";
+            errMsg = "Non è possibile al momento eliminare l'utente selezionato, perché è il Project Manager di almeno un progetto \"in corso\"";
         }
         console.error("ErrorMessage: " + errMsg);
         return Observable.throw(errMsg);

@@ -72,7 +72,7 @@ export class AdminViewUserComponent implements OnInit {
                                   console.log("Profiles: " + JSON.stringify(this.profiles));
 
                                   //convert Seniority to String
-                                  if(this.user.seniority == 1) {
+                                  /*if(this.user.seniority == 1) {
                                       this.seniority = "Junior";
                                   } else if (this.user.seniority == 2) {
                                       this.seniority = "Middle";
@@ -80,7 +80,7 @@ export class AdminViewUserComponent implements OnInit {
                                       this.seniority = "Senior";
                                   } else {
                                       this.seniority = "Livello di seniority non ancora assegnato";
-                                  }
+                                  }*/
 
                                   this.active = true;
                                },

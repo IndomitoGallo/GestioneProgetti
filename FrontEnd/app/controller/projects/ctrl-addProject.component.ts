@@ -53,7 +53,7 @@ export class CtrlAddProjectComponent implements OnInit {
             this.errorMessage = "Inserire un budget maggiore di zero";
         }
         else {
-          
+
             this.project = new Project(0, name, description, "in corso", budget, 0, pm);
             console.log("Progetto che si vuole creare = " + JSON.stringify(this.project));
 
@@ -87,7 +87,7 @@ export class CtrlAddProjectComponent implements OnInit {
                                         }
                                       }
                                   );
-            }                  
+            }
 
         }
 
