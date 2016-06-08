@@ -270,7 +270,7 @@ public class ProjectDAO implements IProjectDAO {
                     utilDB.closeConnection(conn);
                 }
             } catch (SQLException e) {
-                System.err.println("Database Error!");
+                System.err.println("Close Resource Error!");
                 e.printStackTrace();
                 return FAIL;
             }
@@ -378,7 +378,7 @@ public class ProjectDAO implements IProjectDAO {
             users.add(employees);
             users.add(pms);
         } catch (SQLException e) {
-            System.err.println("Close Resource Error!");
+            System.err.println("Database Error!");
             e.printStackTrace();
             return users;
         } finally {
@@ -419,11 +419,12 @@ public class ProjectDAO implements IProjectDAO {
             conn = utilDB.createConnection();
             stm = utilDB.createStatement(conn);
             String query;
-            ResultSet res;
+            ResultSet res1;
+            ResultSet res2;
             for (int id : employees) {
                 query = "select p.user,p.project from projectUser p where p.user=" + id + " and p.project=" + idProject;
-                res = utilDB.query(stm, query);
-                if (!res.next()) {
+                res1 = utilDB.query(stm, query);
+                if (!res1.next()) {
                     String insert = "insert into projectUser values(" + id + "," + idProject + ",0)";
                     if (utilDB.manipulate(stm, insert) != 1) {
                         return FAIL;
@@ -431,23 +432,28 @@ public class ProjectDAO implements IProjectDAO {
                 }
             }
             query = "select p.user from projectUser p where p.project=" + idProject;
-            res = utilDB.query(stm, query);
+            res2 = utilDB.query(stm, query);
             
-            List<Integer> emp = new ArrayList<>();
+            List<Integer> empUser = new ArrayList<>();
             for(int i = 0; i < employees.length; i++) {
-                emp.add(employees[i]);
+                empUser.add(employees[i]);
             }   
             
-            while (res.next()) {
-                if (!emp.contains(res.getInt(1))) {
-                    query = "delete from projectUser p where p.user=" + res.getInt(1);
+            List<Integer> empDB = new ArrayList<>();
+            while (res2.next()) {
+                empDB.add(res2.getInt(1));
+            }
+            
+            for (Integer emp : empDB) {
+                if (!empUser.contains(emp)) {
+                    query = "delete from projectUser where user=" + emp + " and project=" + idProject;
                     if (utilDB.manipulate(stm, query) != 1) {
                         return FAIL;
                     }
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Close Resource Error!");
+            System.err.println("Database Error!");
             e.printStackTrace();
             return FAIL;
         } finally {
@@ -489,7 +495,7 @@ public class ProjectDAO implements IProjectDAO {
 		utilDB.manipulate(stm, insert);
             }
         } catch (SQLException e) {
-            System.err.println("Close Resource Error!");
+            System.err.println("Database Error!");
             e.printStackTrace();
             return FAIL;
         } finally {
@@ -528,14 +534,16 @@ public class ProjectDAO implements IProjectDAO {
         try {
             conn = utilDB.createConnection();	//connessione al DB
             stmt = conn.createStatement();	//creazione dello Statement
-            //Query SQL per sapere quanti impiegati sono associati al progetto
-            String sql1 = "SELECT COUNT(*) FROM projectUser WHERE project=" + idProject;
+            //Query SQL per sapere quanti impiegati sono associati al progetto (solo quelli attivi)
+            String sql1 = "SELECT COUNT(*) FROM projectUser, user WHERE project=" + idProject + 
+                          " AND user.id = projectUser.user AND isDeactivated=0";
             ResultSet rs1 = utilDB.query(stmt, sql1);
             //Riempio l'array passato in ingresso con gli id degli impiegati
             rs1.next();
             int[] employees = new int[rs1.getInt(1)];
-            //Query SQL per reperire tutti gli utenti associati al progetti
-            String sql2 = "SELECT user FROM projectUser WHERE project=" + idProject;
+            //Query SQL per reperire tutti gli utenti associati al progetto (solo quelli attivi)
+            String sql2 = "SELECT user FROM projectUser, user WHERE project=" + idProject + 
+                          " AND user.id = projectUser.user AND isDeactivated=0";
             ResultSet rs2 = utilDB.query(stmt, sql2);
 
             int i = 0;
@@ -586,9 +594,9 @@ public class ProjectDAO implements IProjectDAO {
         try {
             conn = utilDB.createConnection();
             stm = utilDB.createStatement(conn);
-            String sql1 = "select total_hours from projectUser where project=" 
-                            + idProject 
-                            + " order by user asc";
+            String sql1 = "select total_hours from projectUser p, user u where u.id=p.user and p.project=" 
+                            + idProject + " and u.isDeactivated=0"
+                            + " order by u.id asc";
             ResultSet rs1 = utilDB.query(stm, sql1);
             List<Object> hours = new ArrayList<>();
             while (rs1.next()) {
@@ -597,7 +605,7 @@ public class ProjectDAO implements IProjectDAO {
             }
             List<Object> employees = new ArrayList<>();
             String sql2 = "select u.* from user u, projectUser p where u.id=p.user and p.project=" 
-                            + idProject 
+                            + idProject + " and u.isDeactivated=0"
                             + " order by u.id asc";
             ResultSet rs2 = utilDB.query(stm, sql2);
             while(rs2.next()) {
@@ -674,7 +682,7 @@ public class ProjectDAO implements IProjectDAO {
                     utilDB.closeConnection(conn);
                 }
             } catch (SQLException e) {
-                System.err.println("Database Error!");
+                System.err.println("Close Resource Error!");
                 e.printStackTrace();
                 return FAIL;
             }

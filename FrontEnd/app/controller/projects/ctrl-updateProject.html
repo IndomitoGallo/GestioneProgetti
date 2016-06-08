@@ -65,7 +65,7 @@
 		<!-- ******************************** STAND-BY ************************************** -->
 
 		<form *ngIf="standby" id="updateProject_form" name="updateProject" #updateProjectForm="ngForm">
-				<h3>Lo status del progetto selezionato è {{project.status}}: si prega di modificarlo per riattivarlo</h3>
+				<h3>Lo status del progetto selezionato è {{project.status}}: si prega di modificarlo per riattivarlo e di selezionare un Project Manager tra quelli disponibili</h3>
 				<div class="form-group">
 						<label for="name">Name</label>
 		        <input #name="ngForm" type="text" [(ngModel)]="project.name" class="form-control" id="name" name="name" readonly ngControl="name" maxlength="60"/>
@@ -93,16 +93,21 @@
 						</div>
 				</div>
         <div class="form-group">
-		        <label for="pManager">Project Manager: il PM attualmente assegnato è {{pmName}}</label>
-		        <select class="form-control" id="pManager" name="pManager" readonly ngControl="pManager" #pManager="ngForm">
-								<option [value]="project.projectManager">{{pmName}}</option>
+		        <label *ngIf="pmName != undefined" for="pManager">Project Manager: il PM attualmente assegnato è {{pmName}}</label>
+						<label *ngIf="pmName == undefined" for="pManager">Project Manager: nessun PM attualmente assegnato</label>
+		        <select class="form-control" id="pManager" name="pManager" required ngControl="pManager" #pManager="ngForm">
+								<option *ngIf="pmName != undefined" [value]="project.projectManager">{{pmName}}</option>
 		            <option *ngFor="#pm of managers" [value]="pm.id">{{pm.name}} {{pm.surname}}</option>
 		        </select>
+						<div [hidden]="pManager.valid || pManager.pristine" class="alert alert-danger">
+		            Project Manager is required
+		        </div>
 				</div>
         <strong>Nessuno dei dipendenti può essere assegnato al progetto:</strong>
 				<div class="checkbox">
 						<label class="myCheckbox" *ngFor="#employee of employees">
-								<input #dipendente id="dipendente" disabled="true" name="dipendente" type="checkbox" [checked]=true value="true" readonly/>
+								<input *ngIf="dipendenti[employee.id]" #dipendente id="dipendente" disabled="true" name="dipendente" type="checkbox" [checked]=true (click)="isSelected([employee.id])"/>
+								<input *ngIf="!dipendenti[employee.id]" #dipendente id="dipendente" disabled="true" name="dipendente" type="checkbox" (click)="isSelected([employee.id])"/>
 								{{employee.name}} {{employee.surname}}
 						</label>
         </div>
