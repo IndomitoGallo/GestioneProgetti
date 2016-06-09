@@ -2,7 +2,7 @@ package it.uniroma2.gestioneprogetti.response;
 /**
  * La classe UserProfilesRES modella un oggetto response che incapsula al suo interno 
  * le proprietà UserRES "utente" e int[] "profili" in modo tale
- * da trasportare i dati dallo strato Application allo strato Services.
+ * da trasportare i dati dallo strato Services allo strato Application.
  * @author Gruppo Talocci
  */
 public class UserProfilesRES extends AbstractRES {

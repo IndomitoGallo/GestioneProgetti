@@ -341,13 +341,13 @@ public class UserService implements IUserService {
             return response;
         }
 
-        List<UserRES> heroesResList = new ArrayList<>();
+        List<UserRES> usersResList = new ArrayList<>();
         for (User usr : usersList) {
-            UserRES heroRES = new UserRES(usr.getId(), usr.getUsername(), usr.getPassword(), usr.getEmail(),
+            UserRES userRES = new UserRES(usr.getId(), usr.getUsername(), usr.getPassword(), usr.getEmail(),
                     usr.getName(), usr.getSurname(), usr.getSkill(), usr.getIsDeactivated());
-            heroesResList.add(heroRES);
+            usersResList.add(userRES);
         }
-        response.setUsersList(heroesResList);
+        response.setUsersList(usersResList);
 
         response.setMessage("SUCCESS");
         response.setErrorCode("0");

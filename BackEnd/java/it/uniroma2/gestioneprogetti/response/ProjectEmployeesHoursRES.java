@@ -7,7 +7,7 @@ import java.util.List;
  * le proprietà ProjectRES "progetto", List<UserRES> " lista dei dipendenti",
  * List<Integer> "lista contenente il numero di ore spese in un progetto 
  * per ogni dipendente" e String "nome del projectManager", 
- * in modo tale da trasportare i dati dallo strato Application allo strato Services.
+ * in modo tale da trasportare i dati dallo strato Services allo strato Application.
  * @author Gruppo Talocci
  */
 

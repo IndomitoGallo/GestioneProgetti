@@ -5,7 +5,7 @@ import java.util.List;
  * La classe ProjectFormRES modella un oggetto response che incapsula al suo interno 
  * le proprietà ProjectRES "progetto", List<UserRES> "lista di dipendenti", 
  * List<UserRES> pmsList "lista dei projectManget" e int[] "id dei dipendenti" in modo tale
- * da trasportare i dati dallo strato Application allo strato Services.
+ * da trasportare i dati dallo strato Services allo strato Application.
  * @author Gruppo Talocci
  */
 public class ProjectFormRES extends AbstractRES {
