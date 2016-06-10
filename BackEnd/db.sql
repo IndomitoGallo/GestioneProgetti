@@ -138,3 +138,16 @@ INSERT INTO projectUser VALUES(5, 4, 50);
 INSERT INTO projectUser VALUES(6, 2, 40);
 INSERT INTO projectUser VALUES(7, 1, 30);
 INSERT INTO projectUser VALUES(7, 2, 20);
+
+/* Trigger */
+DELIMITER //
+DROP TRIGGER IF EXISTS user_not_employee;
+CREATE TRIGGER user_not_employee
+AFTER DELETE ON profileUser
+FOR EACH ROW
+BEGIN
+	IF(OLD.profile = 3) THEN
+		DELETE FROM projectUser WHERE user = OLD.user;
+	END IF;
+END;//
+DELIMITER ;

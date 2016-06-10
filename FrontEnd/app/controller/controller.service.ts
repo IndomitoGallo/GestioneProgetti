@@ -171,11 +171,11 @@ export class ControllerService {
         if(error.status == 401) {
             errMsg = "La sessione è scaduta: effettuare nuovamente il Login"
         }
-        else if(error.status == 400) {
-            errMsg = "Verificare che tutti i campi siano stati inseriti correttamente: non possono esistere due progetti con lo stesso nome"
+        else if(error.status == 400) { //Bad Request
+            errMsg = "Verificare che tutti i campi siano stati inseriti correttamente: non possono esistere due progetti con lo stesso nome";
         }
-        else {
-            errMsg = "Non è possibile al momento creare un nuovo progetto";
+        else { //Service Unavailable
+            errMsg = "Non è possibile al momento creare un nuovo progetto. Verificare il campo Name: non possono esistere due progetti con lo stesso nome";
         }
         console.error("ErrorMessage: " + errMsg);
         return Observable.throw(errMsg);
@@ -190,11 +190,11 @@ export class ControllerService {
         if(error.status == 401) {
             errMsg = "La sessione è scaduta: effettuare nuovamente il Login"
         }
-        else if(error.status == 400) {
-            errMsg = "Verificare che tutti i campi siano stati inseriti correttamente: non possono esistere due progetti con lo stesso nome"
+        else if(error.status == 400) { //Bad Request
+            errMsg = "Verificare che tutti i campi siano stati inseriti correttamente: non possono esistere due progetti con lo stesso nome";
         }
-        else {
-            errMsg = "Non è possibile al momento aggiornare il progetto selezionato";
+        else { //Service Unavailable
+            errMsg = "Non è possibile al momento aggiornare il progetto selezionato. Verificare il campo Name: non possono esistere due progetti con lo stesso nome";
         }
         console.error("ErrorMessage: " + errMsg);
         return Observable.throw(errMsg);

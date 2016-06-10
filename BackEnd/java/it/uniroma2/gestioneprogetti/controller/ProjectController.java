@@ -95,7 +95,7 @@ public class ProjectController {
      * Altrimenti, viene creato l'oggetto ProjectEmployeesRQS per trasportare le informazioni verso lo 
      * strato dei servizi e viene memorizzato l'esito dell'operazione in un'EmptyRES.
      * Se la response contiene "SUCCESS" viene restituito l'HTTP status OK,
-     * altrimenti se la response contiene "false" lo status restituito e' BAD_REQUEST e se contiene "FAIL" lo
+     * altrimenti se la response contiene "FAIL" lo
      * status restituito e' SERVICE_UNAVAILABLE .
      * @param peb ProjectEmployeesBean
      * @return ResponseEntity risposta HTTP contentente l'esito dell'operazione, viene passata allo strato superiore
@@ -120,8 +120,6 @@ public class ProjectController {
         EmptyRES response = serviceFactory.getProjectService().insertProject(request);
         if (response.getMessage().equals("FAIL"))
             return new ResponseEntity(HttpStatus.SERVICE_UNAVAILABLE); 
-        if(response.getMessage().equals("false"))
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         
         return new ResponseEntity(HttpStatus.CREATED);
     }
@@ -138,7 +136,7 @@ public class ProjectController {
      * Altrimenti, viene creato l'oggetto ProjectEmployeesRQS per trasportare le informazioni verso lo 
      * strato dei servizi e viene memorizzato l'esito dell'operazione in un'EmptyRES.
      * Se la response contiene "SUCCESS" viene restituito l'HTTP status OK,
-     * altrimenti se la response contiene "false" lo status restituito e' BAD_REQUEST e se contiente "FAIL" lo
+     * altrimenti se la response contiente "FAIL" lo
      * status restituito e' SERVICE_UNAVAILABLE.
      * @param peb ProjectEmployeesBean
      * @param idProject int
@@ -164,8 +162,6 @@ public class ProjectController {
         EmptyRES response = serviceFactory.getProjectService().updateProject(request);
         if (response.getMessage().equals("FAIL"))
             return new ResponseEntity(HttpStatus.SERVICE_UNAVAILABLE); 
-        if(response.getMessage().equals("false"))
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         
         return new ResponseEntity(HttpStatus.CREATED);
     }

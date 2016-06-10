@@ -93,8 +93,14 @@ public class ProjectDAO implements IProjectDAO {
         try {
             conn = utilDB.createConnection();	//connessione al DB
             stmt = conn.createStatement();	//creazione dello Statement
+            //Viene effettuato un controllo per verificare se già esiste un progetto con lo stesso nome
+            String sql1 = "SELECT id FROM project WHERE name='" + project.getName() + "'";
+            ResultSet rs1 = utilDB.query(stmt, sql1);
+            if(rs1.next()) {
+                return FAIL;
+            }
             //SQL insert
-            String sql = "INSERT INTO project VALUES"
+            String sql2 = "INSERT INTO project VALUES"
                     + "(NULL, '"
                     + //l'id è definito tramite "auto increment"
                     project.getName() + "', '"
@@ -105,12 +111,12 @@ public class ProjectDAO implements IProjectDAO {
                     + "0.0, "
                     + //il costo è inizialmente settato a 0.0
                     project.getProjectManager() + ")";
-            utilDB.manipulate(stmt, sql);	//esecuzione del comando SQL
-            sql = "SELECT id FROM project WHERE name='" + project.getName() + "'";
-            ResultSet rs = utilDB.query(stmt, sql);
-            rs.next();
+            utilDB.manipulate(stmt, sql2);	//esecuzione del comando SQL
+            String sql3 = "SELECT id FROM project WHERE name='" + project.getName() + "'";
+            ResultSet rs2 = utilDB.query(stmt, sql3);
+            rs2.next();
             //set del campo id del progetto, verrà usato nella insert delle associazioni con i dipendenti
-            project.setId(rs.getInt(1));
+            project.setId(rs2.getInt(1));
         } catch (SQLException e) {	//catch di un'eccezione proveniente dal DB	    	 
             System.err.println("Database Error!");
             e.printStackTrace();
@@ -153,14 +159,20 @@ public class ProjectDAO implements IProjectDAO {
         try {
             conn = utilDB.createConnection();	//connessione al DB
             stmt = conn.createStatement();	//creazione dello Statement
+            //Viene effettuato un controllo per verificare se già esiste un progetto con lo stesso nome
+            String sql1 = "SELECT id FROM project WHERE name='" + project.getName() + "'";
+            ResultSet rs1 = utilDB.query(stmt, sql1);
+            if(rs1.next()) {
+                return FAIL;
+            }
             //SQL update
-            String sql = "UPDATE project SET name='" + project.getName()
-                    + "', description='" + project.getDescription() + "'"
+            String sql2 = "UPDATE project SET name='" + project.getName()
+                    + "',2description='" + project.getDescription() + "'"
                     + ", status='" + project.getStatus() + "'"
                     + ", budget=" + project.getBudget() 
                     + ", project_manager=" + project.getProjectManager()
                     + " WHERE id=" + project.getId();
-            utilDB.manipulate(stmt, sql);	//esecuzione del comando SQL
+            utilDB.manipulate(stmt, sql2);	//esecuzione del comando SQL
         } catch (SQLException e) {	//il metodo intercetta un'eccezione proveniente dal DB	    	 
             System.err.println("Database Error!");
             e.printStackTrace();
